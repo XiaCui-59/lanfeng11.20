@@ -10,9 +10,7 @@
     "login": "/components/login",
     "welcome": "/components/welcome",
     "chat": "/components/chat",
-    "chat-old": "/components/chat_old",
     "channel": "/components/channel",
-    "fengling": "/components/fengling",
     "fl-mask": "/components/flmask"
   }
 }

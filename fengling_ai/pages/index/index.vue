@@ -17,36 +17,15 @@
 							{{item.name}}
 						</view>
 					</view>
-					<!-- <u-tabs :list="hasChannel?list4:list4.slice(0,2)" lineWidth="15" lineColor="#0F2A4F"
-						:current="currentTabIndex" :activeStyle="{
-					            color: '#0F2A4F',
-					            fontWeight: '600',
-					            transform: 'scale(1.05)',
-								fontSize:'40rpx'
-					        }" :inactiveStyle="{
-					            color: '#7DA9CE',
-								fontWeight: '500',
-					            transform: 'scale(1)',
-								fontSize:'35rpx'
-					        }" itemStyle="padding-left: 22rpx; padding-right: 22rpx; height: 44px;" duration="100"
-						@click.stop="changeTab">
-					</u-tabs> -->
 				</view>
 			</u-navbar>
 		</view>
 		<view class="main_box">
 			<!-- 风铃页 -->
-			<!-- <fengling v-show="currentTabIndex == 0" :top="statusBarHeight+44" :bottom="botSafe" @sendMsg="sendBtnMsg">
-			</fengling> -->
 			<welcome ref="welcome" v-show="currentTabIndex == 0" :top="statusBarHeight+44" :bottom="botSafe"
 				:canPlay="canPlay" @sendMsg="sendBtnMsg" @openCanPlay="openCanPlay" @setGreetStatus="setGreetStatus"
 				@tocall="toCall">
 			</welcome>
-			<!-- 对话页 -->
-			<!-- <chatOld ref="chat" v-show="currentTabIndex == 1" :top="statusBarHeight+44" :bottom="botSafe"
-				:historyList="historyList" :qaList="qaList" :scrollHeight="chatScrollHeight" :answering="answering"
-				:greetingObj="greetingObj" @sendMsg="sendBtnMsg" @moreHis="getMoreHistory">
-			</chatOld> -->
 			<chat ref="chatRef" v-if="currentTabIndex == 1" :top="statusBarHeight+44" :bottom="botSafe"
 				:historyList="historyList" :qaList="qaList" :scrollHeight="chatScrollHeight" :answering="answering"
 				:greetingObj="greetingObj" :answerContinue="answerContinue" :scrollStr="scrollStr" @sendMsg="sendBtnMsg"
@@ -102,10 +81,6 @@
 						:value="index==0?'¥ '+item.value:(index==1 && userInfo.is_vip?'':item.value)" :clickable="false"
 						:url="item.url" isLink @click="handleClick"></u-cell>
 				</u-cell-group>
-				<!-- 联系客服 -->
-				<!-- <view class="contact">
-					<button type="default" open-type="contact">联系客服</button>
-				</view> -->
 				<!-- 退出登录 -->
 				<view class="logout" @click="logout">退出登录</view>
 			</view>
@@ -130,9 +105,9 @@
 						说话</view>
 					<!-- 键盘输入区 -->
 					<view class="input_box" v-show="!showVoice">
-						<input type="text" confirm-type="发送" v-model="question"
+						<input type="text" confirm-type="发送" :value="question"
 							:placeholder="canSend?'更多工作就问我':'正在努力思考，请稍后'" @focus="inputBindFocus" @confirm="doSend"
-							:disabled="!canSend" :adjust-position="false" />
+							:disabled="!canSend" @input="onInput" @blur="onBlur" :adjust-position="false" />
 					</view>
 				</view>
 
@@ -166,9 +141,6 @@
 				:style="{bottom:inputHeight?inputHeight+60+'px':'128rpx'}" @click="toCall">
 				<image :src="imgUrl+'/worker/new/ic_telephone.png'" mode="widthFix"></image>
 			</view>
-			<!-- <view class="phone_icon" :style="{bottom:inputHeight?inputHeight+60+'px':'128rpx'}" @click="toCall">
-				<image :src="imgUrl+'/worker/new/ic_telephone.png'" mode="widthFix"></image>
-			</view> -->
 		</view>
 		<login :showLogin="showLogin" @closeLogin="closeLogin" @getInfo="getInfo" :shareId="shareId">
 		</login>
@@ -182,9 +154,7 @@
 	import flMask from "@/components/flmask.vue"
 	import login from "@/components/login.vue"
 	import welcome from "@/components/welcome.vue"
-	import fengling from "@/components/fengling.vue"
 	import chat from "@/components/chat.vue"
-	import chatOld from "@/components/chat_old.vue"
 	import channel from "@/components/channel.vue"
 	import commonMethods from "@/common/commMethods.js"
 	import urlSetting from "@/url_setting";
@@ -212,7 +182,6 @@
 				maskEndPoint: {},
 				showMenu: false,
 				manager: app.globalData.manager,
-				// manager: uni.getRecorderManager(),
 				menuList: [{
 						text: "钱包余额",
 						url: "/pages/balance/balance",
@@ -271,13 +240,10 @@
 				touchStartTime: "",
 				touchEndTime: "",
 				secondTimer: null,
-				// showAnswering: app.globalData.showAnswering,
 				num: 1,
 				hold: "h1",
-				// placeHolder: "您想找什么工作,都可以问我",
 				question: "",
 				qaList: [],
-				// qaList: app.globalData.qaList,
 				currentQalength: 0,
 				curRespone: {
 					content: "",
@@ -300,7 +266,6 @@
 				printTimer2: null,
 				printTimer3: null,
 				hasChannel: false,
-				// responEnd: false,
 				scrollStr: "",
 				jobId: "",
 				sureStatus: false, //记录用户是否报名成功
@@ -316,8 +281,6 @@
 		async onLoad(params) {
 			uni.showLoading()
 			this.resetCity()
-			this.unConnected()
-			this.unConnecting()
 			this.btnInfo = await commonMethods.getElementInfo(".input_btn_wrap")
 			if (this.btnInfo) {
 				this.botSafe = app.globalData.systemHeight - this.btnInfo.top
@@ -347,25 +310,29 @@
 			this.getSetting()
 		},
 		onUnload() {
+			console.log("执行了onUnload")
 			this.canPlay = false
-			// this.close()
+			this.close()
 		},
 		async onShow() {
-
-			// this.setChannelId("")
-			// 切换页面时关闭answering
+			let _this = this
 			this.resetData()
 			this.closeAnswering()
-			// this.openCansend()
 			// 录音初始化
 			this.initRecord()
+			if (!this.answerContinue) {
+				this.qaList = []
+			}
 			uni.onKeyboardHeightChange(this.listenKeyBoard)
 			if (this.isLogin()) {
 				this.getInfo()
 				this.closeInterviewCard()
 				this.closeChannelInterviewCard()
-				// this.historyId = 0
-				// this.historyList = await this.getHistory()
+			}
+			if (this.currentTabIndex == 1) {
+				this.$nextTick(() => {
+					_this.$refs.chatRef.toScroll()
+				})
 			}
 		},
 		onHide() {
@@ -383,9 +350,7 @@
 			login,
 			welcome,
 			chat,
-			chatOld,
 			channel,
-			fengling,
 			flMask
 		},
 		watch: {
@@ -414,16 +379,14 @@
 				} else {
 					this.showLogin = true
 				}
-
-
 			},
-			question(newValue) {
-				if (!newValue) {
+			question(newVal) {
+				if (!newVal) {
 					this.showSend = false
 				} else {
 					this.showSend = true
 				}
-			},
+			}
 		},
 		methods: {
 			...mapMutations(["openAnswering", "closeAnswering", "setConnected", "unConnected", "setConnecting",
@@ -434,6 +397,12 @@
 				"setAiReady", "resetAiReady", "resetCity", "setChannelInterviewCard", "closeChannelInterviewCard",
 				"setJobName", "resetJobName", "setJobId", "resetJobId"
 			]),
+			onInput(e) {
+				this.question = e.target.value
+			},
+			onBlur() {
+				this.question = ""
+			},
 			openCanPlay() {
 				this.canPlay = true
 			},
@@ -468,7 +437,6 @@
 					uni.authorize({
 						scope: 'scope.record',
 						success(res) {
-							// console.log(res, 'success')
 							_this.voicePermisson = true
 							_this.canPlay = false
 							uni.navigateTo({
@@ -478,7 +446,6 @@
 						fail(err) {
 							// 弹出麦克风授权
 							_this.voicePermisson = false
-							console.log(err, 'err')
 							_this.$refs.myModal.showModal({
 								title: "请先开启语音输入权限。",
 								showCancel: false,
@@ -487,7 +454,6 @@
 									if (resp == "confirm") {
 										uni.openSetting({
 											success(respone) {
-												// console.log(res.authSetting, "res.authSetting")
 												if (respone.authSetting['scope.record']) {
 													_this.voicePermisson = true
 													_this.canPlay = false
@@ -498,7 +464,6 @@
 												}
 											},
 											fail(openErr) {
-												console.log(openErr, 'openerr')
 												_this.voicePermisson = false
 											}
 										});
@@ -541,11 +506,9 @@
 						url: url,
 						method: "GET",
 						success(res) {
-							console.log("getPosition:", res)
 							resolve(res.data.result)
 						},
 						fail(err) {
-							console.log(err)
 							reject(err)
 						}
 					})
@@ -580,15 +543,12 @@
 								})
 							}
 						},
-						fail(err) {
-							console.log(err, "微信登录接口调用失败")
-						}
+						fail(err) {}
 					});
 				})
 			},
 			printResponse() {
 				let _this = this
-				console.log("printResponse qaList：", _this.qaList)
 				let index = 0
 				let noOutCount = 0
 				this.prinTimer = setInterval(function() {
@@ -597,7 +557,6 @@
 						noOutCount = 0
 						_this.curRespone.content += _this.responseStr[index]
 						if (_this.inChannel) {
-							console.log("inchannel")
 							_this.updateChannelQaList(_this.curRespone)
 						} else {
 							// 不在通话页
@@ -609,7 +568,6 @@
 						index++
 					} else {
 						if (_this.responEnd) {
-							console.log(_this.responseStr)
 							clearInterval(_this.prinTimer)
 							_this.openCansend()
 							_this.resetData()
@@ -682,21 +640,16 @@
 						may_ask: []
 					}
 					this.qaList.push(data)
-					console.log(this.qaList, "qaLIST")
 				}
 
 			},
 			getHistory() {
-				console.log("获取聊天记录")
 				let _this = this
+				console.log("获取历史记录")
 				return new Promise(resolve => {
 					let url = "/api/chat/histories?last_message_id=" + _this.historyId + "&job_channel_id="
 					_this.$aiRequest(url, "", "GET", _this.header).then(res => {
 						if (res.code == 0) {
-							if (!_this.answerContinue) {
-								_this.qaList = []
-							}
-							// _this.qaList = []
 							if (res.data.length == 0) {
 								// 新用户
 								_this.newUser = true
@@ -716,16 +669,15 @@
 
 			},
 			getMoreHistory() {
-				if (this.historyList.length == 0) {
-					this.qaList = []
-				}
-				if (!this.loadAllHistory) {
+				let _this = this
+				if (!this.loadAllHistory && this.historyId) {
 					uni.showLoading()
 					let url = "/api/chat/histories?last_message_id=" + this.historyId + "&job_channel_id="
 					this.$aiRequest(url).then(res => {
 						if (res.code == 0) {
 							let len = res.data.length
 							uni.hideLoading()
+							this.$refs.chatRef.refreshRestore()
 							if (len > 0) {
 								let resArr = res.data.reverse()
 								let newArr = this.handleList(resArr)
@@ -743,6 +695,10 @@
 						icon: "none",
 						duration: 2000
 					})
+					setTimeout(function() {
+						_this.$refs.chatRef.refreshRestore()
+					}, 500)
+
 				}
 
 			},
@@ -757,7 +713,6 @@
 						arr[i].showTranIcon = false
 					}
 				}
-				// console.log("arr:", arr)
 				return arr
 			},
 			bodyTouchStart(e) {
@@ -773,10 +728,6 @@
 						this.currentTabIndex--
 					}
 				}
-				// if (this.currentTabIndex == 1) {
-				// 	this.historyId = 0
-				// 	this.historyList = await this.getHistory()
-				// }
 				this.moveDirection = ""
 			},
 			bodyTouchMove(e) {
@@ -798,7 +749,6 @@
 				})
 			},
 			async sendBtnMsg(obj) {
-				console.log(obj)
 				if (!this.isLogin()) {
 					this.showLogin = true
 					return
@@ -868,16 +818,13 @@
 			initRecord() {
 				//录音开始事件
 				this.manager.onStart(e => {
-					// console.log("录音开始")
 					this.inputing = true
 				});
 				//录音结束事件
 				this.manager.onStop(res => {
 					let _this = this
-					// console.log("录音结束")
 					this.inputing = false
 					clearInterval(_this.secondTimer)
-					// console.log("时间间隔:", this.touchEndTime - this.touchStartTime)
 					if ((this.touchEndTime - this.touchStartTime) > 1000) {
 						this.handleRecorder(res);
 					} else {
@@ -892,7 +839,6 @@
 					let _this = this
 					this.inputing = false
 					clearInterval(_this.secondTimer)
-					console.log("录音出错：", res.errMsg)
 				})
 			},
 			// 处理录音数据
@@ -902,8 +848,6 @@
 			}) {
 				this.inputing = false;
 				let _this = this
-				// console.log("tempFilePath", tempFilePath)
-				// console.log("duration", duration)
 				if (duration < 600) {
 					uni.showToast({
 						title: "说话时间过短",
@@ -988,7 +932,6 @@
 					return
 				}
 				// 回答完成后才能发下一条信息
-				console.log("answerContinue:", this.answerContinue)
 				if (this.answering || this.answerContinue) {
 					this.$refs.myModal.showModal({
 						title: "目前有正在回复的对话，请稍后重试",
@@ -1000,6 +943,10 @@
 				if (!this.canSend) {
 					return
 				} else {
+					// 如果无历史记录显示加载中
+					if (this.historyList.length == 0) {
+						uni.showLoading()
+					}
 					// 设置非频道
 					this.notChannel()
 					// 设置非通话页
@@ -1017,20 +964,17 @@
 							_this.sureStatus = false
 							_this.closeInterviewCard()
 							_this.closeChannelInterviewCard()
-							_this.question = "";
-							console.log(data, "data")
+							_this.$set(_this, "question", "")
 							if (data != "ping") {
 								if (!_this.cancelRecord) {
 									_this.openAnswering()
-									// _this.showAnswering = true
-									// app.globalData.showAnswering = false
 									param.printStr = ""
 									_this.$set(_this.qaList, _this.qaList.length, param)
 									_this.currentQalength = _this.qaList.length
-									console.log("send qaList：", _this.qaList)
 									_this.num++
 									_this.hold = "h" + _this.num
 									_this.closeCansend()
+									uni.hideLoading()
 									// _this.placeHolder = "正在努力思考，请稍后..."
 								}
 
@@ -1039,7 +983,6 @@
 						},
 						fail(err) {
 							_this.jobId = ""
-							console.log(err);
 
 						}
 					})
@@ -1048,22 +991,19 @@
 			},
 			async creatConnect(header) {
 				var _this = this;
-				console.log("socketTask:", app.globalData.socketTask)
 				if (app.globalData.socketTask) {
 					// 关闭之前的链接
 					await this.close()
 					return false
 				}
-				console.log("connected/connecting：", this.connected, this.connecting)
+				console.log("connected：", this.connected)
 				if (this.connected || this.connecting) {
 					return false
 				}
 				// 两个链接状态都为false才开始创建链接
 				this.setConnecting()
-				// console.log(app.globalData.wssUrl, "wss")
 				let res = await this.connectWebsocket(header)
 				if (res.errMsg == "connectSocket:ok") {
-					console.log("执行初始化")
 					this.initWebsocket()
 				}
 			},
@@ -1075,11 +1015,6 @@
 						header: header,
 						method: 'GET',
 						success(res) {
-							// 这里是接口调用成功的回调，不是连接成功的回调，请注意
-							console.log("接口调用成功:", res)
-							uni.onSocketOpen(function(res) {
-								console.log("链接打开成功")
-							})
 							resolve(res)
 						},
 						fail(err) {
@@ -1150,25 +1085,16 @@
 							_this.resetJobName()
 						}
 						if (respData.message != "[DONE]") {
-							_this.curRespone.content += respData.message
-							if (_this.inChannel) {
-								// 频道内
-								_this.updateChannelQaList(_this.curRespone)
-							} else {
-								_this.$set(_this.qaList, _this.currentQalength, _this.curRespone)
-								// _this.updateChannelQaList(_this.curRespone)
+							_this.responCount++
+							_this.responseStr += respData.message
+							if (_this.responCount == 1) {
+								_this.printResponse()
 							}
-							// _this.responCount++
-							// _this.responseStr += respData.message
-							// if (_this.responCount == 1) {
-							// 	_this.printResponse()
-							// }
 						} else {
 							_this.setRespEnd()
 							if (!_this.sureStatus) {
 								_this.getMayAsk()
 							}
-
 						}
 					}
 				})
@@ -1178,7 +1104,6 @@
 					app.globalData.socketTask = null
 					this.unConnected()
 					this.unConnecting()
-					console.log("close connected/connecting：", this.connected, this.connecting)
 					this.resetAiReady()
 					clearInterval(_this.timer)
 					setTimeout(function() {
@@ -1189,7 +1114,6 @@
 				})
 			},
 			doSend(e, text) {
-				// console.log(text);
 				if (e.ctrlKey && e.keyCode === 13) {
 					//用户点击了ctrl+enter触发
 					this.question += '\n';
@@ -1243,8 +1167,6 @@
 				}, 10000)
 			},
 			resetData() {
-				// this.canSend = true
-				// this.placeHolder = "想了解什么工作，请告诉我吧"
 				this.cancelRecord = false
 				this.curRespone = {
 					content: "",
@@ -1254,32 +1176,6 @@
 				this.responCount = 0
 				this.responseStr = ""
 				this.notRespEnd()
-			},
-			formatResultStr(str) {
-				if (str) {
-					this.speeking(str)
-				}
-			},
-			speeking(str) {
-				// console.log(str, "播报内容")
-				plugin.textToSpeech({
-					lang: "zh_CN",
-					content: str,
-					success: function(res) {
-						if (res.retcode == 0) {
-							// console.log("result", res.result)
-							wx.playBackgroundAudio({
-								dataUrl: res.filename,
-								title: '',
-							})
-						} else {
-							console.warn("翻译失败", res)
-						}
-					},
-					fail: function(res) {
-						console.log("网络失败", res)
-					}
-				})
 			},
 			close() {
 				return new Promise((resolve) => {
@@ -1320,14 +1216,8 @@
 					if (_this.voicePermisson) {
 						_this.touchStartTime = e.timeStamp
 						_this.$refs.chatRef.stopCurAudio()
-						// if (!this.Audio.paused) {
-						// 	//如果音频正在播放 先暂停。
-						// 	this.stopAudio(this.AudioExam)
-						// }
 						uni.vibrateShort({
-							success: function() {
-								// console.log('success');
-							}
+							success: function() {}
 						});
 						_this.startPoint = e.touches[0]; //记录长按时开始点信息，后面用于计算上划取消时手指滑动的距离。
 						// this.showInputing = true
@@ -1340,13 +1230,11 @@
 						uni.authorize({
 							scope: 'scope.record',
 							success(res) {
-								// console.log(res, 'success')
 								_this.voicePermisson = true
 							},
 							fail(err) {
 								// 弹出麦克风授权
 								_this.voicePermisson = false
-								console.log(err, 'err')
 
 							}
 						})
@@ -1360,18 +1248,14 @@
 				uni.getSetting({
 					success(res) {
 						if (!res.authSetting['scope.record']) {
-							console.log('用户尚未授权语音权限');
 							_this.voicePermisson = false
 							// 可以在这里引导用户去设置中开启权限
 						} else {
-							console.log('用户已授权语音权限');
 							_this.voicePermisson = true
 							// 用户已授权，可以继续进行后续操作
 						}
 					},
-					fail(err) {
-						console.log('获取设置失败', err);
-					}
+					fail(err) {}
 				});
 			},
 			stopRecord(e) {
@@ -1391,22 +1275,18 @@
 			},
 			//录音被打断
 			cancelVoice(e) {
-				// console.log("touch取消")
 				this.inputing = false
 				// this.canSend = false;
 				this.manager.stop();
 			},
 			handleClick(e) {
-				console.log(e)
 				if (e.name == "联系客服") {
 					wx.openCustomerServiceChat({
 						extInfo: {
 							url: "https://work.weixin.qq.com/kfid/kfc01b1c6e379607409"
 						},
 						corpId: 'wwe3ced2e65390ad79',
-						success(res) {
-							console.log(res)
-						}
+						success(res) {}
 					})
 				}
 			},
@@ -1417,7 +1297,6 @@
 					this.showLogin = true
 				}
 
-				console.log(this.currentTabIndex)
 			},
 			openSetting() {
 				if (!this.isLogin()) {
@@ -1429,13 +1308,11 @@
 				if (ifAuth) {
 					uni.openSetting({
 						success(res) {
-							// console.log(res.authSetting, "res.authSetting")
 							if (res.authSetting['scope.record']) {
 								_this.voicePermisson = true
 							}
 						},
 						fail(openErr) {
-							console.log(openErr, 'openerr')
 							_this.voicePermisson = false
 						}
 					});
@@ -1443,13 +1320,11 @@
 					uni.authorize({
 						scope: 'scope.record',
 						success(res) {
-							// console.log(res, 'success')
 							_this.voicePermisson = true
 						},
 						fail(err) {
 							// 弹出麦克风授权
 							_this.voicePermisson = false
-							console.log(err, 'err')
 						},
 						complete() {
 							uni.setStorageSync("voiceAuth", true)
@@ -1467,11 +1342,9 @@
 				this.showVoice = !this.showVoice
 			},
 			maskStart(e) {
-				// console.log(e)
 				this.maskStartPoint = e.touches[0]
 			},
 			maskEnd(e) {
-				// console.log(e)
 
 			},
 			handleMaskMove(e) {
@@ -1488,10 +1361,8 @@
 				// 判断是否登录
 				if (this.isLogin()) {
 					// 已登录
-					// console.log("已登录")
 					this.showMenu = true
 				} else {
-					// console.log("未登录")
 					// 未登录显示登录弹窗
 					this.showLogin = true
 				}
@@ -1532,7 +1403,7 @@
 				})
 				this.historyId = 0
 				this.historyList = await this.getHistory()
-				console.log("historyList:", this.historyList)
+				console.log("historyList：", this.historyList)
 			}
 		}
 	}

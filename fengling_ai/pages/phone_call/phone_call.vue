@@ -92,7 +92,9 @@
 				playTimer: null,
 				isWelcome: true,
 				status: "", //记录当前场景：普通（normal）;面试（interview)
-				job_id: "" //记录当前面试的职位id
+				job_id: "", //记录当前面试的职位id，
+				errorTimer: null, //异常判断
+				getResponeTime: 0 //记录等待返回第一个音频的时间
 			}
 		},
 		components: {
@@ -407,7 +409,6 @@
 
 				source.connect(gain);
 				gain.connect(this.audioCtx.destination);
-
 				source.type = 'sine'; // 使用正弦波
 				source.frequency.value = 300.50; // 调高音调到C6
 				gain.gain.setValueAtTime(2, this.audioCtx.currentTime); // 降低音量
@@ -444,7 +445,6 @@
 						"Authorization": "bearer " + uni.getStorageSync("token"),
 						"Content-Type": "application/octet-stream"
 					},
-					// timeout: 10000,
 					responseType: 'arraybuffer',
 					method: 'POST',
 					data: data,
@@ -459,6 +459,23 @@
 
 					}
 				})
+				this.errorTimer = setInterval(function() {
+					if (_this.getResponeTime < 10) {
+						// 10秒内是否返回第一段音频
+						if (_this.receiveCount > 0) {
+							clearInterval(_this.errorTimer)
+						} else {
+							_this.getResponeTime++
+						}
+					} else {
+						_this.clearCallContent()
+						_this.requestTask.offChunkReceived() //取消监听数据返回函数
+						_this.playError()
+						clearInterval(_this.errorTimer)
+						_this.getResponeTime = 0
+					}
+
+				}, 1000)
 				this.requestTask.onChunkReceived((res) => {
 					_this.receiveCount++
 					if (_this.receiveCount == 1) {

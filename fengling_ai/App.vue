@@ -30,7 +30,6 @@
 			menuButtonInfo: {},
 			statusBarHeight: 0,
 			socketTask: null,
-			// qaList: [], //对话页即时聊天记录,
 			Audio: uni.createInnerAudioContext(),
 			manager: uni.getRecorderManager(),
 		},

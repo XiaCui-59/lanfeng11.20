@@ -43,9 +43,9 @@
 						说话</view>
 					<!-- 键盘输入区 -->
 					<view class="input_box" v-show="!showVoice">
-						<input type="text" confirm-type="发送" v-model="question"
+						<input type="text" confirm-type="发送" :value="question"
 							:placeholder="canSend?'更多工作就问我':'正在努力思考，请稍后'" @focus="inputBindFocus" @confirm="doSend"
-							:disabled="!canSend" :adjust-position="false" />
+							:disabled="!canSend" @input="onInput" @blur="onBlur" :adjust-position="false" />
 					</view>
 				</view>
 
@@ -221,6 +221,12 @@
 				"clearChannelQaList", "addChannelQaList",
 				"calcChannelQaLen", "setChannelId", "notInCall", "closeInterviewCard", "closeChannelInterviewCard"
 			]),
+			onInput(e) {
+				this.question = e.target.value
+			},
+			onBlur() {
+				this.question = ""
+			},
 			async handleGreeting() {
 				// let msg = await this.handleBtnMsg(this.channel_info.name)
 				let msg = "欢迎进入" + this.channel_info.name + "频道，" + this.channel_info.content
@@ -347,10 +353,9 @@
 				})
 			},
 			getMoreHistory() {
-				if (this.historyList.length == 0) {
-					this.clearChannelQaList()
-				}
-				if (!this.loadAllHistory) {
+				let _this = this
+
+				if (!this.loadAllHistory && this.historyId) {
 					uni.showLoading()
 					let url = "/api/chat/histories?last_message_id=" + this.historyId + "&job_channel_id=" + this
 						.channel_info.id
@@ -358,6 +363,7 @@
 						if (res.code == 0) {
 							let len = res.data.length
 							uni.hideLoading()
+							this.$refs.chat.refreshRestore()
 							if (len > 0) {
 								let resArr = res.data.reverse()
 								let newArr = this.handleList(resArr)
@@ -375,6 +381,9 @@
 						icon: "none",
 						duration: 2000
 					})
+					setTimeout(function() {
+						_this.$refs.chat.refreshRestore()
+					}, 500)
 				}
 
 			},
@@ -573,6 +582,10 @@
 				if (!this.canSend) {
 					return
 				} else {
+					// 如果无历史记录显示加载中
+					if (this.historyList.length == 0) {
+						uni.showLoading()
+					}
 					this.isChannel()
 					this.notInCall()
 					app.globalData.socketTask.send({
@@ -596,6 +609,7 @@
 									_this.hold = "h" + _this.num
 									_this.question = "";
 									_this.closeCansend()
+									uni.hideLoading()
 									// _this.placeHolder = "正在努力思考，请稍后..."
 								}
 

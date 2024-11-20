@@ -12,13 +12,15 @@
 		<!-- 有聊天对话区 -->
 		<view class="chat_area" v-show="historyList.length>0 ||qaList.length > 1">
 			<scroll-view class="chat_wrap" :scroll-into-view="scrollView" :style="{height:scrollHeight+'px'}"
-				:scroll-y="true" id="chatwrap" @scrolltoupper="getMoreHistory">
+				:scroll-y="true" id="chatwrap" :refresher-enabled="true" :refresher-triggered="trigger"
+				@refresherrefresh="getMoreHistory">
 				<!-- 历史记录 -->
 				<view class="history list">
 					<view class="qa_item" v-for="(item,index) in historyList" :key="item.id" :id="'his'+item.id">
 						<view class="line" :class="item.origin == 'customer'?'right':'left'">
 							<view class="inline_box">
-								<view class="cont" :class="item.msg_type == 'text'?'textcont':''">
+								<view class="cont" :style="{background:item.msg_type=='card'?'transparent':'auto',
+								width:item.msg_type=='card'?'100%':'auto'}" :class="item.msg_type == 'text'?'textcont':''">
 									<!-- 文字信息 -->
 									<rich-text :nodes="item.content"
 										:class="item.origin == 'customer'?'customer_text':'ai_text'"
@@ -29,14 +31,26 @@
 									<!-- <rich-text :nodes="item.content"
 										:class="item.origin == 'customer'?'customer_text':'ai_text'"
 										v-if="item.msg_type == 'text'"></rich-text> -->
-									<!-- 工作推荐列表 -->
-									<!-- <view class="job_list" v-if="item.jobs?item.jobs.length>0:false">
-										<view class="job_item flex flex-start" v-for="(jobItem,jobIndex) in item.jobs"
-											@click.stop="sendMsg(jobItem.name,'job')">
-											<view class="circle"></view>
-											<view class="job_text">{{jobItem.name}}</view>
+									<!-- 面试卡片 -->
+									<view class="sure_card" style="margin-top:0;"
+										v-if="item.msg_type == 'card' && item.card && item.card.type == 'audio_call_start_interview'">
+										<view class="text_img">
+											<image :src="imgUrl+'/worker/new/sure_text.png'" mode="widthFix"></image>
 										</view>
-									</view> -->
+										<view class="bot_box">
+											<view class="name flex flex-start">
+												<view class="label">已报名工作</view>
+												<view class="text">{{item.card.job_title}}</view>
+											</view>
+											<view class="sure_btn">
+												<image :src="imgUrl+'/worker/new/sure_button.png'" mode="widthFix">
+												</image>
+											</view>
+										</view>
+										<view class="sure_icon">
+											<image :src="imgUrl+'/worker/new/sure_icon.png'" mode="widthFix"></image>
+										</view>
+									</view>
 									<view class="voice_line flex flex_end">
 										<view class="trans" v-show="item.showTranIcon"
 											@click.stop="startTrans(item,'his')">
@@ -214,6 +228,8 @@
 				currentPlayType: "",
 				currentPlayIndex: 0,
 				currentContHeight: 0,
+				freshing: false,
+				trigger: false
 			};
 		},
 		computed: {
@@ -300,7 +316,15 @@
 					}
 				}).exec();
 			},
+			refreshRestore() {
+				this.freshing = false
+				this.trigger = false
+				console.log("freshing/trigger：", this.freshing, this.trigger)
+			},
 			getMoreHistory() {
+				if (this.freshing) return
+				this.freshing = true
+				this.trigger = true
 				this.$emit("moreHis")
 			},
 			sendMsg(msg, type) {
