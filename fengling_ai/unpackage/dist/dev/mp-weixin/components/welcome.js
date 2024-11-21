@@ -362,6 +362,7 @@ var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/r
 var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11));
 var _flmask = _interopRequireDefault(__webpack_require__(/*! @/components/flmask.vue */ 294));
 var _commonData = _interopRequireDefault(__webpack_require__(/*! @/common/commonData.js */ 235));
+var _commMethods = _interopRequireDefault(__webpack_require__(/*! @/common/commMethods.js */ 170));
 var _vuex = __webpack_require__(/*! vuex */ 41);
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
@@ -403,10 +404,12 @@ var _default = {
       requestTimer: null,
       reConnectCount: 0,
       //记录网络异常重连次数,
-      mayAskCount: 0 //记录mayAsk异常重连次数
+      mayAskCount: 0,
+      //记录mayAsk异常重连次数,
+      bannerImageInfo: null,
+      bannerHeight: 0
     };
   },
-
   computed: _objectSpread({}, (0, _vuex.mapState)(["city", "aiReady"])),
   created: function created() {
     var _this2 = this;
@@ -414,18 +417,14 @@ var _default = {
     console.log("city:", this.city);
     //音频停止事件
     app.globalData.Audio.onPlay(function (e) {
-      console.log("风铃页播放");
       _this2.textAnimation();
     });
 
     //音频停止事件
-    app.globalData.Audio.onStop(function (e) {
-      console.log("风铃页停止");
-    });
+    app.globalData.Audio.onStop(function (e) {});
 
     //音频播放结束事件
     app.globalData.Audio.onEnded(function (e) {
-      console.log("风铃页播放结束");
       if (_this2.canPlay) {
         _this2.playNext();
       }
@@ -600,14 +599,22 @@ var _default = {
                 return _this4.$request("/homepage", data, "POST");
               case 5:
                 res = _context2.sent;
-                _this4.currentPlay = res.data.list[0];
-                _this4.recommendList = res.data.list;
                 _this4.$emit("setGreetStatus");
-                _this4.playWelcome();
-                _context2.next = 16;
+                if (res.data.list.length > 0) {
+                  _this4.currentPlay = res.data.list[0];
+                  _this4.recommendList = res.data.list;
+                  _this4.getMayAsk();
+                  _this4.playWelcome();
+                } else {
+                  _this4.$refs.myModal.showModal({
+                    title: "暂无推荐职位信息",
+                    showCancel: false
+                  });
+                }
+                _context2.next = 14;
                 break;
-              case 12:
-                _context2.prev = 12;
+              case 10:
+                _context2.prev = 10;
                 _context2.t0 = _context2["catch"](2);
                 console.error('An error occurred:', _context2.t0);
                 // 处理错误
@@ -628,12 +635,12 @@ var _default = {
                     }
                   });
                 }
-              case 16:
+              case 14:
               case "end":
                 return _context2.stop();
             }
           }
-        }, _callee2, null, [[2, 12]]);
+        }, _callee2, null, [[2, 10]]);
       }))();
     },
     sendMsg: function sendMsg(msg, type) {
@@ -645,7 +652,6 @@ var _default = {
       this.$emit("sendMsg", obj);
     },
     textAnimation: function textAnimation() {
-      console.log("开启定时器");
       var _this = this;
       _this.scrollTop = 0;
       if (!this.animationTimer) {
@@ -657,12 +663,6 @@ var _default = {
     touchStart: function touchStart() {
       this.animationActive = false;
     },
-    // touchMove() {
-    // 	this.animationActive = false
-    // },
-    // touchEnd() {
-    // 	this.animationActive = true
-    // },
     getPosition: function getPosition() {
       return new Promise(function (resolve, reject) {
         var url = "https://apis.map.qq.com/ws/location/v1/ip?key=" + app.globalData.qqMapKey;
@@ -680,10 +680,6 @@ var _default = {
         });
       });
     },
-    // scroll(e) {
-    // 	console.log(e.detail)
-    // 	this.scrollTop = e.detail.scrollTop
-    // },
     scrollLower: function scrollLower() {
       if (this.animationActive) {
         this.scrollTop = 0;

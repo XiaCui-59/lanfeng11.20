@@ -33,7 +33,8 @@
 										v-if="item.msg_type == 'text'"></rich-text> -->
 									<!-- 面试卡片 -->
 									<view class="sure_card" style="margin-top:0;"
-										v-if="item.msg_type == 'card' && item.card && item.card.type == 'audio_call_start_interview'">
+										v-if="item.msg_type == 'card' && item.card && item.card.type == 'audio_call_start_interview'"
+										@click="clickSureCard(item)">
 										<view class="text_img">
 											<image :src="imgUrl+'/worker/new/sure_text.png'" mode="widthFix"></image>
 										</view>
@@ -229,7 +230,8 @@
 				currentPlayIndex: 0,
 				currentContHeight: 0,
 				freshing: false,
-				trigger: false
+				trigger: false,
+				cardDoubleClick: false //防止卡片连续点击
 			};
 		},
 		computed: {
@@ -255,7 +257,6 @@
 				handler: function(newVal, oldVal) {
 					let _this = this
 					this.getElementHeight()
-					console.log("chat监听到qaList：", newVal)
 					// 当最后一条消息是用户时，关闭面试卡片
 					if (newVal[newVal.length - 1].origin == 'customer') {
 						// this.closeInterviewCard()
@@ -326,6 +327,39 @@
 				this.freshing = true
 				this.trigger = true
 				this.$emit("moreHis")
+			},
+			clickSureCard(item) {
+				let _this = this
+				if (this.cardDoubleClick) {
+					uni.showToast({
+						title: "请勿连续点击",
+						icon: "error",
+						duration: 2000
+					})
+					return
+				}
+				this.cardDoubleClick = true
+				setTimeout(function() {
+					_this.cardDoubleClick = false
+				}, 2000)
+				let url = "/api/chat/job/" + item.card.job_id + "/is-interviewed"
+				this.$aiRequest(url).then(res => {
+					if (res.code == 0) {
+						if (res.data.is_interviewed) {
+							uni.showToast({
+								title: "该职位您已面试",
+								icon: "error",
+								duration: 2000
+							})
+						} else {
+							let obj = {
+								type: "interview",
+								job_id: item.card.job_id
+							}
+							this.$emit("tocall", obj)
+						}
+					}
+				})
 			},
 			sendMsg(msg, type) {
 				let obj = {
@@ -451,6 +485,18 @@
 				}
 			},
 			toCall() {
+				if (this.cardDoubleClick) {
+					uni.showToast({
+						title: "请勿连续点击",
+						icon: "error",
+						duration: 2000
+					})
+					return
+				}
+				this.cardDoubleClick = true
+				setTimeout(function() {
+					_this.cardDoubleClick = false
+				}, 2000)
 				let obj = {
 					type: "interview",
 					job_id: this.sureJobId

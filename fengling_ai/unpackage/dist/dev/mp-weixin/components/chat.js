@@ -239,9 +239,11 @@ var _default = {
       currentPlayIndex: 0,
       currentContHeight: 0,
       freshing: false,
-      trigger: false
+      trigger: false,
+      cardDoubleClick: false //防止卡片连续点击
     };
   },
+
   computed: _objectSpread({}, (0, _vuex.mapState)(["showInterviewCard", "inChannel", "channelId", "showChannelInterviewCard", "sureJobName", "sureJobId"])),
   created: function created() {
     var _this2 = this;
@@ -273,7 +275,6 @@ var _default = {
       handler: function handler(newVal, oldVal) {
         var _this = this;
         this.getElementHeight();
-        console.log("chat监听到qaList：", newVal);
         // 当最后一条消息是用户时，关闭面试卡片
         if (newVal[newVal.length - 1].origin == 'customer') {
           // this.closeInterviewCard()
@@ -343,6 +344,40 @@ var _default = {
       this.trigger = true;
       this.$emit("moreHis");
     },
+    clickSureCard: function clickSureCard(item) {
+      var _this3 = this;
+      var _this = this;
+      if (this.cardDoubleClick) {
+        uni.showToast({
+          title: "请勿连续点击",
+          icon: "error",
+          duration: 2000
+        });
+        return;
+      }
+      this.cardDoubleClick = true;
+      setTimeout(function () {
+        _this.cardDoubleClick = false;
+      }, 2000);
+      var url = "/api/chat/job/" + item.card.job_id + "/is-interviewed";
+      this.$aiRequest(url).then(function (res) {
+        if (res.code == 0) {
+          if (res.data.is_interviewed) {
+            uni.showToast({
+              title: "该职位您已面试",
+              icon: "error",
+              duration: 2000
+            });
+          } else {
+            var obj = {
+              type: "interview",
+              job_id: item.card.job_id
+            };
+            _this3.$emit("tocall", obj);
+          }
+        }
+      });
+    },
     sendMsg: function sendMsg(msg, type) {
       var obj = {
         msg: msg,
@@ -360,38 +395,38 @@ var _default = {
     },
     //播放音频
     playAudio: function playAudio(item) {
-      var _this3 = this;
+      var _this4 = this;
       this.Audio.src = item.voice.media.url;
       this.Audio.id = item.id;
       this.Audio.play();
       if (this.currentPlayType == "his") {
         this.historyList.forEach(function (el, index) {
           if (el.msg_type == "voice") {
-            if (index == _this3.currentPlayIndex) {
-              _this3.historyList[_this3.currentPlayIndex].voice.anmitionPlay = true;
+            if (index == _this4.currentPlayIndex) {
+              _this4.historyList[_this4.currentPlayIndex].voice.anmitionPlay = true;
             } else {
-              _this3.historyList[index].voice.anmitionPlay = false;
+              _this4.historyList[index].voice.anmitionPlay = false;
             }
           }
         });
         this.qaList.forEach(function (el, index) {
           if (el.msg_type == "voice") {
-            _this3.qaList[index].voice.anmitionPlay = false;
+            _this4.qaList[index].voice.anmitionPlay = false;
           }
         });
       } else {
         this.qaList.forEach(function (el, index) {
           if (el.msg_type == "voice") {
-            if (index == _this3.currentPlayIndex) {
-              _this3.qaList[_this3.currentPlayIndex].voice.anmitionPlay = true;
+            if (index == _this4.currentPlayIndex) {
+              _this4.qaList[_this4.currentPlayIndex].voice.anmitionPlay = true;
             } else {
-              _this3.qaList[index].voice.anmitionPlay = false;
+              _this4.qaList[index].voice.anmitionPlay = false;
             }
           }
         });
         this.historyList.forEach(function (el, index) {
           if (el.msg_type == "voice") {
-            _this3.historyList[index].voice.anmitionPlay = false;
+            _this4.historyList[index].voice.anmitionPlay = false;
           }
         });
       }
@@ -400,19 +435,19 @@ var _default = {
     },
     //停止音频
     stopAudio: function stopAudio(item) {
-      var _this4 = this;
+      var _this5 = this;
       if (this.currentPlayType == "his") {
         this.historyList[this.currentPlayIndex].voice.anmitionPlay = false;
         this.qaList.forEach(function (el, index) {
           if (el.msg_type == "voice") {
-            _this4.qaList[index].voice.anmitionPlay = false;
+            _this5.qaList[index].voice.anmitionPlay = false;
           }
         });
       } else {
         this.qaList[this.currentPlayIndex].voice.anmitionPlay = false;
         this.historyList.forEach(function (el, index) {
           if (el.msg_type == "voice") {
-            _this4.historyList[index].voice.anmitionPlay = false;
+            _this5.historyList[index].voice.anmitionPlay = false;
           }
         });
       }
@@ -426,14 +461,14 @@ var _default = {
     },
     //关闭动画
     closeAnmition: function closeAnmition() {
-      var _this5 = this;
+      var _this6 = this;
       var id = this.Audio.id;
       var item;
       if (this.currentPlayType == "his") {
         this.historyList.forEach(function (el, index) {
           if (el.msg_type == "voice") {
             if (el.id == id) {
-              _this5.historyList[index].voice.anmitionPlay = false;
+              _this6.historyList[index].voice.anmitionPlay = false;
             }
           }
         });
@@ -442,7 +477,7 @@ var _default = {
         this.qaList.forEach(function (el, index) {
           if (el.msg_type == "voice") {
             if (el.id == id) {
-              _this5.qaList[index].voice.anmitionPlay = false;
+              _this6.qaList[index].voice.anmitionPlay = false;
             }
           }
         });
@@ -459,6 +494,18 @@ var _default = {
       }
     },
     toCall: function toCall() {
+      if (this.cardDoubleClick) {
+        uni.showToast({
+          title: "请勿连续点击",
+          icon: "error",
+          duration: 2000
+        });
+        return;
+      }
+      this.cardDoubleClick = true;
+      setTimeout(function () {
+        _this.cardDoubleClick = false;
+      }, 2000);
       var obj = {
         type: "interview",
         job_id: this.sureJobId
@@ -548,11 +595,11 @@ var _default = {
       }
     },
     toScroll: function toScroll() {
-      var _this6 = this;
+      var _this7 = this;
       var _this = this;
       _this.scrollView = "";
       this.$nextTick(function () {
-        if (_this6.answering) {
+        if (_this7.answering) {
           console.log("正在回答");
           _this.scrollView = "answering";
         } else {

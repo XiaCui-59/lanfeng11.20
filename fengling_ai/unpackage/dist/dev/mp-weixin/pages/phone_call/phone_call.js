@@ -476,6 +476,9 @@ var _default = {
       app.globalData.Audio.play();
     },
     playError: function playError() {
+      if (this.closeStatus) {
+        return;
+      }
       app.globalData.Audio.src = this.errorVoice;
       app.globalData.Audio.play();
       this.aiSpeeking = true;

@@ -10056,9 +10056,8 @@ var request = function request() {
       data: date,
       header: header,
       dataType: 'json',
-      timeout: url == "/homepage" ? 2000 : 60000
+      timeout: url == "/homepage" ? 5000 : 60000
     }).then(function (response) {
-      console.log("response：", response);
       var _response = (0, _slicedToArray2.default)(response, 2),
         error = _response[0],
         res = _response[1];
@@ -10066,7 +10065,6 @@ var request = function request() {
         if (res.statusCode == 500) {
           console.log("系统内部发生错误");
         }
-        console.log(res.data.code, "datacode");
         if (res.data.code == -1) {
           uni.removeStorageSync("token");
         }

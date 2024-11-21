@@ -1136,7 +1136,9 @@ var _default = {
         _this9.unConnected();
         _this9.unConnecting();
         _this9.resetAiReady();
-        // this.handleConnectErr()
+        if (_this9.answering || _this9.answerContinue) {
+          _this9.handleConnectErr();
+        }
         setTimeout(function () {
           _this.creatConnect(_this.header);
         }, 2000);
@@ -1199,7 +1201,9 @@ var _default = {
         setTimeout(function () {
           _this.creatConnect(_this.header);
         }, 2000);
-        // this.handleConnectErr()
+        if (_this9.answering || _this9.answerContinue) {
+          _this9.handleConnectErr();
+        }
       });
     },
     doSend: function doSend(e, text) {

@@ -188,22 +188,27 @@ image {
 .top_wrap .banner {
   box-sizing: border-box;
   position: relative;
-  z-index: 10;
+  background: url("https://static.test.swiftwd.com/worker/new/banner_bg.png") no-repeat;
+  background-size: 100% auto;
+  background-position: center top;
+  border-bottom-left-radius: 40rpx;
+  border-bottom-right-radius: 40rpx;
+  padding: 28rpx;
+  box-sizing: border-box;
 }
 .top_wrap .banner > image {
-  width: 103%;
-}
-.top_wrap .banner .banner_text {
+  width: 320rpx;
   position: absolute;
-  top: 26rpx;
-  left: 26rpx;
+  bottom: 0;
+  right: -20rpx;
+  z-index: 10;
 }
-.top_wrap .banner .banner_text .ban_top {
+.top_wrap .banner .ban_top {
   width: 60%;
   padding-bottom: 15rpx;
   border-bottom: 2rpx dotted rgba(255, 255, 255, 0.7);
 }
-.top_wrap .banner .banner_text .ban_top .tit {
+.top_wrap .banner .ban_top .tit {
   font-weight: 600;
   font-size: 31rpx;
   color: #223756;
@@ -212,18 +217,18 @@ image {
   white-space: nowrap;
   overflow: hidden;
 }
-.top_wrap .banner .banner_text .ban_top .salary {
+.top_wrap .banner .ban_top .salary {
   font-weight: 900;
   font-size: 38rpx;
   color: #223756;
   font-family: Arial, Arial;
 }
-.top_wrap .banner .banner_text .ban_top .salary .period {
+.top_wrap .banner .ban_top .salary .period {
   font-weight: 400;
   font-size: 23rpx;
   color: #223756;
 }
-.top_wrap .banner .banner_text .ban_bot {
+.top_wrap .banner .ban_bot {
   width: 54%;
   padding-top: 25rpx;
   font-weight: 400;
@@ -231,33 +236,34 @@ image {
   color: #FFFFFF;
   line-height: 46rpx;
 }
-.top_wrap .banner .banner_text .voice_control {
+.top_wrap .banner .voice_control {
   position: absolute;
-  bottom: -20rpx;
-  left: 0rpx;
+  bottom: 20rpx;
+  left: 20rpx;
   box-sizing: border-box;
   z-index: 100;
   font-size: 0;
 }
-.top_wrap .banner .banner_text .voice_control image {
+.top_wrap .banner .voice_control image {
   height: 50rpx;
 }
-.top_wrap .banner .banner_text .surein {
+.top_wrap .banner .surein {
   position: absolute;
-  bottom: -20rpx;
-  right: 28rpx;
+  bottom: 20rpx;
+  right: 20rpx;
   width: 163rpx;
   height: 58rpx;
   line-height: 58rpx;
   text-align: center;
   background: rgba(255, 255, 255, 0.9);
   border-radius: 29rpx;
+  z-index: 100;
 }
-.top_wrap .banner .banner_text .surein image {
+.top_wrap .banner .surein image {
   width: 30rpx;
   vertical-align: middle;
 }
-.top_wrap .banner .banner_text .surein text {
+.top_wrap .banner .surein text {
   font-weight: 400;
   font-size: 27rpx;
   color: #213B56;

@@ -2,36 +2,32 @@
 	<view class="content_body body_bg" :style="{paddingTop:top+'px',paddingBottom:bottom+'px'}">
 		<view class="top_wrap">
 			<view class="banner">
-				<image :src="imgUrl+'/worker/new/welcome_banner.png'" mode="widthFix"></image>
-				<view class="banner_text">
-					<view class="ban_top">
-						<view class="tit">{{currentPlay.project_name}}</view>
-						<view class="salary flex flex-start">
-							<text>{{currentPlay.worker_salary_max}}</text>
-							<text
-								class="period">元{{period.filter(el=>{return el.value == currentPlay.worker_salary_type})[0].text}}
-							</text>
-						</view>
-					</view>
-					<view class="ban_bot">
-						<scroll-view scroll-y="true" class="cont" style="height:250rpx;" :scroll-with-animation="true"
-							:scroll-top="scrollTop" @touchstart="touchStart" @scrolltolower="scrollLower">
-							{{currentPlay.content}}
-						</scroll-view>
-					</view>
-					<view class="voice_control" @click.stop="handleAudio">
-						<image :src="imgUrl+'/worker/new/ic_index_voice_muted.png'" mode="heightFix"
-							:style="{display:muted?'inline-block':'none'}"></image>
-						<image :src="imgUrl+'/worker/new/ic_index_voice_play.png'" mode="heightFix"
-							:style="{display:muted?'none':'inline-block'}"></image>
-					</view>
-					<view class="surein" @click.stop="toChat('surejob')">
-						<image :src="imgUrl+'/worker/new/ic_heart.png'" mode="widthFix"></image>
-						<text>立即报名</text>
+				<view class="ban_top">
+					<view class="tit">{{currentPlay.project_name}}</view>
+					<view class="salary flex flex-start">
+						<text>{{currentPlay.worker_salary_max}}</text>
+						<text
+							class="period">元{{period.filter(el=>{return el.value == currentPlay.worker_salary_type})[0].text}}
+						</text>
 					</view>
 				</view>
-
-
+				<view class="ban_bot">
+					<scroll-view scroll-y="true" class="cont" style="height:260rpx;" :scroll-with-animation="true"
+						:scroll-top="scrollTop" @touchstart="touchStart" @scrolltolower="scrollLower">
+						{{currentPlay.content}}
+					</scroll-view>
+				</view>
+				<image :src="imgUrl+'/worker/new/banner_ai.png'" mode="widthFix"></image>
+				<view class="voice_control" @click.stop="handleAudio">
+					<image :src="imgUrl+'/worker/new/ic_index_voice_muted.png'" mode="heightFix"
+						:style="{display:muted?'inline-block':'none'}"></image>
+					<image :src="imgUrl+'/worker/new/ic_index_voice_play.png'" mode="heightFix"
+						:style="{display:muted?'none':'inline-block'}"></image>
+				</view>
+				<view class="surein" @click.stop="toChat('surejob')">
+					<image :src="imgUrl+'/worker/new/ic_heart.png'" mode="widthFix"></image>
+					<text>立即报名</text>
+				</view>
 			</view>
 			<view class="tips_wrap flex flex_btween">
 				<view class="tip_list">
@@ -62,18 +58,6 @@
 						<image :src="imgUrl+'/worker/new/iwant02.png'" mode="widthFix"></image>
 					</view>
 				</view>
-				<!-- <view class="iwant_item">
-					<view class="tit">我要报名</view>
-					<view class="iwant_tips flex flex_btween">
-						<view class="tips_list">
-							<view class="tips">工作合适</view>
-							<view class="tips">马上报名</view>
-						</view>
-						<view class="icon">
-							<image :src="imgUrl+'/worker/new/iwant01.png'" mode="widthFix"></image>
-						</view>
-					</view>
-				</view> -->
 				<view class="iwant_item flex flex_btween" @click="toChat('interview')">
 					<view class="iwant_tips">
 						<view class="tit">我要去面试</view>
@@ -88,48 +72,6 @@
 				</view>
 			</view>
 		</view>
-		<!-- <view class="greeting">
-			<view class="avatar">
-				<image :src="imgUrl+'/worker/new/index_ai_logo.png'" mode="widthFix">
-				</image>
-				<view class="play_box">
-					<image :src="imgUrl+'/worker/new/ic_no_speeking.png'" mode="heightFix"
-						:style="{display:muted?'inline-block':'none'}"></image>
-					<image :src="imgUrl+'/worker/answering.gif'" mode="heightFix"
-						:style="{display:muted?'none':'inline-block'}"></image>
-				</view>
-			</view>
-			<view class="tips">
-				<view class="title flex flex_btween">
-					<view class="name">{{currentPlay.project_name}}</view>
-					<view class="sala_box flex flex_end">
-						<view class="count">{{currentPlay.worker_salary_min + "-"+currentPlay.worker_salary_max}}</view>
-						<view class="period">
-							元{{period.filter(el=>{return el.value == currentPlay.worker_salary_type})[0].text}}</view>
-					</view>
-				</view>
-				<scroll-view scroll-y="true" class="cont" style="height:300rpx;" :scroll-with-animation="true"
-					:scroll-top="scrollTop" @touchstart="touchStart" @scrolltolower="scrollLower">
-					<view class="animation_box">
-						{{currentPlay.content}}
-					</view>
-				</scroll-view>
-				<view class="voice_control" @click.stop="handleAudio">
-					<image :src="imgUrl+'/worker/new/ic_index_voice_muted.png'" mode="heightFix"
-						:style="{display:muted?'inline-block':'none'}"></image>
-					<image :src="imgUrl+'/worker/new/ic_index_voice_play.png'" mode="heightFix"
-						:style="{display:muted?'none':'inline-block'}"></image>
-				</view>
-			</view>
-		</view>
-		<view class="tips_wrap" :style="{bottom:bottom+'px'}">
-			<view class="tip_list">
-				<view class="item" v-for="(item,index) in currentPlay.may_ask" :key="index"
-					@click="sendMsg(item,'tip')">
-					<view class="text">{{item}}</view>
-				</view>
-			</view>
-		</view> -->
 		<myModal ref="myModal">
 		</myModal>
 	</view>
@@ -138,6 +80,7 @@
 <script>
 	import flMask from "@/components/flmask.vue"
 	import commonData from "@/common/commonData.js"
+	import commonMethods from "@/common/commMethods.js"
 	import {
 		mapState,
 		mapMutations
@@ -177,7 +120,9 @@
 				lastClickTime: 0, // 记录上次点击的时间
 				requestTimer: null,
 				reConnectCount: 0, //记录网络异常重连次数,
-				mayAskCount: 0 //记录mayAsk异常重连次数
+				mayAskCount: 0, //记录mayAsk异常重连次数,
+				bannerImageInfo: null,
+				bannerHeight: 0
 			};
 		},
 		computed: {
@@ -188,18 +133,14 @@
 			console.log("city:", this.city)
 			//音频停止事件
 			app.globalData.Audio.onPlay(e => {
-				console.log("风铃页播放")
 				this.textAnimation()
 			});
 
 			//音频停止事件
-			app.globalData.Audio.onStop(e => {
-				console.log("风铃页停止")
-			});
+			app.globalData.Audio.onStop(e => {});
 
 			//音频播放结束事件
 			app.globalData.Audio.onEnded(e => {
-				console.log("风铃页播放结束")
 				if (this.canPlay) {
 					this.playNext()
 				}
@@ -359,10 +300,19 @@
 				}
 				try {
 					let res = await this.$request("/homepage", data, "POST")
-					this.currentPlay = res.data.list[0]
-					this.recommendList = res.data.list
 					this.$emit("setGreetStatus")
-					this.playWelcome()
+					if (res.data.list.length > 0) {
+						this.currentPlay = res.data.list[0]
+						this.recommendList = res.data.list
+						this.getMayAsk()
+						this.playWelcome()
+					} else {
+						this.$refs.myModal.showModal({
+							title: "暂无推荐职位信息",
+							showCancel: false
+						})
+					}
+
 				} catch (error) {
 					console.error('An error occurred:', error);
 					// 处理错误
@@ -395,7 +345,6 @@
 				this.$emit("sendMsg", obj)
 			},
 			textAnimation() {
-				console.log("开启定时器")
 				let _this = this
 				_this.scrollTop = 0
 				if (!this.animationTimer) {
@@ -408,12 +357,6 @@
 			touchStart() {
 				this.animationActive = false
 			},
-			// touchMove() {
-			// 	this.animationActive = false
-			// },
-			// touchEnd() {
-			// 	this.animationActive = true
-			// },
 			getPosition() {
 				return new Promise((resolve, reject) => {
 					let url = "https://apis.map.qq.com/ws/location/v1/ip?key=" + app.globalData.qqMapKey
@@ -432,10 +375,6 @@
 				})
 
 			},
-			// scroll(e) {
-			// 	console.log(e.detail)
-			// 	this.scrollTop = e.detail.scrollTop
-			// },
 			scrollLower() {
 				if (this.animationActive) {
 					this.scrollTop = 0
@@ -447,19 +386,6 @@
 </script>
 
 <style lang="scss">
-	// @keyframes textRun {
-	// 	0% {
-	// 		transform: translateY(0px);
-	// 	}
-
-	// 	50% {
-	// 		transform: translateY(-50%);
-	// 	}
-
-	// 	100% {
-	// 		transform: translateY(-100%);
-	// 	}
-	// }
 	.top_wrap {
 		margin-top: 42rpx;
 
@@ -512,100 +438,96 @@
 		.banner {
 			box-sizing: border-box;
 			position: relative;
-			z-index: 10;
-
-
-
+			background: url($back-ground-url+'/worker/new/banner_bg.png') no-repeat;
+			background-size: 100% auto;
+			background-position: center top;
+			border-bottom-left-radius: 40rpx;
+			border-bottom-right-radius: 40rpx;
+			padding: 28rpx;
+			box-sizing: border-box;
 
 			&>image {
-				width: 103%;
-				// position: absolute;
-				// left: 0;
-				// top: 0;
-				// z-index: -1;
-			}
-
-			.banner_text {
+				width: 320rpx;
 				position: absolute;
-				top: 26rpx;
-				left: 26rpx;
+				bottom: 0;
+				right: -20rpx;
+				z-index: 10;
+			}
 
-				.ban_top {
-					width: 60%;
-					padding-bottom: 15rpx;
-					border-bottom: 2rpx dotted rgba(255, 255, 255, 0.7);
+			.ban_top {
+				width: 60%;
+				padding-bottom: 15rpx;
+				border-bottom: 2rpx dotted rgba(255, 255, 255, 0.7);
 
-					.tit {
-						font-weight: 600;
-						font-size: 31rpx;
-						color: #223756;
-						width: 80%;
-						text-overflow: ellipsis;
-						white-space: nowrap;
-						overflow: hidden;
-					}
-
-					.salary {
-						font-weight: 900;
-						font-size: 38rpx;
-						color: #223756;
-						font-family: Arial, Arial;
-
-						.period {
-							font-weight: 400;
-							font-size: 23rpx;
-							color: #223756;
-						}
-					}
+				.tit {
+					font-weight: 600;
+					font-size: 31rpx;
+					color: #223756;
+					width: 80%;
+					text-overflow: ellipsis;
+					white-space: nowrap;
+					overflow: hidden;
 				}
 
-				.ban_bot {
-					width: 54%;
-					padding-top: 25rpx;
-					font-weight: 400;
-					font-size: 29rpx;
-					color: #FFFFFF;
-					line-height: 46rpx;
-				}
+				.salary {
+					font-weight: 900;
+					font-size: 38rpx;
+					color: #223756;
+					font-family: Arial, Arial;
 
-				.voice_control {
-					position: absolute;
-					bottom: -20rpx;
-					left: 0rpx;
-					box-sizing: border-box;
-					z-index: 100;
-					font-size: 0;
-
-					image {
-						height: 50rpx;
-					}
-				}
-
-				.surein {
-					position: absolute;
-					bottom: -20rpx;
-					right: 28rpx;
-					width: 163rpx;
-					height: 58rpx;
-					line-height: 58rpx;
-					text-align: center;
-					background: rgba(255, 255, 255, 0.9);
-					border-radius: 29rpx;
-
-					image {
-						width: 30rpx;
-						vertical-align: middle;
-					}
-
-					text {
+					.period {
 						font-weight: 400;
-						font-size: 27rpx;
-						color: #213B56;
+						font-size: 23rpx;
+						color: #223756;
 					}
 				}
 			}
 
+			.ban_bot {
+				width: 54%;
+				padding-top: 25rpx;
+				font-weight: 400;
+				font-size: 29rpx;
+				color: #FFFFFF;
+				line-height: 46rpx;
+			}
 
+			.voice_control {
+				position: absolute;
+				bottom: 20rpx;
+				left: 20rpx;
+				box-sizing: border-box;
+				z-index: 100;
+				font-size: 0;
+
+				image {
+					height: 50rpx;
+				}
+			}
+
+			.surein {
+				position: absolute;
+				bottom: 20rpx;
+				right: 20rpx;
+				width: 163rpx;
+				height: 58rpx;
+				line-height: 58rpx;
+				text-align: center;
+				background: rgba(255, 255, 255, 0.9);
+				border-radius: 29rpx;
+				z-index: 100;
+
+				image {
+					width: 30rpx;
+					vertical-align: middle;
+				}
+
+				text {
+					font-weight: 400;
+					font-size: 27rpx;
+					color: #213B56;
+				}
+			}
 		}
 	}
 

@@ -1044,7 +1044,9 @@
 					this.unConnected()
 					this.unConnecting()
 					this.resetAiReady()
-					// this.handleConnectErr()
+					if (this.answering || this.answerContinue) {
+						this.handleConnectErr()
+					}
 					setTimeout(function() {
 						_this.creatConnect(_this.header)
 					}, 2000)
@@ -1109,7 +1111,9 @@
 					setTimeout(function() {
 						_this.creatConnect(_this.header)
 					}, 2000)
-					// this.handleConnectErr()
+					if (this.answering || this.answerContinue) {
+						this.handleConnectErr()
+					}
 
 				})
 			},

@@ -363,6 +363,9 @@
 				app.globalData.Audio.play();
 			},
 			playError() {
+				if (this.closeStatus) {
+					return
+				}
 				app.globalData.Audio.src = this.errorVoice;
 				app.globalData.Audio.play();
 				this.aiSpeeking = true

@@ -19,15 +19,13 @@ const request = (url = '', date = {}, type = 'GET', header = {
 			data: date,
 			header: header,
 			dataType: 'json',
-			timeout: url == "/homepage" ? 2000 : 60000
+			timeout: url == "/homepage" ? 5000 : 60000
 		}).then((response) => {
-			console.log("response：", response)
 			let [error, res] = response;
 			if (res) {
 				if (res.statusCode == 500) {
 					console.log("系统内部发生错误")
 				}
-				console.log(res.data.code, "datacode")
 				if (res.data.code == -1) {
 					uni.removeStorageSync("token")
 				}
