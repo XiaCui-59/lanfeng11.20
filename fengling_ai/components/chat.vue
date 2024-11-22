@@ -122,17 +122,38 @@
 									<!-- <view class="tit">{{item.printMayAsk.title}}</view> -->
 									<view class="may_ask_list">
 										<view class="ask_item flex flex-start"
-											v-for="(askItem,askIndex) in item.may_ask" :key="`ask${askIndex}`"
-											@click.stop="()=>sendMsg(askItem,'tip')">
-											<view class="text">{{askItem}}</view>
+											v-for="(askItem,askIndex) in item.may_ask" :key="`ask${askIndex}`">
+											<view class="text" @click.stop="()=>sendMsg(askItem,'tip')">{{askItem}}
+											</view>
 										</view>
+									</view>
+								</view>
+								<!-- 面试卡片 -->
+								<view class="sure_card" style="margin-top:20rpx;"
+									v-if="item.card && item.card.card_type == 'audio_call_start_interview' && item.card.showCard"
+									@click="toCall">
+									<view class="text_img">
+										<image :src="imgUrl+'/worker/new/sure_text.png'" mode="widthFix"></image>
+									</view>
+									<view class="bot_box">
+										<view class="name flex flex-start">
+											<view class="label">已报名工作</view>
+											<view class="text">{{item.card.job_name}}</view>
+										</view>
+										<view class="sure_btn">
+											<image :src="imgUrl+'/worker/new/sure_button.png'" mode="widthFix">
+											</image>
+										</view>
+									</view>
+									<view class="sure_icon">
+										<image :src="imgUrl+'/worker/new/sure_icon.png'" mode="widthFix"></image>
 									</view>
 								</view>
 							</view>
 						</view>
 					</view>
 					<!-- 报名成功后展示面试提示卡片 -->
-					<view class="sure_card" v-if="showInterviewCard" @click="toCall">
+					<!-- <view class="sure_card" v-if="showInterviewCard" @click="toCall">
 						<view class="text_img">
 							<image :src="imgUrl+'/worker/new/sure_text.png'" mode="widthFix"></image>
 						</view>
@@ -148,8 +169,8 @@
 						<view class="sure_icon">
 							<image :src="imgUrl+'/worker/new/sure_icon.png'" mode="widthFix"></image>
 						</view>
-					</view>
-					<view class="sure_card" v-if="showChannelInterviewCard" @click="toCall">
+					</view> -->
+					<!-- <view class="sure_card" v-if="showChannelInterviewCard" @click="toCall">
 						<view class="text_img">
 							<image :src="imgUrl+'/worker/new/sure_text.png'" mode="widthFix"></image>
 						</view>
@@ -165,7 +186,7 @@
 						<view class="sure_icon">
 							<image :src="imgUrl+'/worker/new/sure_icon.png'" mode="widthFix"></image>
 						</view>
-					</view>
+					</view> -->
 				</view>
 				<view class="list">
 					<view class="qa_item" :style="{paddingBottom: '20rpx',display:answering?'block':'none'}"
@@ -485,6 +506,7 @@
 				}
 			},
 			toCall() {
+				let _this = this
 				if (this.cardDoubleClick) {
 					uni.showToast({
 						title: "请勿连续点击",

@@ -426,7 +426,7 @@ var _default = {
     //音频播放结束事件
     app.globalData.Audio.onEnded(function (e) {
       if (_this2.canPlay) {
-        _this2.playNext();
+        _this2.playFirst();
       }
     });
   },
@@ -478,7 +478,7 @@ var _default = {
     },
     changeNext: function changeNext() {
       var len = this.recommendList.length;
-      if (this.currentPlayIndex == len) {
+      if (this.currentPlayIndex == len - 1) {
         var obj = {
           msg: "我正在找工作，能帮我推荐一些合适的职位吗？",
           type: "",
@@ -490,13 +490,20 @@ var _default = {
         this.playNext();
       }
     },
+    playFirst: function playFirst() {
+      app.globalData.Audio.stop();
+      if (this.canPlay && !this.muted) {
+        console.log("currentPlay：", this.currentPlay);
+        this.playAudio();
+      }
+    },
     // 播放下一个工作
     playNext: function playNext() {
       var _this = this;
       var len = this.recommendList.length;
-      if (this.currentPlayIndex < len) {
-        this.currentPlay = this.recommendList[this.currentPlayIndex];
+      if (this.currentPlayIndex < len - 1) {
         this.currentPlayIndex++;
+        this.currentPlay = this.recommendList[this.currentPlayIndex];
       } else {
         this.currentPlayIndex = 0;
         this.currentPlay = this.recommendList[this.currentPlayIndex];
@@ -505,6 +512,7 @@ var _default = {
       // this.playAudio()
       setTimeout(function () {
         if (_this.canPlay && !_this.muted) {
+          console.log("currentPlay：", _this.currentPlay);
           _this.playAudio();
         }
       }, 50);

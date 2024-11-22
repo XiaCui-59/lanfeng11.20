@@ -198,6 +198,7 @@ image {
   background: #FFFFFF;
   box-shadow: 0rpx 0rpx 4rpx 0rpx rgba(0, 0, 0, 0.1);
   border-radius: 63rpx;
+  z-index: 10;
 }
 .input_btn_wrap .phone_icon {
   position: absolute;
@@ -263,6 +264,7 @@ image {
   position: absolute;
   top: 20rpx;
   right: 15rpx;
+  z-index: 100;
 }
 .input_btn_wrap .func_icon image {
   width: 60rpx;

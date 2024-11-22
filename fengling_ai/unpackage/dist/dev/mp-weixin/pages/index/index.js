@@ -290,7 +290,8 @@ var _default = {
       curRespone: {
         content: "",
         origin: "ai",
-        msg_type: "text"
+        msg_type: "text",
+        card: null
       },
       responseStr: "",
       responCount: 0,
@@ -469,9 +470,9 @@ var _default = {
     onInput: function onInput(e) {
       this.question = e.target.value;
     },
-    onBlur: function onBlur() {
-      this.question = "";
-    },
+    // onBlur() {
+    // 	this.question = ""
+    // },
     openCanPlay: function openCanPlay() {
       this.canPlay = true;
     },
@@ -630,18 +631,22 @@ var _default = {
           index++;
         } else {
           if (_this.responEnd) {
+            if (_this.curRespone.card) {
+              _this.curRespone.card.showCard = true;
+            }
             clearInterval(_this.prinTimer);
             _this.openCansend();
             _this.resetData();
             _this.closeAnswerContinue();
             // 如果用户是报名成功则推送面试卡片
-            if (_this.sureStatus) {
-              if (_this.inChannel) {
-                _this.setChannelInterviewCard();
-              } else {
-                _this.setInterviewCard();
-              }
-            }
+            // if (_this.sureStatus) {
+            // 	if (_this.inChannel) {
+            // 		_this.setChannelInterviewCard()
+            // 	} else {
+            // 		_this.setInterviewCard()
+            // 	}
+
+            // }
           } else {
             if (noOutCount > 999) {
               // 如果出现链接异常，未接收到结束标识符[DONE]时，超时30s则自动清除定时器
@@ -728,7 +733,15 @@ var _default = {
     getMoreHistory: function getMoreHistory() {
       var _this5 = this;
       var _this = this;
-      if (!this.loadAllHistory && this.historyId) {
+      if (!this.loadAllHistory) {
+        if (!this.historyId) {
+          if (this.answerContinue || this.answering) {
+            this.$refs.chatRef.refreshRestore();
+            return;
+          } else {
+            this.qaList = [];
+          }
+        }
         uni.showLoading();
         var url = "/api/chat/histories?last_message_id=" + this.historyId + "&job_channel_id=";
         this.$aiRequest(url).then(function (res) {
@@ -745,6 +758,8 @@ var _default = {
             } else {
               _this5.loadAllHistory = true;
             }
+          } else {
+            _this5.$refs.chatRef.refreshRestore();
           }
         });
       } else {
@@ -884,7 +899,6 @@ var _default = {
         return;
       }
       this.currentTabIndex = 1;
-      this.question = "";
       if (e.detail.height) {
         this.inputHeight = e.detail.height; //这个高度就是软键盘的高度
       }
@@ -1018,6 +1032,7 @@ var _default = {
         if (this.historyList.length == 0) {
           uni.showLoading();
         }
+        this.question = "";
         // 设置非频道
         this.notChannel();
         // 设置非通话页
@@ -1036,6 +1051,7 @@ var _default = {
             _this.closeInterviewCard();
             _this.closeChannelInterviewCard();
             _this.$set(_this, "question", "");
+            uni.hideLoading();
             if (data != "ping") {
               if (!_this.cancelRecord) {
                 _this.openAnswering();
@@ -1045,7 +1061,6 @@ var _default = {
                 _this.num++;
                 _this.hold = "h" + _this.num;
                 _this.closeCansend();
-                uni.hideLoading();
                 // _this.placeHolder = "正在努力思考，请稍后..."
               }
             }
@@ -1147,7 +1162,7 @@ var _default = {
         _this.openAnswerContinue();
         _this.closeAnswering();
         var respData = JSON.parse(res.data);
-        // console.log("websocket返回：", respData)
+        console.log("websocket返回：", respData);
         if (_this.inCall) {
           // 对话页
           if (respData.type == "audio_call_start_interview") {
@@ -1167,7 +1182,14 @@ var _default = {
           }
         } else {
           if (respData.type == "audio_call_start_interview") {
-            // 用户报名了
+            // 用户报名了,推送卡片
+            var card = {
+              card_type: "audio_call_start_interview",
+              job_name: respData.job_name,
+              job_id: respData.job_id,
+              showCard: false
+            };
+            _this.curRespone.card = JSON.parse(JSON.stringify(card));
             _this.sureStatus = true;
             _this.setJobName(respData.job_name);
             _this.setJobId(respData.job_id);
@@ -1264,7 +1286,8 @@ var _default = {
       this.curRespone = {
         content: "",
         origin: "ai",
-        msg_type: "text"
+        msg_type: "text",
+        card: null
       };
       this.responCount = 0;
       this.responseStr = "";

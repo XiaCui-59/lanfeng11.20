@@ -45,7 +45,7 @@
 					<view class="input_box" v-show="!showVoice">
 						<input type="text" confirm-type="发送" :value="question"
 							:placeholder="canSend?'更多工作就问我':'正在努力思考，请稍后'" @focus="inputBindFocus" @confirm="doSend"
-							:disabled="!canSend" @input="onInput" @blur="onBlur" :adjust-position="false" />
+							:disabled="!canSend" @input="onInput" :adjust-position="false" />
 					</view>
 				</view>
 
@@ -224,9 +224,6 @@
 			onInput(e) {
 				this.question = e.target.value
 			},
-			onBlur() {
-				this.question = ""
-			},
 			async handleGreeting() {
 				// let msg = await this.handleBtnMsg(this.channel_info.name)
 				let msg = "欢迎进入" + this.channel_info.name + "频道，" + this.channel_info.content
@@ -354,8 +351,15 @@
 			},
 			getMoreHistory() {
 				let _this = this
-
-				if (!this.loadAllHistory && this.historyId) {
+				if (!this.loadAllHistory) {
+					if (!this.historyId) {
+						if (this.answerContinue || this.answering) {
+							this.$refs.chat.refreshRestore()
+							return
+						} else {
+							this.clearChannelQaList()
+						}
+					}
 					uni.showLoading()
 					let url = "/api/chat/histories?last_message_id=" + this.historyId + "&job_channel_id=" + this
 						.channel_info.id
@@ -373,6 +377,8 @@
 							} else {
 								this.loadAllHistory = true
 							}
+						} else {
+							this.$refs.chat.refreshRestore()
 						}
 					})
 				} else {
@@ -448,7 +454,6 @@
 				})
 			},
 			inputBindFocus(e) {
-				this.question = ""
 				if (e.detail.height) {
 					this.inputHeight = e.detail.height //这个高度就是软键盘的高度
 				}
@@ -586,6 +591,7 @@
 					if (this.historyList.length == 0) {
 						uni.showLoading()
 					}
+					this.question = ""
 					this.isChannel()
 					this.notInCall()
 					app.globalData.socketTask.send({
@@ -607,7 +613,6 @@
 									_this.calcChannelQaLen()
 									_this.num++
 									_this.hold = "h" + _this.num
-									_this.question = "";
 									_this.closeCansend()
 									uni.hideLoading()
 									// _this.placeHolder = "正在努力思考，请稍后..."
@@ -911,6 +916,7 @@
 		background: #FFFFFF;
 		box-shadow: 0rpx 0rpx 4rpx 0rpx rgba(0, 0, 0, 0.1);
 		border-radius: 63rpx;
+		z-index: 10;
 
 		.voice_inputing {
 			text-align: center;
@@ -994,6 +1000,7 @@
 			position: absolute;
 			top: 20rpx;
 			right: 15rpx;
+			z-index: 100;
 
 			image {
 				width: 60rpx;

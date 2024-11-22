@@ -85,7 +85,7 @@
 				receiveEnd: false,
 				currentTransIndex: 0,
 				closeStatus: false,
-				errorVoice: app.globalData.baseImageUrl + "/worker/error.mp3",
+				errorVoice: app.globalData.baseImageUrl + "/worker/error.mp3?time=" + (new Date()).getTime(),
 				requestTask: null,
 				receiveCount: 0,
 				transTimer: null,
@@ -368,6 +368,7 @@
 				}
 				app.globalData.Audio.src = this.errorVoice;
 				app.globalData.Audio.play();
+				this.clearCallContent()
 				this.aiSpeeking = true
 				this.aiThrinking = false
 				this.inputStatus = false
@@ -436,6 +437,7 @@
 				return mergedArray.buffer
 			},
 			sendMessage(data) {
+				console.log("用户发送了语音")
 				let _this = this
 				this.requestTask = wx.request({
 					url: BASE_URL,
@@ -451,37 +453,40 @@
 					responseType: 'arraybuffer',
 					method: 'POST',
 					data: data,
-					success: res => {},
+					success: res => {
+						console.log("发送成功")
+					},
 					fail: res => {
 						console.error('request fail', res)
 						// 链接出现问题
-						if (_this.receiveCount == 0) {
-							_this.requestTask.offChunkReceived() //取消监听数据返回函数
+						_this.requestTask.offChunkReceived() //取消监听数据返回函数
+						app.globalData.Audio.stop()
+						setTimeout(function() {
+							console.log("request请求失败或超时")
 							_this.playError()
-						}
+						}, 500)
 
 					}
 				})
 				this.errorTimer = setInterval(function() {
-					if (_this.getResponeTime < 10) {
+					if (_this.getResponeTime < 15) {
 						// 10秒内是否返回第一段音频
 						if (_this.receiveCount > 0) {
 							clearInterval(_this.errorTimer)
+							app.globalData.Audio.stop()
 						} else {
 							_this.getResponeTime++
 						}
 					} else {
-						_this.clearCallContent()
-						_this.requestTask.offChunkReceived() //取消监听数据返回函数
-						_this.playError()
-						clearInterval(_this.errorTimer)
 						_this.getResponeTime = 0
+						clearInterval(_this.errorTimer)
 					}
 
 				}, 1000)
 				this.requestTask.onChunkReceived((res) => {
 					_this.receiveCount++
 					if (_this.receiveCount == 1) {
+						console.log("接收到第一条数据")
 						_this.transFirst(res.data)
 					}
 					_this.resultArrayBuffer.push(res.data)
@@ -494,7 +499,7 @@
 
 					if (containsDoneMarker) {
 						// 处理完成
-						// console.log("检测到 [DONE] 标记");
+						console.log("检测到 [DONE] 标记");
 						_this.receiveEnd = true
 						_this.requestTask.offChunkReceived() //取消监听数据返回函数
 					}

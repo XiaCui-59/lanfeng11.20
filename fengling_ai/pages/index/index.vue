@@ -107,7 +107,7 @@
 					<view class="input_box" v-show="!showVoice">
 						<input type="text" confirm-type="发送" :value="question"
 							:placeholder="canSend?'更多工作就问我':'正在努力思考，请稍后'" @focus="inputBindFocus" @confirm="doSend"
-							:disabled="!canSend" @input="onInput" @blur="onBlur" :adjust-position="false" />
+							:disabled="!canSend" @input="onInput" :adjust-position="false" />
 					</view>
 				</view>
 
@@ -248,7 +248,8 @@
 				curRespone: {
 					content: "",
 					origin: "ai",
-					msg_type: "text"
+					msg_type: "text",
+					card: null
 				},
 				responseStr: "",
 				responCount: 0, //用于第一次接收到信息时，开启打字效果
@@ -400,9 +401,9 @@
 			onInput(e) {
 				this.question = e.target.value
 			},
-			onBlur() {
-				this.question = ""
-			},
+			// onBlur() {
+			// 	this.question = ""
+			// },
 			openCanPlay() {
 				this.canPlay = true
 			},
@@ -568,19 +569,22 @@
 						index++
 					} else {
 						if (_this.responEnd) {
+							if (_this.curRespone.card) {
+								_this.curRespone.card.showCard = true
+							}
 							clearInterval(_this.prinTimer)
 							_this.openCansend()
 							_this.resetData()
 							_this.closeAnswerContinue()
 							// 如果用户是报名成功则推送面试卡片
-							if (_this.sureStatus) {
-								if (_this.inChannel) {
-									_this.setChannelInterviewCard()
-								} else {
-									_this.setInterviewCard()
-								}
+							// if (_this.sureStatus) {
+							// 	if (_this.inChannel) {
+							// 		_this.setChannelInterviewCard()
+							// 	} else {
+							// 		_this.setInterviewCard()
+							// 	}
 
-							}
+							// }
 						} else {
 							if (noOutCount > 999) {
 								// 如果出现链接异常，未接收到结束标识符[DONE]时，超时30s则自动清除定时器
@@ -670,7 +674,15 @@
 			},
 			getMoreHistory() {
 				let _this = this
-				if (!this.loadAllHistory && this.historyId) {
+				if (!this.loadAllHistory) {
+					if (!this.historyId) {
+						if (this.answerContinue || this.answering) {
+							this.$refs.chatRef.refreshRestore()
+							return
+						} else {
+							this.qaList = []
+						}
+					}
 					uni.showLoading()
 					let url = "/api/chat/histories?last_message_id=" + this.historyId + "&job_channel_id="
 					this.$aiRequest(url).then(res => {
@@ -687,6 +699,8 @@
 							} else {
 								this.loadAllHistory = true
 							}
+						} else {
+							this.$refs.chatRef.refreshRestore()
 						}
 					})
 				} else {
@@ -810,7 +824,6 @@
 					return
 				}
 				this.currentTabIndex = 1
-				this.question = ""
 				if (e.detail.height) {
 					this.inputHeight = e.detail.height //这个高度就是软键盘的高度
 				}
@@ -947,6 +960,7 @@
 					if (this.historyList.length == 0) {
 						uni.showLoading()
 					}
+					this.question = ""
 					// 设置非频道
 					this.notChannel()
 					// 设置非通话页
@@ -965,6 +979,7 @@
 							_this.closeInterviewCard()
 							_this.closeChannelInterviewCard()
 							_this.$set(_this, "question", "")
+							uni.hideLoading()
 							if (data != "ping") {
 								if (!_this.cancelRecord) {
 									_this.openAnswering()
@@ -974,7 +989,6 @@
 									_this.num++
 									_this.hold = "h" + _this.num
 									_this.closeCansend()
-									uni.hideLoading()
 									// _this.placeHolder = "正在努力思考，请稍后..."
 								}
 
@@ -1055,7 +1069,7 @@
 					_this.openAnswerContinue()
 					_this.closeAnswering()
 					let respData = JSON.parse(res.data)
-					// console.log("websocket返回：", respData)
+					console.log("websocket返回：", respData)
 					if (_this.inCall) {
 						// 对话页
 						if (respData.type == "audio_call_start_interview") {
@@ -1077,7 +1091,14 @@
 
 					} else {
 						if (respData.type == "audio_call_start_interview") {
-							// 用户报名了
+							// 用户报名了,推送卡片
+							let card = {
+								card_type: "audio_call_start_interview",
+								job_name: respData.job_name,
+								job_id: respData.job_id,
+								showCard: false
+							}
+							_this.curRespone.card = JSON.parse(JSON.stringify(card))
 							_this.sureStatus = true
 							_this.setJobName(respData.job_name)
 							_this.setJobId(respData.job_id)
@@ -1175,7 +1196,8 @@
 				this.curRespone = {
 					content: "",
 					origin: "ai",
-					msg_type: "text"
+					msg_type: "text",
+					card: null
 				}
 				this.responCount = 0
 				this.responseStr = ""
@@ -1633,6 +1655,7 @@
 		background: #FFFFFF;
 		box-shadow: 0rpx 0rpx 4rpx 0rpx rgba(0, 0, 0, 0.1);
 		border-radius: 63rpx;
+		z-index: 10;
 
 		.phone_icon {
 			position: absolute;
@@ -1728,6 +1751,7 @@
 			position: absolute;
 			top: 20rpx;
 			right: 15rpx;
+			z-index: 100;
 
 			image {
 				width: 60rpx;

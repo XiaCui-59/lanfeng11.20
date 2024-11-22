@@ -357,9 +357,6 @@ var _default = {
     onInput: function onInput(e) {
       this.question = e.target.value;
     },
-    onBlur: function onBlur() {
-      this.question = "";
-    },
     handleGreeting: function handleGreeting() {
       var _this4 = this;
       return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3() {
@@ -497,7 +494,15 @@ var _default = {
     getMoreHistory: function getMoreHistory() {
       var _this6 = this;
       var _this = this;
-      if (!this.loadAllHistory && this.historyId) {
+      if (!this.loadAllHistory) {
+        if (!this.historyId) {
+          if (this.answerContinue || this.answering) {
+            this.$refs.chat.refreshRestore();
+            return;
+          } else {
+            this.clearChannelQaList();
+          }
+        }
         uni.showLoading();
         var url = "/api/chat/histories?last_message_id=" + this.historyId + "&job_channel_id=" + this.channel_info.id;
         this.$aiRequest(url).then(function (res) {
@@ -514,6 +519,8 @@ var _default = {
             } else {
               _this6.loadAllHistory = true;
             }
+          } else {
+            _this6.$refs.chat.refreshRestore();
           }
         });
       } else {
@@ -604,7 +611,6 @@ var _default = {
       });
     },
     inputBindFocus: function inputBindFocus(e) {
-      this.question = "";
       if (e.detail.height) {
         this.inputHeight = e.detail.height; //这个高度就是软键盘的高度
       }
@@ -738,6 +744,7 @@ var _default = {
         if (this.historyList.length == 0) {
           uni.showLoading();
         }
+        this.question = "";
         this.isChannel();
         this.notInCall();
         app.globalData.socketTask.send({
@@ -759,7 +766,6 @@ var _default = {
                 _this.calcChannelQaLen();
                 _this.num++;
                 _this.hold = "h" + _this.num;
-                _this.question = "";
                 _this.closeCansend();
                 uni.hideLoading();
                 // _this.placeHolder = "正在努力思考，请稍后..."

@@ -142,7 +142,7 @@
 			//音频播放结束事件
 			app.globalData.Audio.onEnded(e => {
 				if (this.canPlay) {
-					this.playNext()
+					this.playFirst()
 				}
 			});
 
@@ -199,7 +199,7 @@
 			},
 			changeNext() {
 				let len = this.recommendList.length
-				if (this.currentPlayIndex == len) {
+				if (this.currentPlayIndex == len - 1) {
 					let obj = {
 						msg: "我正在找工作，能帮我推荐一些合适的职位吗？",
 						type: "",
@@ -212,13 +212,20 @@
 				}
 
 			},
+			playFirst() {
+				app.globalData.Audio.stop()
+				if (this.canPlay && !this.muted) {
+					console.log("currentPlay：", this.currentPlay)
+					this.playAudio()
+				}
+			},
 			// 播放下一个工作
 			playNext() {
 				let _this = this
 				let len = this.recommendList.length
-				if (this.currentPlayIndex < len) {
-					this.currentPlay = this.recommendList[this.currentPlayIndex]
+				if (this.currentPlayIndex < len - 1) {
 					this.currentPlayIndex++
+					this.currentPlay = this.recommendList[this.currentPlayIndex]
 				} else {
 					this.currentPlayIndex = 0
 					this.currentPlay = this.recommendList[this.currentPlayIndex]
@@ -227,6 +234,7 @@
 				// this.playAudio()
 				setTimeout(function() {
 					if (_this.canPlay && !_this.muted) {
+						console.log("currentPlay：", _this.currentPlay)
 						_this.playAudio()
 					}
 

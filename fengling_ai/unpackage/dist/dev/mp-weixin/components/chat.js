@@ -494,6 +494,7 @@ var _default = {
       }
     },
     toCall: function toCall() {
+      var _this = this;
       if (this.cardDoubleClick) {
         uni.showToast({
           title: "请勿连续点击",
