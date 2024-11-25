@@ -322,18 +322,64 @@ var _default = {
   computed: _objectSpread({}, (0, _vuex.mapState)(["answering", "connected", "connecting", "canSend", "inChannel", "answerContinue", "channelQaLen", "channelId", "channelQaList", "location", "token", "inCall", "responEnd", "aiReady"])),
   onLoad: function onLoad(params) {
     var _this2 = this;
-    return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
-      var scanId, _this, location, token;
-      return _regenerator.default.wrap(function _callee$(_context) {
+    return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2() {
+      var _this, location, scanId, token;
+      return _regenerator.default.wrap(function _callee2$(_context2) {
         while (1) {
-          switch (_context.prev = _context.next) {
+          switch (_context2.prev = _context2.next) {
             case 0:
-              uni.showLoading();
+              _this = _this2;
               _this2.resetCity();
-              _context.next = 4;
+              // 网络状态判断
+              uni.getNetworkType({
+                success: function success(res) {
+                  if (res.networkType.toString() == "none") {
+                    // 无网络
+                    uni.showModal({
+                      title: "当前无网络，请检查您的网络设置，并重启小程序。",
+                      showCancel: false
+                    });
+                  }
+                },
+                fail: function fail(err) {
+                  console.log("网络判断error", err);
+                }
+              });
+              // 监听网络变化
+              uni.onNetworkStatusChange( /*#__PURE__*/function () {
+                var _ref = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee(res) {
+                  return _regenerator.default.wrap(function _callee$(_context) {
+                    while (1) {
+                      switch (_context.prev = _context.next) {
+                        case 0:
+                          console.log("网络变化了：", res.isConnected, res.networkType);
+                          if (res.networkType.toString() == "none") {
+                            // 监听到无网络
+                            uni.showModal({
+                              title: "当前无网络，请检查您的网络设置，并重启小程序。",
+                              showCancel: false
+                            });
+                          } else {
+                            uni.reLaunch({
+                              url: "/pages/index/index"
+                            });
+                            uni.offNetworkStatusChange();
+                          }
+                        case 2:
+                        case "end":
+                          return _context.stop();
+                      }
+                    }
+                  }, _callee);
+                }));
+                return function (_x) {
+                  return _ref.apply(this, arguments);
+                };
+              }());
+              _context2.next = 6;
               return _commMethods.default.getElementInfo(".input_btn_wrap");
-            case 4:
-              _this2.btnInfo = _context.sent;
+            case 6:
+              _this2.btnInfo = _context2.sent;
               if (_this2.btnInfo) {
                 _this2.botSafe = app.globalData.systemHeight - _this2.btnInfo.top;
                 _this2.chatScrollHeight = _this2.btnInfo.top - _this2.statusBarHeight - 84;
@@ -343,11 +389,10 @@ var _default = {
               scanId = params.scene ? decodeURIComponent(params.scene).split("=")[1] : "";
               _this2.shareId = params.share_id ? params.share_id : scanId ? scanId : "";
               _this2.params = params;
-              _this = _this2;
-              _context.next = 13;
+              _context2.next = 14;
               return _this2.getPosition();
-            case 13:
-              location = _context.sent;
+            case 14:
+              location = _context2.sent;
               _this2.setLocation(location);
               token = uni.getStorageSync("token") ? uni.getStorageSync("token") : "";
               _this2.header = {
@@ -361,17 +406,17 @@ var _default = {
                 "address": encodeURIComponent(JSON.stringify(_this.location)),
                 "Authorization": "bearer " + token
               };
-              _context.next = 19;
+              _context2.next = 20;
               return _this2.getOpenid();
-            case 19:
-              _this2.openid = _context.sent;
+            case 20:
+              _this2.openid = _context2.sent;
               _this2.getSetting();
-            case 21:
+            case 22:
             case "end":
-              return _context.stop();
+              return _context2.stop();
           }
         }
-      }, _callee);
+      }, _callee2);
     }))();
   },
   onUnload: function onUnload() {
@@ -381,37 +426,38 @@ var _default = {
   },
   onShow: function onShow() {
     var _this3 = this;
-    return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2() {
+    return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3() {
       var _this;
-      return _regenerator.default.wrap(function _callee2$(_context2) {
+      return _regenerator.default.wrap(function _callee3$(_context3) {
         while (1) {
-          switch (_context2.prev = _context2.next) {
+          switch (_context3.prev = _context3.next) {
             case 0:
               _this = _this3;
-              _this3.resetData();
               _this3.closeAnswering();
               // 录音初始化
               _this3.initRecord();
-              if (!_this3.answerContinue) {
+              if (!_this3.answerContinue && !_this3.answering) {
                 _this3.qaList = [];
+                _this3.resetData();
               }
               uni.onKeyboardHeightChange(_this3.listenKeyBoard);
               if (_this3.isLogin()) {
                 _this3.getInfo();
-                _this3.closeInterviewCard();
-                _this3.closeChannelInterviewCard();
+                // this.closeInterviewCard()
+                // this.closeChannelInterviewCard()
               }
+
               if (_this3.currentTabIndex == 1) {
                 _this3.$nextTick(function () {
                   _this.$refs.chatRef.toScroll();
                 });
               }
-            case 8:
+            case 7:
             case "end":
-              return _context2.stop();
+              return _context3.stop();
           }
         }
-      }, _callee2);
+      }, _callee3);
     }))();
   },
   onHide: function onHide() {
@@ -618,7 +664,6 @@ var _default = {
       this.prinTimer = setInterval(function () {
         var len = _this.responseStr.length;
         if (index < len) {
-          noOutCount = 0;
           _this.curRespone.content += _this.responseStr[index];
           if (_this.inChannel) {
             _this.updateChannelQaList(_this.curRespone);
@@ -647,17 +692,18 @@ var _default = {
             // 	}
 
             // }
-          } else {
-            if (noOutCount > 999) {
-              // 如果出现链接异常，未接收到结束标识符[DONE]时，超时30s则自动清除定时器
-              clearInterval(_this.prinTimer);
-              _this.openCansend();
-              _this.resetData();
-              _this.closeAnswerContinue();
-            } else {
-              noOutCount++;
-            }
           }
+          // else {
+          // 	if (noOutCount > 999) {
+          // 		// 如果出现链接异常，未接收到结束标识符[DONE]时，超时30s则自动清除定时器
+          // 		clearInterval(_this.prinTimer)
+          // 		_this.openCansend()
+          // 		_this.resetData()
+          // 		_this.closeAnswerContinue()
+          // 	} else {
+          // 		noOutCount++
+          // 	}
+          // }
         }
       }, 30);
     },
@@ -694,6 +740,8 @@ var _default = {
         this.closeAnswering();
         this.openCansend();
         this.closeAnswerContinue();
+        this.resetData();
+        clearInterval(this.prinTimer);
         // 上一条是用户发送的数据时
         var data = {
           content: "抱歉！刚才打了个盹儿，没理解到您的意思，请重新发送一下您的问题。",
@@ -818,21 +866,21 @@ var _default = {
     },
     sendBtnMsg: function sendBtnMsg(obj) {
       var _this6 = this;
-      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3() {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4() {
         var strArr, random;
-        return _regenerator.default.wrap(function _callee3$(_context3) {
+        return _regenerator.default.wrap(function _callee4$(_context4) {
           while (1) {
-            switch (_context3.prev = _context3.next) {
+            switch (_context4.prev = _context4.next) {
               case 0:
                 if (_this6.isLogin()) {
-                  _context3.next = 3;
+                  _context4.next = 3;
                   break;
                 }
                 _this6.showLogin = true;
-                return _context3.abrupt("return");
+                return _context4.abrupt("return");
               case 3:
                 if (_this6.aiReady) {
-                  _context3.next = 6;
+                  _context4.next = 6;
                   break;
                 }
                 uni.showToast({
@@ -840,10 +888,10 @@ var _default = {
                   icon: "error",
                   duration: 2000
                 });
-                return _context3.abrupt("return");
+                return _context4.abrupt("return");
               case 6:
                 if (!_this6.answerContinue) {
-                  _context3.next = 10;
+                  _context4.next = 10;
                   break;
                 }
                 uni.showToast({
@@ -852,7 +900,7 @@ var _default = {
                   duration: 2000
                 });
                 _this6.currentTabIndex = 1;
-                return _context3.abrupt("return");
+                return _context4.abrupt("return");
               case 10:
                 _this6.jobId = obj.job_id;
                 _this6.action = obj.action;
@@ -873,10 +921,10 @@ var _default = {
                 _this6.sendQuestion();
               case 15:
               case "end":
-                return _context3.stop();
+                return _context4.stop();
             }
           }
-        }, _callee3);
+        }, _callee4);
       }))();
     },
     handleBtnMsg: function handleBtnMsg(msg) {
@@ -930,9 +978,9 @@ var _default = {
       });
     },
     // 处理录音数据
-    handleRecorder: function handleRecorder(_ref) {
-      var tempFilePath = _ref.tempFilePath,
-        duration = _ref.duration;
+    handleRecorder: function handleRecorder(_ref2) {
+      var tempFilePath = _ref2.tempFilePath,
+        duration = _ref2.duration;
       this.inputing = false;
       var _this = this;
       if (duration < 600) {
@@ -1073,44 +1121,44 @@ var _default = {
     },
     creatConnect: function creatConnect(header) {
       var _this8 = this;
-      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4() {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee5() {
         var _this, res;
-        return _regenerator.default.wrap(function _callee4$(_context4) {
+        return _regenerator.default.wrap(function _callee5$(_context5) {
           while (1) {
-            switch (_context4.prev = _context4.next) {
+            switch (_context5.prev = _context5.next) {
               case 0:
                 _this = _this8;
                 if (!app.globalData.socketTask) {
-                  _context4.next = 5;
+                  _context5.next = 5;
                   break;
                 }
-                _context4.next = 4;
+                _context5.next = 4;
                 return _this8.close();
               case 4:
-                return _context4.abrupt("return", false);
+                return _context5.abrupt("return", false);
               case 5:
                 console.log("connected：", _this8.connected);
                 if (!(_this8.connected || _this8.connecting)) {
-                  _context4.next = 8;
+                  _context5.next = 8;
                   break;
                 }
-                return _context4.abrupt("return", false);
+                return _context5.abrupt("return", false);
               case 8:
                 // 两个链接状态都为false才开始创建链接
                 _this8.setConnecting();
-                _context4.next = 11;
+                _context5.next = 11;
                 return _this8.connectWebsocket(header);
               case 11:
-                res = _context4.sent;
+                res = _context5.sent;
                 if (res.errMsg == "connectSocket:ok") {
                   _this8.initWebsocket();
                 }
               case 13:
               case "end":
-                return _context4.stop();
+                return _context5.stop();
             }
           }
-        }, _callee4);
+        }, _callee5);
       }))();
     },
     connectWebsocket: function connectWebsocket(header) {
@@ -1166,9 +1214,10 @@ var _default = {
         if (_this.inCall) {
           // 对话页
           if (respData.type == "audio_call_start_interview") {
+            console.log("返回的job_id：", respData.job_id);
+            _this.setIncallJobId(respData.job_id ? respData.job_id : "");
             // 用户报名了
             _this.setIncallEnroll();
-            _this.setIncallJobId(respData.job_id);
           } else {
             _this.resetIncallEnroll();
           }
@@ -1502,10 +1551,10 @@ var _default = {
     },
     getInfo: function getInfo() {
       var _this10 = this;
-      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee5() {
-        return _regenerator.default.wrap(function _callee5$(_context5) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee6() {
+        return _regenerator.default.wrap(function _callee6$(_context6) {
           while (1) {
-            switch (_context5.prev = _context5.next) {
+            switch (_context6.prev = _context6.next) {
               case 0:
                 _this10.$request("/worker/profile").then(function (response) {
                   if (response.code == 0) {
@@ -1516,17 +1565,17 @@ var _default = {
                   }
                 });
                 _this10.historyId = 0;
-                _context5.next = 4;
+                _context6.next = 4;
                 return _this10.getHistory();
               case 4:
-                _this10.historyList = _context5.sent;
+                _this10.historyList = _context6.sent;
                 console.log("historyList：", _this10.historyList);
               case 6:
               case "end":
-                return _context5.stop();
+                return _context6.stop();
             }
           }
-        }, _callee5);
+        }, _callee6);
       }))();
     }
   })

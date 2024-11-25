@@ -10044,11 +10044,11 @@ var request = function request() {
     "app-id": _url_setting.default.urls.appid,
     "open-id": !uni.getStorageSync("openid") ? "" : uni.getStorageSync("openid")
   };
-  // if (url.indexOf("is-entry") == -1) {
-  // 	uni.showLoading({
-  // 		title: "加载中"
-  // 	})
-  // }
+  if (url == "/homepage") {
+    uni.showLoading({
+      title: "加载中"
+    });
+  }
   return new Promise(function (resolve, reject) {
     uni.request({
       method: type,
@@ -10080,9 +10080,9 @@ var request = function request() {
         console.log("error1：", error);
         reject(error);
       }
-
-      // uni.hideLoading();
+      uni.hideLoading();
     }).catch(function (error) {
+      uni.hideLoading();
       console.log("error：", error);
       var _error = (0, _slicedToArray2.default)(error, 2),
         err = _error[0],

@@ -208,8 +208,6 @@ var _default = {
               uni.setKeepScreenOn({
                 keepScreenOn: true
               });
-              console.log('App Launch');
-              console.log(params);
               _this.globalData.scene = params.scene;
               uni.hideTabBar();
               // 版本更新提示
@@ -281,15 +279,15 @@ var _default = {
               _this.globalData.loginAreaTop = Math.floor(systemInfo.screenHeight * (218 / 844));
               _this.globalData.bannerHeight = Math.floor(systemInfo.screenHeight * (100 / 844));
               if (!_this.isLogin()) {
-                _context.next = 39;
+                _context.next = 37;
                 break;
               }
-              _context.next = 37;
+              _context.next = 35;
               return _this.queryPubStatus();
-            case 37:
+            case 35:
               _this.globalData.showPubTabbar = _context.sent;
               console.log(_this.globalData.showPubTabbar, "!!!!");
-            case 39:
+            case 37:
             case "end":
               return _context.stop();
           }

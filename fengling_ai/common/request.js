@@ -7,11 +7,11 @@ const request = (url = '', date = {}, type = 'GET', header = {
 	"app-id": urlSetting.urls.appid,
 	"open-id": !uni.getStorageSync("openid") ? "" : uni.getStorageSync("openid")
 }) => {
-	// if (url.indexOf("is-entry") == -1) {
-	// 	uni.showLoading({
-	// 		title: "加载中"
-	// 	})
-	// }
+	if (url == "/homepage") {
+		uni.showLoading({
+			title: "加载中"
+		})
+	}
 	return new Promise((resolve, reject) => {
 		uni.request({
 			method: type,
@@ -42,9 +42,10 @@ const request = (url = '', date = {}, type = 'GET', header = {
 				reject(error)
 			}
 
-			// uni.hideLoading();
+			uni.hideLoading();
 
 		}).catch(error => {
+			uni.hideLoading();
 			console.log("error：", error)
 			let [err, res] = error;
 			reject(err)

@@ -280,8 +280,40 @@
 			])
 		},
 		async onLoad(params) {
-			uni.showLoading()
+			var _this = this;
+			let location;
 			this.resetCity()
+			// 网络状态判断
+			uni.getNetworkType({
+				success(res) {
+					if (res.networkType.toString() == "none") {
+						// 无网络
+						uni.showModal({
+							title: "当前无网络，请检查您的网络设置，并重启小程序。",
+							showCancel: false
+						})
+					}
+				},
+				fail(err) {
+					console.log("网络判断error", err)
+				}
+			})
+			// 监听网络变化
+			uni.onNetworkStatusChange(async function(res) {
+				console.log("网络变化了：", res.isConnected, res.networkType)
+				if (res.networkType.toString() == "none") {
+					// 监听到无网络
+					uni.showModal({
+						title: "当前无网络，请检查您的网络设置，并重启小程序。",
+						showCancel: false
+					})
+				} else {
+					uni.reLaunch({
+						url: "/pages/index/index"
+					})
+					uni.offNetworkStatusChange()
+				}
+			});
 			this.btnInfo = await commonMethods.getElementInfo(".input_btn_wrap")
 			if (this.btnInfo) {
 				this.botSafe = app.globalData.systemHeight - this.btnInfo.top
@@ -292,8 +324,8 @@
 			let scanId = params.scene ? decodeURIComponent(params.scene).split("=")[1] : ""
 			this.shareId = params.share_id ? params.share_id : (scanId ? scanId : "")
 			this.params = params
-			var _this = this;
-			let location = await this.getPosition()
+
+			location = await this.getPosition()
 			this.setLocation(location)
 			let token = uni.getStorageSync("token") ? uni.getStorageSync("token") : ""
 			this.header = {
@@ -317,18 +349,18 @@
 		},
 		async onShow() {
 			let _this = this
-			this.resetData()
 			this.closeAnswering()
 			// 录音初始化
 			this.initRecord()
-			if (!this.answerContinue) {
+			if (!this.answerContinue && !this.answering) {
 				this.qaList = []
+				this.resetData()
 			}
 			uni.onKeyboardHeightChange(this.listenKeyBoard)
 			if (this.isLogin()) {
 				this.getInfo()
-				this.closeInterviewCard()
-				this.closeChannelInterviewCard()
+				// this.closeInterviewCard()
+				// this.closeChannelInterviewCard()
 			}
 			if (this.currentTabIndex == 1) {
 				this.$nextTick(() => {
@@ -555,7 +587,6 @@
 				this.prinTimer = setInterval(function() {
 					let len = _this.responseStr.length
 					if (index < len) {
-						noOutCount = 0
 						_this.curRespone.content += _this.responseStr[index]
 						if (_this.inChannel) {
 							_this.updateChannelQaList(_this.curRespone)
@@ -585,17 +616,18 @@
 							// 	}
 
 							// }
-						} else {
-							if (noOutCount > 999) {
-								// 如果出现链接异常，未接收到结束标识符[DONE]时，超时30s则自动清除定时器
-								clearInterval(_this.prinTimer)
-								_this.openCansend()
-								_this.resetData()
-								_this.closeAnswerContinue()
-							} else {
-								noOutCount++
-							}
 						}
+						// else {
+						// 	if (noOutCount > 999) {
+						// 		// 如果出现链接异常，未接收到结束标识符[DONE]时，超时30s则自动清除定时器
+						// 		clearInterval(_this.prinTimer)
+						// 		_this.openCansend()
+						// 		_this.resetData()
+						// 		_this.closeAnswerContinue()
+						// 	} else {
+						// 		noOutCount++
+						// 	}
+						// }
 					}
 				}, 30)
 
@@ -634,6 +666,8 @@
 					this.closeAnswering()
 					this.openCansend()
 					this.closeAnswerContinue()
+					this.resetData()
+					clearInterval(this.prinTimer)
 					// 上一条是用户发送的数据时
 					let data = {
 						content: "抱歉！刚才打了个盹儿，没理解到您的意思，请重新发送一下您的问题。",
@@ -1073,10 +1107,11 @@
 					if (_this.inCall) {
 						// 对话页
 						if (respData.type == "audio_call_start_interview") {
-
+							console.log("返回的job_id：", respData.job_id)
+							_this.setIncallJobId(respData.job_id ? respData.job_id : "")
 							// 用户报名了
 							_this.setIncallEnroll()
-							_this.setIncallJobId(respData.job_id)
+
 						} else {
 							_this.resetIncallEnroll()
 						}

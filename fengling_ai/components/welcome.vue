@@ -74,11 +74,95 @@
 		</view>
 		<myModal ref="myModal">
 		</myModal>
+		<view class="new_user_steps" :style="{paddingTop:top+'px',paddingBottom:bottom+'px'}">
+			<view class="top_wrap" v-show="currentStep == 3">
+				<view class="banner">
+					<view class="ban_top">
+						<view class="tit">{{currentPlay.project_name}}</view>
+						<view class="salary flex flex-start">
+							<text>{{currentPlay.worker_salary_max}}</text>
+							<text
+								class="period">元{{period.filter(el=>{return el.value == currentPlay.worker_salary_type})[0].text}}
+							</text>
+						</view>
+					</view>
+					<view class="ban_bot">
+						<scroll-view scroll-y="true" class="cont" style="height:260rpx;" :scroll-with-animation="true"
+							:scroll-top="scrollTop" @touchstart="touchStart" @scrolltolower="scrollLower">
+							{{currentPlay.content}}
+						</scroll-view>
+					</view>
+					<image :src="imgUrl+'/worker/new/banner_ai.png'" mode="widthFix"></image>
+					<view class="voice_control">
+						<image :src="imgUrl+'/worker/new/ic_index_voice_muted.png'" mode="heightFix"
+							:style="{display:muted?'inline-block':'none'}"></image>
+						<image :src="imgUrl+'/worker/new/ic_index_voice_play.png'" mode="heightFix"
+							:style="{display:muted?'none':'inline-block'}"></image>
+					</view>
+					<view class="surein">
+						<image :src="imgUrl+'/worker/new/ic_heart.png'" mode="widthFix"></image>
+						<text>立即报名</text>
+					</view>
+				</view>
+				<view class="tips_wrap flex flex_btween">
+					<view class="tip_list">
+						<view class="item" v-for="(item,index) in currentPlay.may_ask" :key="index">
+							<view class="text">{{item}}</view>
+						</view>
+					</view>
+					<view class="change">下一个&gt;</view>
+				</view>
+			</view>
+			<view class="iwant_wrap" :style="{bottom:bottom+10+'px'}">
+				<view class="img flex flex_btween">
+					<image :src="imgUrl+'/worker/new/iwant_slogan.png'" mode="widthFix"></image>
+					<image :src="imgUrl+'/worker/new/ic_telephone.png'" mode="widthFix" style="width: 77rpx;"
+						v-show="currentStep == 4"></image>
+				</view>
+				<view class="iwant_list flex flex_btween">
+					<view class="iwant_item flex flex_btween" v-show="currentStep == 1">
+						<view class="iwant_tips">
+							<view class="tit">我要找工作</view>
+							<view class="tips_list">
+								<view class="tips">优质高效</view>
+								<view class="tips">我最懂你</view>
+							</view>
+						</view>
+						<view class="icon">
+							<image :src="imgUrl+'/worker/new/iwant02.png'" mode="widthFix"></image>
+						</view>
+						<view class="step_tips">
+							<view class="step_top">
+								<view class="step_tit">点击“我要找工作”，快速推进高薪工作</view>
+								<view class="step_text flex flex_btween">
+									<view class="text">优质工作，一键快速推荐</view>
+									<view class="step_btn">下一步</view>
+								</view>
+							</view>
+							<view class="step_line">
+								<image :src="imgUrl+'/worker/new/step_line.png'" mode="widthFix"></image>
+							</view>
+						</view>
+					</view>
+					<view class="iwant_item flex flex_btween" v-show="currentStep == 2">
+						<view class="iwant_tips">
+							<view class="tit">我要去面试</view>
+							<view class="tips_list">
+								<view class="tips">线上面试</view>
+								<view class="tips">无需奔波</view>
+							</view>
+						</view>
+						<view class="icon">
+							<image :src="imgUrl+'/worker/new/iwant01.png'" mode="widthFix"></image>
+						</view>
+					</view>
+				</view>
+			</view>
+		</view>
 	</view>
 </template>
 
 <script>
-	import flMask from "@/components/flmask.vue"
 	import commonData from "@/common/commonData.js"
 	import commonMethods from "@/common/commMethods.js"
 	import {
@@ -122,7 +206,8 @@
 				reConnectCount: 0, //记录网络异常重连次数,
 				mayAskCount: 0, //记录mayAsk异常重连次数,
 				bannerImageInfo: null,
-				bannerHeight: 0
+				bannerHeight: 0,
+				currentStep: 1
 			};
 		},
 		computed: {
@@ -130,7 +215,6 @@
 		},
 		created() {
 			let _this = this
-			console.log("city:", this.city)
 			//音频停止事件
 			app.globalData.Audio.onPlay(e => {
 				this.textAnimation()
@@ -156,7 +240,6 @@
 				}
 			},
 			canPlay(newVal) {
-				console.log("canPlay", newVal)
 				if (!newVal) {
 					app.globalData.Audio.pause()
 					this.muted = true
@@ -215,7 +298,6 @@
 			playFirst() {
 				app.globalData.Audio.stop()
 				if (this.canPlay && !this.muted) {
-					console.log("currentPlay：", this.currentPlay)
 					this.playAudio()
 				}
 			},
@@ -234,7 +316,6 @@
 				// this.playAudio()
 				setTimeout(function() {
 					if (_this.canPlay && !_this.muted) {
-						console.log("currentPlay：", _this.currentPlay)
 						_this.playAudio()
 					}
 
@@ -265,7 +346,6 @@
 			//播放工作音频
 			playWelcome() {
 				let i = Math.floor(Math.random() * this.welcomeVoiceList.length)
-				console.log("当前播报：", i)
 				app.globalData.Audio.src = this.welcomeVoiceList[i];
 				app.globalData.Audio.play();
 				this.muted = false
@@ -372,7 +452,6 @@
 						url: url,
 						method: "GET",
 						success(res) {
-							console.log("getPosition:", res)
 							resolve(res.data.result.ad_info.city)
 						},
 						fail(err) {
@@ -615,11 +694,85 @@
 		}
 	}
 
-	.content_body {
+	.content_body,
+	.new_user_steps {
 		background: url($back-ground-url+"/worker/new/welcome_bg.png") no-repeat;
 		background-size: cover;
 		padding: 0 28rpx;
 		box-sizing: border-box;
+
+		&.new_user_steps {
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			z-index: 1000;
+			background: rgba(0, 0, 0, 0.60);
+
+			.iwant_wrap {
+				.iwant_list {
+					.iwant_item {
+						position: relative;
+
+						.step_tips {
+							position: absolute;
+							bottom: 100%;
+							left: 0;
+
+							.step_top {
+								background: linear-gradient(131deg, #DDB2DA 0%, #3C95ED 51%, #B3E7FC 100%);
+								padding: 28rpx 18rpx 40rpx 18rpx;
+								box-sizing: border-box;
+								border-radius: 14rpx;
+
+								.step_tit {
+									font-weight: 600;
+									font-size: 31rpx;
+									color: #FFFFFF;
+									line-height: 42rpx;
+									white-space: nowrap;
+								}
+
+								.step_text {
+									margin-top: 20rpx;
+
+									.text {
+										font-weight: 400;
+										font-size: 23rpx;
+										color: rgba(255, 255, 255, 0.6);
+										line-height: 33rpx;
+									}
+
+									.step_btn {
+										width: 154rpx;
+										height: 46rpx;
+										background: #FFFFFF;
+										border-radius: 23rpx;
+										font-weight: 400;
+										font-size: 23rpx;
+										color: #216FF9;
+										line-height: 46rpx;
+										text-align: center;
+									}
+								}
+							}
+
+							.step_line {
+								padding-left: 100rpx;
+								font-size: 0;
+
+								image {
+									width: 30rpx;
+								}
+							}
+
+
+						}
+					}
+				}
+			}
+		}
 
 
 		.greeting {

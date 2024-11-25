@@ -224,7 +224,7 @@
 			handleAutoAction() {
 				// 处理我要报名和我要面试，由AI说第一句话
 				let jobId = this.job_id ? this.job_id : this.incallJobId
-				console.log("incallJobId：", this.incallJobId, jobId)
+				console.log("incallJobId：", jobId)
 				// 面试场景
 				let time = new Date().getTime()
 				let id = uni.getStorageSync("openid") + time
@@ -524,7 +524,8 @@
 					// 音频转换失败，重新转换
 					// console.log("当前解码失败索引：", _this.currentTransIndex, data)
 					console.error('decodeAudioData fail', err)
-					_this.currentTransIndex++
+					// 将第一条从原始数据中移除
+					_this.resultArrayBuffer.splice(0, 1)
 					_this.startTrans()
 				})
 
@@ -535,13 +536,20 @@
 					let data = _this.resultArrayBuffer[_this.currentTransIndex]
 					_this.audioCtx.decodeAudioData(data, buffer => {
 						_this.currentTransIndex++
+						if (_this.currentTransIndex == 1) {
+							_this.resetAiSpeekingEnd()
+							_this.playFirst(buffer)
+							_this.isWelcome = false
+							_this.playTipsVoice()
+						}
 						_this.result.push(buffer)
 						_this.startTrans()
 
 					}, err => {
 						// 音频转换失败，重新转换
 						console.error('decodeAudioData fail', err)
-						_this.currentTransIndex++
+						_this.resultArrayBuffer.splice(_this.currentTransIndex, 1)
+						// _this.currentTransIndex++
 						_this.startTrans()
 					})
 				} else {

@@ -30,120 +30,6 @@ image {
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
-@-webkit-keyframes itemMove {
-0% {
-    -webkit-transform: translateY(100%);
-            transform: translateY(100%);
-}
-100% {
-    -webkit-transform: translateY(0px);
-            transform: translateY(0px);
-    opacity: 1;
-}
-}
-@keyframes itemMove {
-0% {
-    -webkit-transform: translateY(100%);
-            transform: translateY(100%);
-}
-100% {
-    -webkit-transform: translateY(0px);
-            transform: translateY(0px);
-    opacity: 1;
-}
-}
-.fl_mask {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1000;
-  background: rgba(0, 0, 0, 0.4);
-}
-.fl_mask .fl_inner_mask {
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(48deg, rgba(33, 111, 249, 0.3) 0%, rgba(0, 57, 78, 0.3) 100%);
-}
-.fl_mask .fl_inner {
-  position: absolute;
-  width: 100%;
-  bottom: 200rpx;
-}
-.fl_mask .fl_inner .top {
-  margin-bottom: 40rpx;
-}
-.fl_mask .fl_inner .top .ai_logo {
-  margin-right: 16rpx;
-}
-.fl_mask .fl_inner .top .ai_logo image {
-  width: 105rpx;
-}
-.fl_mask .fl_inner .top .tit {
-  font-size: 35rpx;
-  color: #FFFFFF;
-  background: linear-gradient(332deg, #D8D8D8 0%, #00B2FF 100%);
-  /*设置渐变的方向从左到右 颜色从ff0000到ffff00*/
-  -webkit-background-clip: text;
-  /*将设置的背景颜色限制在文字中*/
-  -webkit-text-fill-color: transparent;
-  /*给文字设置成透明*/
-}
-.fl_mask .fl_inner .bot {
-  padding-left: 36rpx;
-  box-sizing: border-box;
-}
-.fl_mask .fl_inner .bot .list .item {
-  height: 94rpx;
-  line-height: 94rpx;
-  background: #FFFFFF;
-  border-radius: 48rpx;
-  padding: 0 32rpx;
-  margin-bottom: 19rpx;
-  font-weight: 400;
-  font-size: 32rpx;
-  color: #213968;
-  opacity: 0;
-  transition: all 1s;
-}
-.fl_mask .fl_inner .bot .list .item.animation {
-  -webkit-animation: itemMove 0.6s ease-in-out forwards;
-          animation: itemMove 0.6s ease-in-out forwards;
-}
-
-@charset "UTF-8";
-/**
- * 这里是uni-app内置的常用样式变量
- *
- * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
- * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
- *
- */
-/**
- * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
- *
- * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
- */
-/* 颜色变量 */
-/* 行为相关颜色 */
-image {
-  will-change: transform;
-  width: auto;
-  height: auto;
-  flex-shrink: 0;
-}
-/* 文字基本颜色 */
-/* 背景颜色 */
-/* 边框颜色 */
-/* 尺寸变量 */
-/* 文字尺寸 */
-/* 图片尺寸 */
-/* Border Radius */
-/* 水平间距 */
-/* 垂直间距 */
-/* 透明度 */
-/* 文章场景相关 */
 .top_wrap {
   margin-top: 42rpx;
 }
@@ -321,16 +207,86 @@ image {
 .iwant_wrap .iwant_list .iwant_item .icon image {
   width: 160rpx;
 }
-.content_body {
+.content_body,
+.new_user_steps {
   background: url("https://static.test.swiftwd.com/worker/new/welcome_bg.png") no-repeat;
   background-size: cover;
   padding: 0 28rpx;
   box-sizing: border-box;
 }
-.content_body .greeting {
+.content_body.new_user_steps,
+.new_user_steps.new_user_steps {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.6);
+}
+.content_body.new_user_steps .iwant_wrap .iwant_list .iwant_item,
+.new_user_steps.new_user_steps .iwant_wrap .iwant_list .iwant_item {
+  position: relative;
+}
+.content_body.new_user_steps .iwant_wrap .iwant_list .iwant_item .step_tips,
+.new_user_steps.new_user_steps .iwant_wrap .iwant_list .iwant_item .step_tips {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+}
+.content_body.new_user_steps .iwant_wrap .iwant_list .iwant_item .step_tips .step_top,
+.new_user_steps.new_user_steps .iwant_wrap .iwant_list .iwant_item .step_tips .step_top {
+  background: linear-gradient(131deg, #DDB2DA 0%, #3C95ED 51%, #B3E7FC 100%);
+  padding: 28rpx 18rpx 40rpx 18rpx;
+  box-sizing: border-box;
+  border-radius: 14rpx;
+}
+.content_body.new_user_steps .iwant_wrap .iwant_list .iwant_item .step_tips .step_top .step_tit,
+.new_user_steps.new_user_steps .iwant_wrap .iwant_list .iwant_item .step_tips .step_top .step_tit {
+  font-weight: 600;
+  font-size: 31rpx;
+  color: #FFFFFF;
+  line-height: 42rpx;
+  white-space: nowrap;
+}
+.content_body.new_user_steps .iwant_wrap .iwant_list .iwant_item .step_tips .step_top .step_text,
+.new_user_steps.new_user_steps .iwant_wrap .iwant_list .iwant_item .step_tips .step_top .step_text {
+  margin-top: 20rpx;
+}
+.content_body.new_user_steps .iwant_wrap .iwant_list .iwant_item .step_tips .step_top .step_text .text,
+.new_user_steps.new_user_steps .iwant_wrap .iwant_list .iwant_item .step_tips .step_top .step_text .text {
+  font-weight: 400;
+  font-size: 23rpx;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 33rpx;
+}
+.content_body.new_user_steps .iwant_wrap .iwant_list .iwant_item .step_tips .step_top .step_text .step_btn,
+.new_user_steps.new_user_steps .iwant_wrap .iwant_list .iwant_item .step_tips .step_top .step_text .step_btn {
+  width: 154rpx;
+  height: 46rpx;
+  background: #FFFFFF;
+  border-radius: 23rpx;
+  font-weight: 400;
+  font-size: 23rpx;
+  color: #216FF9;
+  line-height: 46rpx;
+  text-align: center;
+}
+.content_body.new_user_steps .iwant_wrap .iwant_list .iwant_item .step_tips .step_line,
+.new_user_steps.new_user_steps .iwant_wrap .iwant_list .iwant_item .step_tips .step_line {
+  padding-left: 100rpx;
+  font-size: 0;
+}
+.content_body.new_user_steps .iwant_wrap .iwant_list .iwant_item .step_tips .step_line image,
+.new_user_steps.new_user_steps .iwant_wrap .iwant_list .iwant_item .step_tips .step_line image {
+  width: 30rpx;
+}
+.content_body .greeting,
+.new_user_steps .greeting {
   margin-top: 42rpx;
 }
-.content_body .greeting .avatar {
+.content_body .greeting .avatar,
+.new_user_steps .greeting .avatar {
   text-align: center;
   width: 280rpx;
   height: 280rpx;
@@ -338,10 +294,12 @@ image {
   border-radius: 50%;
   position: relative;
 }
-.content_body .greeting .avatar > image {
+.content_body .greeting .avatar > image,
+.new_user_steps .greeting .avatar > image {
   width: 280rpx;
 }
-.content_body .greeting .avatar .play_box {
+.content_body .greeting .avatar .play_box,
+.new_user_steps .greeting .avatar .play_box {
   position: absolute;
   width: 86rpx;
   height: 54rpx;
@@ -352,10 +310,12 @@ image {
   right: 0;
   text-align: center;
 }
-.content_body .greeting .avatar .play_box image {
+.content_body .greeting .avatar .play_box image,
+.new_user_steps .greeting .avatar .play_box image {
   height: 54rpx;
 }
-.content_body .greeting .tips {
+.content_body .greeting .tips,
+.new_user_steps .greeting .tips {
   overflow: hidden;
   background: #F1F8FF;
   border-radius: 4rpx 44rpx 44rpx 44rpx;
@@ -363,14 +323,16 @@ image {
   box-sizing: border-box;
   position: relative;
 }
-.content_body .greeting .tips .title {
+.content_body .greeting .tips .title,
+.new_user_steps .greeting .tips .title {
   padding: 23rpx 0;
   background: #F1F8FF;
   border-bottom: 2rpx dashed rgba(34, 55, 86, 0.2);
   position: relative;
   z-index: 100;
 }
-.content_body .greeting .tips .title .name {
+.content_body .greeting .tips .title .name,
+.new_user_steps .greeting .tips .title .name {
   font-weight: 600;
   font-size: 38rpx;
   color: #223756;
@@ -379,22 +341,26 @@ image {
   text-overflow: ellipsis;
   overflow: hidden;
 }
-.content_body .greeting .tips .title .sala_box {
+.content_body .greeting .tips .title .sala_box,
+.new_user_steps .greeting .tips .title .sala_box {
   max-width: 360rpx;
 }
-.content_body .greeting .tips .title .sala_box .count {
+.content_body .greeting .tips .title .sala_box .count,
+.new_user_steps .greeting .tips .title .sala_box .count {
   font-weight: 600;
   font-size: 42rpx;
   color: #223756;
   white-space: nowrap;
 }
-.content_body .greeting .tips .title .sala_box .period {
+.content_body .greeting .tips .title .sala_box .period,
+.new_user_steps .greeting .tips .title .sala_box .period {
   font-weight: 400;
   font-size: 24rpx;
   color: #223756;
   margin-left: 8rpx;
 }
-.content_body .greeting .tips .cont {
+.content_body .greeting .tips .cont,
+.new_user_steps .greeting .tips .cont {
   font-weight: 400;
   font-size: 31rpx;
   color: #223756;
@@ -404,10 +370,12 @@ image {
   padding-bottom: 0rpx;
   box-sizing: border-box;
 }
-.content_body .greeting .tips .cont .animation_box {
+.content_body .greeting .tips .cont .animation_box,
+.new_user_steps .greeting .tips .cont .animation_box {
   padding-bottom: 100rpx;
 }
-.content_body .greeting .tips .voice_control {
+.content_body .greeting .tips .voice_control,
+.new_user_steps .greeting .tips .voice_control {
   width: 100%;
   text-align: right;
   position: absolute;
@@ -417,7 +385,8 @@ image {
   box-sizing: border-box;
   z-index: 100;
 }
-.content_body .greeting .tips .voice_control image {
+.content_body .greeting .tips .voice_control image,
+.new_user_steps .greeting .tips .voice_control image {
   height: 50rpx;
 }
 

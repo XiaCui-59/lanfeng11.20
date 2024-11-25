@@ -47,8 +47,7 @@
 			uni.setKeepScreenOn({
 				keepScreenOn: true
 			});
-			console.log('App Launch')
-			console.log(params)
+
 			this.globalData.scene = params.scene
 			uni.hideTabBar()
 			// 版本更新提示
