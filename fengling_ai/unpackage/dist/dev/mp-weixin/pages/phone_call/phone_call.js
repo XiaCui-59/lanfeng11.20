@@ -333,8 +333,8 @@ var _default = {
       // console.log("转换后音频长度：", newVal.length)
     }
   },
-  computed: _objectSpread({}, (0, _vuex.mapState)(["answering", "connected", "connecting", "canSend", "inChannel", "answerContinue", "channelQaLen", "channelId", "channelQaList", "location", "token", "callContent", "incallEnroll", "incallJobId"])),
-  methods: _objectSpread(_objectSpread({}, (0, _vuex.mapMutations)(["setInCall", "clearCallContent", "setAiSpeekingEnd", "resetAiSpeekingEnd", "resetIncallEnroll", "resetIncallJobId"])), {}, {
+  computed: _objectSpread({}, (0, _vuex.mapState)(["answering", "connected", "connecting", "canSend", "inChannel", "answerContinue", "channelQaLen", "channelId", "channelQaList", "location", "token", "callContent", "incallEnroll", "incallJobId", "hangUpFirst"])),
+  methods: _objectSpread(_objectSpread({}, (0, _vuex.mapMutations)(["setInCall", "clearCallContent", "setAiSpeekingEnd", "resetAiSpeekingEnd", "resetIncallEnroll", "resetIncallJobId", "resetHangUpFirst"])), {}, {
     handleAutoAction: function handleAutoAction() {
       // 处理我要报名和我要面试，由AI说第一句话
       var jobId = this.job_id ? this.job_id : this.incallJobId;
@@ -718,7 +718,13 @@ var _default = {
             _this.aiThrinking = true;
             _this.handleAutoAction();
           } else {
-            _this.startRecord();
+            if (_this.hangUpFirst) {
+              //主动挂断电话
+              _this.resetHangUpFirst();
+              _this.close();
+            } else {
+              _this.startRecord();
+            }
           }
         } else {
           // 轮询是否有新数据返回

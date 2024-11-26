@@ -346,10 +346,17 @@
 						</view>
 					</view>
 					<view class="tabs flex flex_start">
-						<view class="tab" :class="currentSubTab==0?'active':''" @click="changeSubTab(0)">履职记录</view>
-						<view class="tab" :class="currentSubTab==1?'active':''" @click="changeSubTab(1)">跟进记录</view>
+						<view class="tab" :class="currentSubTab==0?'active':''" @click="changeSubTab(0)">评估报告</view>
+						<view class="tab" :class="currentSubTab==1?'active':''" @click="changeSubTab(1)">履职记录</view>
+						<view class="tab" :class="currentSubTab==2?'active':''" @click="changeSubTab(2)">跟进记录</view>
 					</view>
-					<view class="table_wrap" v-if="currentSubTab==0">
+					<view class="report" v-if="currentSubTab==0">
+						<view class="report_item">
+							<view class="tit">候选匹配度</view>
+							<rich-text :nodes="currentMatch.candidateMatchScore"></rich-text>
+						</view>
+					</view>
+					<view class="table_wrap" v-if="currentSubTab==1">
 						<uni-table border stripe emptyText="暂无更多数据">
 							<uni-tr style="background: #f6f6f6;">
 								<uni-th align="center"
@@ -376,7 +383,7 @@
 							</uni-tr>
 						</uni-table>
 					</view>
-					<view class="follow" v-if="currentSubTab==1">
+					<view class="follow" v-if="currentSubTab==2">
 						<view class="add_follow flex flex-start">
 							<input type="text" v-model="followText2" placeholder="填写当前状态跟进记录" />
 							<view class="btn" @click="addFollow">添加</view>
@@ -531,7 +538,12 @@
 				preStart: "",
 				preEnd: "",
 				currentCount: 15,
-				searBroker: ""
+				searBroker: "",
+				currentMatch: {
+					candidateMatchScore: "",
+					workExperience: "",
+					chatSummary: []
+				}
 				// selectProId: []
 			};
 		},

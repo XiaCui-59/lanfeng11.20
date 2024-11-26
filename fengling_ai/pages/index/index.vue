@@ -428,7 +428,7 @@
 				"setToken", "clearChannelQaList", "notInCall", "setCallContent", "setRespEnd", "notRespEnd",
 				"setInterviewCard", "setIncallEnroll", "setIncallJobId", "resetIncallEnroll", "closeInterviewCard",
 				"setAiReady", "resetAiReady", "resetCity", "setChannelInterviewCard", "closeChannelInterviewCard",
-				"setJobName", "resetJobName", "setJobId", "resetJobId"
+				"setJobName", "resetJobName", "setJobId", "resetJobId", "setHangUpFirst"
 			]),
 			onInput(e) {
 				this.question = e.target.value
@@ -1114,6 +1114,10 @@
 
 						} else {
 							_this.resetIncallEnroll()
+						}
+						if (respData.type == "audio_call_end") {
+							_this.setHangUpFirst()
+
 						}
 						if (respData.message != "[DONE]") {
 							_this.setCallContent(respData.message)

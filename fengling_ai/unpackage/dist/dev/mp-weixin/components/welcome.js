@@ -186,6 +186,7 @@ var _default = {
       //记录mayAsk异常重连次数,
       bannerImageInfo: null,
       bannerHeight: 0,
+      showUserStep: false,
       currentStep: 1
     };
   },
@@ -207,6 +208,11 @@ var _default = {
         _this2.playFirst();
       }
     });
+    var readStep = uni.getStorageSync("readsteps") ? uni.getStorageSync("readsteps") : "";
+    if (!readStep) {
+      // 未阅读过新手指引
+      this.showUserStep = true;
+    }
   },
   watch: {
     animationActive: function animationActive(newVal) {
@@ -252,6 +258,16 @@ var _default = {
         job_id: type == "surejob" ? this.currentPlay.project_id : ""
       };
       this.$emit("tocall", obj);
+    },
+    nextStep: function nextStep() {
+      if (this.currentStep < 6) {
+        this.currentStep++;
+      } else {
+        this.showUserStep = false;
+        // 存储已阅读新手指引状态
+        uni.setStorageSync("readsteps", 1);
+        this.playWelcome();
+      }
     },
     changeNext: function changeNext() {
       var len = this.recommendList.length;
@@ -386,7 +402,9 @@ var _default = {
                   _this4.currentPlay = res.data.list[0];
                   _this4.recommendList = res.data.list;
                   _this4.getMayAsk();
-                  _this4.playWelcome();
+                  if (!_this4.showUserStep) {
+                    _this4.playWelcome();
+                  }
                 } else {
                   _this4.$refs.myModal.showModal({
                     title: "暂无推荐职位信息",

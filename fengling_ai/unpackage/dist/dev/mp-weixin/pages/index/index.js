@@ -512,7 +512,7 @@ var _default = {
       }
     }
   },
-  methods: _objectSpread(_objectSpread({}, (0, _vuex.mapMutations)(["openAnswering", "closeAnswering", "setConnected", "unConnected", "setConnecting", "unConnecting", "openCansend", "closeCansend", "notChannel", "isChannel", "addChannelQaList", "openAnswerContinue", "closeAnswerContinue", "updateChannelQaList", "setChannelId", "setLocation", "setToken", "clearChannelQaList", "notInCall", "setCallContent", "setRespEnd", "notRespEnd", "setInterviewCard", "setIncallEnroll", "setIncallJobId", "resetIncallEnroll", "closeInterviewCard", "setAiReady", "resetAiReady", "resetCity", "setChannelInterviewCard", "closeChannelInterviewCard", "setJobName", "resetJobName", "setJobId", "resetJobId"])), {}, {
+  methods: _objectSpread(_objectSpread({}, (0, _vuex.mapMutations)(["openAnswering", "closeAnswering", "setConnected", "unConnected", "setConnecting", "unConnecting", "openCansend", "closeCansend", "notChannel", "isChannel", "addChannelQaList", "openAnswerContinue", "closeAnswerContinue", "updateChannelQaList", "setChannelId", "setLocation", "setToken", "clearChannelQaList", "notInCall", "setCallContent", "setRespEnd", "notRespEnd", "setInterviewCard", "setIncallEnroll", "setIncallJobId", "resetIncallEnroll", "closeInterviewCard", "setAiReady", "resetAiReady", "resetCity", "setChannelInterviewCard", "closeChannelInterviewCard", "setJobName", "resetJobName", "setJobId", "resetJobId", "setHangUpFirst"])), {}, {
     onInput: function onInput(e) {
       this.question = e.target.value;
     },
@@ -1220,6 +1220,9 @@ var _default = {
             _this.setIncallEnroll();
           } else {
             _this.resetIncallEnroll();
+          }
+          if (respData.type == "audio_call_end") {
+            _this.setHangUpFirst();
           }
           if (respData.message != "[DONE]") {
             _this.setCallContent(respData.message);

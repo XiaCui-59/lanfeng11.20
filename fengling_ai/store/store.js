@@ -36,9 +36,16 @@ const store = new Vuex.Store({
 		incallJobId: "", //记录语音对话中报名的职位名称
 		aiReady: false, //记录AI的链接状态,
 		sureJobName: "",
-		sureJobId: ""
+		sureJobId: "",
+		hangUpFirst: false //是否主动挂断电话
 	},
 	mutations: {
+		setHangUpFirst(state) {
+			state.hangUpFirst = true
+		},
+		resetHangUpFirst(state) {
+			state.hangUpFirst = false
+		},
 		setJobName(state, name) {
 			state.sureJobName = name
 		},

@@ -214,12 +214,13 @@
 		},
 		computed: {
 			...mapState(["answering", "connected", "connecting", "canSend", "inChannel", "answerContinue", "channelQaLen",
-				"channelId", "channelQaList", "location", "token", "callContent", "incallEnroll", "incallJobId"
+				"channelId", "channelQaList", "location", "token", "callContent", "incallEnroll", "incallJobId",
+				"hangUpFirst"
 			])
 		},
 		methods: {
 			...mapMutations(["setInCall", "clearCallContent", "setAiSpeekingEnd", "resetAiSpeekingEnd",
-				"resetIncallEnroll", "resetIncallJobId"
+				"resetIncallEnroll", "resetIncallJobId", "resetHangUpFirst"
 			]),
 			handleAutoAction() {
 				// 处理我要报名和我要面试，由AI说第一句话
@@ -618,7 +619,13 @@
 							_this.aiThrinking = true
 							_this.handleAutoAction()
 						} else {
-							_this.startRecord()
+							if (_this.hangUpFirst) {
+								//主动挂断电话
+								_this.resetHangUpFirst()
+								_this.close()
+							} else {
+								_this.startRecord()
+							}
 						}
 
 

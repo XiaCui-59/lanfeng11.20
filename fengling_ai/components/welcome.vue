@@ -74,9 +74,10 @@
 		</view>
 		<myModal ref="myModal">
 		</myModal>
-		<view class="new_user_steps" :style="{paddingTop:top+'px',paddingBottom:bottom+'px'}">
-			<view class="top_wrap" v-show="currentStep == 3">
-				<view class="banner">
+		<view class="new_user_steps" v-show="showUserStep" :style="{paddingTop:top+'px',paddingBottom:bottom+'px'}"
+			@click="nextStep">
+			<view class="top_wrap">
+				<view class="banner" :style="{opacity:currentStep == 1?1:0}">
 					<view class="ban_top">
 						<view class="tit">{{currentPlay.project_name}}</view>
 						<view class="salary flex flex-start">
@@ -103,24 +104,50 @@
 						<image :src="imgUrl+'/worker/new/ic_heart.png'" mode="widthFix"></image>
 						<text>立即报名</text>
 					</view>
+					<view class="step_tips">
+						<view class="step_line" style="text-align: right;padding-right: 80rpx;">
+							<image :src="imgUrl+'/worker/new/step_line.png'" mode="widthFix"></image>
+						</view>
+						<view class="step_top">
+							<view class="step_tit">点击“立即报名”，了解当前播报工作详情</view>
+							<view class="step_text flex flex_btween">
+								<view class="text">听语音播报，好工作不容错过</view>
+								<view class="step_btn">下一步</view>
+							</view>
+						</view>
+						<view class="ai_avatar">
+							<image :src="imgUrl+'/worker/new/step_ai_logo.png'" mode="widthFix"></image>
+						</view>
+					</view>
 				</view>
-				<view class="tips_wrap flex flex_btween">
+				<view class="tips_wrap flex flex_btween" :style="{opacity:currentStep == 2?1:0}">
 					<view class="tip_list">
-						<view class="item" v-for="(item,index) in currentPlay.may_ask" :key="index">
-							<view class="text">{{item}}</view>
+						<view class="item" v-for="(item,index) in currentPlay.may_ask" :key="index"
+							:style="{marginBottom:index==2?0:'16rpx'}">
+							<view class="text" style="background:#fff;">{{item}}</view>
 						</view>
 					</view>
 					<view class="change">下一个&gt;</view>
+					<view class="step_tips" style="top:auto;top:100%;bottom:auto;">
+						<view class="step_line" style="padding-left: 80rpx;">
+							<image :src="imgUrl+'/worker/new/step_line.png'" mode="widthFix"></image>
+						</view>
+						<view class="step_top">
+							<view class="step_tit">点击这里，可能会有您想问的问题哟</view>
+							<view class="step_text flex flex_btween">
+								<view class="text">深入了解当前播报职位信息</view>
+								<view class="step_btn">下一步</view>
+							</view>
+						</view>
+						<view class="ai_avatar" style="top:auto;bottom:-60rpx;">
+							<image :src="imgUrl+'/worker/new/step_ai_logo.png'" mode="widthFix"></image>
+						</view>
+					</view>
 				</view>
 			</view>
 			<view class="iwant_wrap" :style="{bottom:bottom+10+'px'}">
-				<view class="img flex flex_btween">
-					<image :src="imgUrl+'/worker/new/iwant_slogan.png'" mode="widthFix"></image>
-					<image :src="imgUrl+'/worker/new/ic_telephone.png'" mode="widthFix" style="width: 77rpx;"
-						v-show="currentStep == 4"></image>
-				</view>
 				<view class="iwant_list flex flex_btween">
-					<view class="iwant_item flex flex_btween" v-show="currentStep == 1">
+					<view class="iwant_item flex flex_btween" :style="{opacity:currentStep == 3?1:0}">
 						<view class="iwant_tips">
 							<view class="tit">我要找工作</view>
 							<view class="tips_list">
@@ -133,18 +160,24 @@
 						</view>
 						<view class="step_tips">
 							<view class="step_top">
-								<view class="step_tit">点击“我要找工作”，快速推进高薪工作</view>
+								<view class="step_tit">点击“我要找工作”，快速入职合适工作</view>
 								<view class="step_text flex flex_btween">
-									<view class="text">优质工作，一键快速推荐</view>
+									<view class="text">优质工作，我最懂你</view>
 									<view class="step_btn">下一步</view>
 								</view>
 							</view>
 							<view class="step_line">
 								<image :src="imgUrl+'/worker/new/step_line.png'" mode="widthFix"></image>
 							</view>
+							<view class="ai_avatar">
+								<image :src="imgUrl+'/worker/new/step_ai_logo.png'" mode="widthFix"></image>
+							</view>
+						</view>
+						<view class="step_hand" style="bottom:-80rpx;right:-60rpx;">
+							<image :src="imgUrl+'/worker/new/step_hand.png'" mode="widthFix"></image>
 						</view>
 					</view>
-					<view class="iwant_item flex flex_btween" v-show="currentStep == 2">
+					<view class="iwant_item flex flex_btween" :style="{opacity:currentStep == 4?1:0}">
 						<view class="iwant_tips">
 							<view class="tit">我要去面试</view>
 							<view class="tips_list">
@@ -155,7 +188,88 @@
 						<view class="icon">
 							<image :src="imgUrl+'/worker/new/iwant01.png'" mode="widthFix"></image>
 						</view>
+						<view class="step_tips" :style="{left:'auto',right:0}">
+							<view class="step_top">
+								<view class="step_tit">点击“我要去面试”，心仪工作马上面试</view>
+								<view class="step_text flex flex_btween">
+									<view class="text">线上面试，无需奔波</view>
+									<view class="step_btn">下一步</view>
+								</view>
+							</view>
+							<view class="step_line" style="text-align: right;padding-right: 100rpx;">
+								<image :src="imgUrl+'/worker/new/step_line.png'" mode="widthFix"></image>
+							</view>
+							<view class="ai_avatar">
+								<image :src="imgUrl+'/worker/new/step_ai_logo.png'" mode="widthFix"></image>
+							</view>
+						</view>
+						<view class="step_hand" style="bottom:-80rpx;left:50%;transform: translateX(-40%);">
+							<image :src="imgUrl+'/worker/new/step_hand.png'" mode="widthFix"></image>
+						</view>
 					</view>
+				</view>
+			</view>
+			<view class="input_btn_wrap" style="bottom:65rpx;"
+				:style="{background:currentStep == 5?'transparent':'#fff',opacity:(currentStep == 5 || currentStep == 6)?1:0}">
+
+				<view class="fl_icon" :style="{opacity:(currentStep == 5 || currentStep == 6)?1:0}">
+					<image :src="imgUrl+'/worker/new/ic_fengling.png'"></image>
+				</view>
+				<view :style="{opacity:currentStep == 6?1:0}">
+					<view class="voice_btn_wrap">按住 说话</view>
+				</view>
+				<view class="func_icon" :style="{opacity:currentStep == 6?1:0}">
+					<image :src="imgUrl+'/worker/ic_keyboard_blue.png'">
+					</image>
+				</view>
+				<view class="step_tips" style="width:80%;left:50%;transform: translateX(-50%);"
+					:style="{opacity:currentStep == 6?1:0}">
+					<view class="step_top">
+						<view class="step_tit">您还可以用语音这样说~</view>
+						<view class="step_text">
+							<view class="text" style="font-size: 27rpx;line-height: 48rpx;">—“有没有适合我的工作呢？”</view>
+							<view class="text" style="font-size: 27rpx;line-height: 48rpx;">—“想找个近点的工作，轻松一点的？”</view>
+							<view class="text" style="font-size: 27rpx;line-height: 48rpx;">—“我想找个长白班的工作，最好包吃住。”</view>
+							<view class="flex flex_end" style="margin-top: 20rpx;">
+								<view class="step_btn">下一步</view>
+							</view>
+						</view>
+					</view>
+					<view class="step_line">
+						<image :src="imgUrl+'/worker/new/step_line.png'" mode="widthFix"></image>
+					</view>
+					<view class="ai_avatar">
+						<image :src="imgUrl+'/worker/new/step_ai_logo.png'" mode="widthFix"></image>
+					</view>
+				</view>
+				<view class="step_tips" style="width:85%;left:0;" :style="{opacity:currentStep == 5?1:0}">
+					<view class="step_top">
+						<view class="step_tit">点击"风铃"图标，查看更多热招工作</view>
+						<view class="step_text flex flex_btween" style="align-items:flex-end;">
+							<view class="list">
+								<view class="text flex" style="margin-top:0;">
+									<view>新津区域宁德时代招聘</view>
+								</view>
+								<view class="text flex">
+									<view>新津-事丰医疗厂</view>
+								</view>
+								<view class="text flex">
+									<view>崇州大东鞋厂长白班</view>
+								</view>
+								<view class="text" style="font-size: 19rpx;color: #FFFFFF;">提示：以上为示例职位，仅供参考</view>
+							</view>
+							<view class="step_btn">下一步</view>
+						</view>
+					</view>
+					<view class="step_line" style="padding-left: 40rpx;">
+						<image :src="imgUrl+'/worker/new/step_line.png'" mode="widthFix"></image>
+					</view>
+					<view class="ai_avatar">
+						<image :src="imgUrl+'/worker/new/step_ai_logo.png'" mode="widthFix"></image>
+					</view>
+				</view>
+				<view class="step_hand" style="bottom:-80rpx;" :style="{left:currentStep==5?'52rpx':'75%'}">
+					<image :src="imgUrl+'/worker/new/step_hand.png'" mode="widthFix"></image>
 				</view>
 			</view>
 		</view>
@@ -207,6 +321,7 @@
 				mayAskCount: 0, //记录mayAsk异常重连次数,
 				bannerImageInfo: null,
 				bannerHeight: 0,
+				showUserStep: false,
 				currentStep: 1
 			};
 		},
@@ -229,7 +344,11 @@
 					this.playFirst()
 				}
 			});
-
+			let readStep = uni.getStorageSync("readsteps") ? uni.getStorageSync("readsteps") : ""
+			if (!readStep) {
+				// 未阅读过新手指引
+				this.showUserStep = true
+			}
 		},
 		watch: {
 			animationActive(newVal) {
@@ -279,6 +398,16 @@
 					job_id: type == "surejob" ? this.currentPlay.project_id : ""
 				}
 				this.$emit("tocall", obj)
+			},
+			nextStep() {
+				if (this.currentStep < 6) {
+					this.currentStep++
+				} else {
+					this.showUserStep = false
+					// 存储已阅读新手指引状态
+					uni.setStorageSync("readsteps", 1)
+					this.playWelcome()
+				}
 			},
 			changeNext() {
 				let len = this.recommendList.length
@@ -393,7 +522,10 @@
 						this.currentPlay = res.data.list[0]
 						this.recommendList = res.data.list
 						this.getMayAsk()
-						this.playWelcome()
+						if (!this.showUserStep) {
+							this.playWelcome()
+						}
+
 					} else {
 						this.$refs.myModal.showModal({
 							title: "暂无推荐职位信息",
@@ -479,6 +611,7 @@
 		.tips_wrap {
 			margin-top: 20rpx;
 			align-items: flex-start;
+			position: relative;
 
 			.change {
 				margin-top: 10rpx;
@@ -701,6 +834,16 @@
 		padding: 0 28rpx;
 		box-sizing: border-box;
 
+		.step_hand {
+			font-size: 0;
+			position: absolute;
+			z-index: 200;
+
+			image {
+				width: 120rpx;
+			}
+		}
+
 		&.new_user_steps {
 			position: fixed;
 			top: 0;
@@ -710,65 +853,120 @@
 			z-index: 1000;
 			background: rgba(0, 0, 0, 0.60);
 
+			.step_tips {
+				position: absolute;
+				bottom: 100%;
+				left: 0;
+
+				.step_top {
+					background: linear-gradient(131deg, #DDB2DA 0%, #3C95ED 51%, #B3E7FC 100%);
+					padding: 40rpx 18rpx 40rpx 18rpx;
+					box-sizing: border-box;
+					border-radius: 14rpx;
+
+					.step_tit {
+						font-weight: 600;
+						font-size: 31rpx;
+						color: #FFFFFF;
+						line-height: 42rpx;
+						white-space: nowrap;
+					}
+
+					.step_text {
+						margin-top: 20rpx;
+
+						.text {
+							font-weight: 400;
+							font-size: 23rpx;
+							color: rgba(255, 255, 255, 0.6);
+							line-height: 33rpx;
+						}
+
+						.step_btn {
+							width: 154rpx;
+							height: 46rpx;
+							background: #FFFFFF;
+							border-radius: 23rpx;
+							font-weight: 400;
+							font-size: 23rpx;
+							color: #216FF9;
+							line-height: 46rpx;
+							text-align: center;
+						}
+
+						.list {
+							.text {
+								margin-top: 10rpx;
+
+
+								view {
+									padding: 0 25rpx;
+									box-sizing: border-box;
+									height: 46rpx;
+									line-height: 46rpx;
+									background: rgba(255, 255, 255, 0.3);
+									border-radius: 23rpx;
+									border: 1rpx solid rgba(255, 255, 255, 0.6);
+									font-size: 23rpx;
+									color: #FFFFFF;
+
+								}
+
+							}
+						}
+					}
+				}
+
+				.step_line {
+					padding-left: 100rpx;
+					font-size: 0;
+
+					image {
+						width: 30rpx;
+					}
+				}
+
+				.ai_avatar {
+					font-size: 0;
+					position: absolute;
+					top: -60rpx;
+					left: 0;
+					bottom: auto;
+					z-index: 200;
+
+					image {
+						width: 120rpx;
+					}
+
+				}
+			}
+
+			.banner {
+				.step_tips {
+					bottom: auto;
+					top: 100%;
+					left: auto;
+					right: 0;
+
+					.ai_avatar {
+						font-size: 0;
+						position: absolute;
+						top: auto;
+						bottom: -60rpx;
+						left: 0;
+
+						image {
+							width: 120rpx;
+						}
+
+					}
+				}
+			}
+
 			.iwant_wrap {
 				.iwant_list {
 					.iwant_item {
 						position: relative;
-
-						.step_tips {
-							position: absolute;
-							bottom: 100%;
-							left: 0;
-
-							.step_top {
-								background: linear-gradient(131deg, #DDB2DA 0%, #3C95ED 51%, #B3E7FC 100%);
-								padding: 28rpx 18rpx 40rpx 18rpx;
-								box-sizing: border-box;
-								border-radius: 14rpx;
-
-								.step_tit {
-									font-weight: 600;
-									font-size: 31rpx;
-									color: #FFFFFF;
-									line-height: 42rpx;
-									white-space: nowrap;
-								}
-
-								.step_text {
-									margin-top: 20rpx;
-
-									.text {
-										font-weight: 400;
-										font-size: 23rpx;
-										color: rgba(255, 255, 255, 0.6);
-										line-height: 33rpx;
-									}
-
-									.step_btn {
-										width: 154rpx;
-										height: 46rpx;
-										background: #FFFFFF;
-										border-radius: 23rpx;
-										font-weight: 400;
-										font-size: 23rpx;
-										color: #216FF9;
-										line-height: 46rpx;
-										text-align: center;
-									}
-								}
-							}
-
-							.step_line {
-								padding-left: 100rpx;
-								font-size: 0;
-
-								image {
-									width: 30rpx;
-								}
-							}
-
-
-						}
 					}
 				}
 			}

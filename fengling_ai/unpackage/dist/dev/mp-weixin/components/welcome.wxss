@@ -36,6 +36,7 @@ image {
 .top_wrap .tips_wrap {
   margin-top: 20rpx;
   align-items: flex-start;
+  position: relative;
 }
 .top_wrap .tips_wrap .change {
   margin-top: 10rpx;
@@ -214,6 +215,16 @@ image {
   padding: 0 28rpx;
   box-sizing: border-box;
 }
+.content_body .step_hand,
+.new_user_steps .step_hand {
+  font-size: 0;
+  position: absolute;
+  z-index: 200;
+}
+.content_body .step_hand image,
+.new_user_steps .step_hand image {
+  width: 120rpx;
+}
 .content_body.new_user_steps,
 .new_user_steps.new_user_steps {
   position: fixed;
@@ -224,44 +235,40 @@ image {
   z-index: 1000;
   background: rgba(0, 0, 0, 0.6);
 }
-.content_body.new_user_steps .iwant_wrap .iwant_list .iwant_item,
-.new_user_steps.new_user_steps .iwant_wrap .iwant_list .iwant_item {
-  position: relative;
-}
-.content_body.new_user_steps .iwant_wrap .iwant_list .iwant_item .step_tips,
-.new_user_steps.new_user_steps .iwant_wrap .iwant_list .iwant_item .step_tips {
+.content_body.new_user_steps .step_tips,
+.new_user_steps.new_user_steps .step_tips {
   position: absolute;
   bottom: 100%;
   left: 0;
 }
-.content_body.new_user_steps .iwant_wrap .iwant_list .iwant_item .step_tips .step_top,
-.new_user_steps.new_user_steps .iwant_wrap .iwant_list .iwant_item .step_tips .step_top {
+.content_body.new_user_steps .step_tips .step_top,
+.new_user_steps.new_user_steps .step_tips .step_top {
   background: linear-gradient(131deg, #DDB2DA 0%, #3C95ED 51%, #B3E7FC 100%);
-  padding: 28rpx 18rpx 40rpx 18rpx;
+  padding: 40rpx 18rpx 40rpx 18rpx;
   box-sizing: border-box;
   border-radius: 14rpx;
 }
-.content_body.new_user_steps .iwant_wrap .iwant_list .iwant_item .step_tips .step_top .step_tit,
-.new_user_steps.new_user_steps .iwant_wrap .iwant_list .iwant_item .step_tips .step_top .step_tit {
+.content_body.new_user_steps .step_tips .step_top .step_tit,
+.new_user_steps.new_user_steps .step_tips .step_top .step_tit {
   font-weight: 600;
   font-size: 31rpx;
   color: #FFFFFF;
   line-height: 42rpx;
   white-space: nowrap;
 }
-.content_body.new_user_steps .iwant_wrap .iwant_list .iwant_item .step_tips .step_top .step_text,
-.new_user_steps.new_user_steps .iwant_wrap .iwant_list .iwant_item .step_tips .step_top .step_text {
+.content_body.new_user_steps .step_tips .step_top .step_text,
+.new_user_steps.new_user_steps .step_tips .step_top .step_text {
   margin-top: 20rpx;
 }
-.content_body.new_user_steps .iwant_wrap .iwant_list .iwant_item .step_tips .step_top .step_text .text,
-.new_user_steps.new_user_steps .iwant_wrap .iwant_list .iwant_item .step_tips .step_top .step_text .text {
+.content_body.new_user_steps .step_tips .step_top .step_text .text,
+.new_user_steps.new_user_steps .step_tips .step_top .step_text .text {
   font-weight: 400;
   font-size: 23rpx;
   color: rgba(255, 255, 255, 0.6);
   line-height: 33rpx;
 }
-.content_body.new_user_steps .iwant_wrap .iwant_list .iwant_item .step_tips .step_top .step_text .step_btn,
-.new_user_steps.new_user_steps .iwant_wrap .iwant_list .iwant_item .step_tips .step_top .step_text .step_btn {
+.content_body.new_user_steps .step_tips .step_top .step_text .step_btn,
+.new_user_steps.new_user_steps .step_tips .step_top .step_text .step_btn {
   width: 154rpx;
   height: 46rpx;
   background: #FFFFFF;
@@ -272,14 +279,66 @@ image {
   line-height: 46rpx;
   text-align: center;
 }
-.content_body.new_user_steps .iwant_wrap .iwant_list .iwant_item .step_tips .step_line,
-.new_user_steps.new_user_steps .iwant_wrap .iwant_list .iwant_item .step_tips .step_line {
+.content_body.new_user_steps .step_tips .step_top .step_text .list .text,
+.new_user_steps.new_user_steps .step_tips .step_top .step_text .list .text {
+  margin-top: 10rpx;
+}
+.content_body.new_user_steps .step_tips .step_top .step_text .list .text view,
+.new_user_steps.new_user_steps .step_tips .step_top .step_text .list .text view {
+  padding: 0 25rpx;
+  box-sizing: border-box;
+  height: 46rpx;
+  line-height: 46rpx;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 23rpx;
+  border: 1rpx solid rgba(255, 255, 255, 0.6);
+  font-size: 23rpx;
+  color: #FFFFFF;
+}
+.content_body.new_user_steps .step_tips .step_line,
+.new_user_steps.new_user_steps .step_tips .step_line {
   padding-left: 100rpx;
   font-size: 0;
 }
-.content_body.new_user_steps .iwant_wrap .iwant_list .iwant_item .step_tips .step_line image,
-.new_user_steps.new_user_steps .iwant_wrap .iwant_list .iwant_item .step_tips .step_line image {
+.content_body.new_user_steps .step_tips .step_line image,
+.new_user_steps.new_user_steps .step_tips .step_line image {
   width: 30rpx;
+}
+.content_body.new_user_steps .step_tips .ai_avatar,
+.new_user_steps.new_user_steps .step_tips .ai_avatar {
+  font-size: 0;
+  position: absolute;
+  top: -60rpx;
+  left: 0;
+  bottom: auto;
+  z-index: 200;
+}
+.content_body.new_user_steps .step_tips .ai_avatar image,
+.new_user_steps.new_user_steps .step_tips .ai_avatar image {
+  width: 120rpx;
+}
+.content_body.new_user_steps .banner .step_tips,
+.new_user_steps.new_user_steps .banner .step_tips {
+  bottom: auto;
+  top: 100%;
+  left: auto;
+  right: 0;
+}
+.content_body.new_user_steps .banner .step_tips .ai_avatar,
+.new_user_steps.new_user_steps .banner .step_tips .ai_avatar {
+  font-size: 0;
+  position: absolute;
+  top: auto;
+  bottom: -60rpx;
+  left: 0;
+}
+.content_body.new_user_steps .banner .step_tips .ai_avatar image,
+.new_user_steps.new_user_steps .banner .step_tips .ai_avatar image {
+  width: 120rpx;
+}
+.content_body.new_user_steps .iwant_wrap .iwant_list .iwant_item,
+.new_user_steps.new_user_steps .iwant_wrap .iwant_list .iwant_item {
+  position: relative;
 }
 .content_body .greeting,
 .new_user_steps .greeting {
