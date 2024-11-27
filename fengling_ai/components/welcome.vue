@@ -112,7 +112,7 @@
 							<view class="step_tit">点击“立即报名”，了解当前播报工作详情</view>
 							<view class="step_text flex flex_btween">
 								<view class="text">听语音播报，好工作不容错过</view>
-								<view class="step_btn">下一步</view>
+								<view class="step_btn">下一步(6/1)</view>
 							</view>
 						</view>
 						<view class="ai_avatar">
@@ -136,7 +136,7 @@
 							<view class="step_tit">点击这里，可能会有您想问的问题哟</view>
 							<view class="step_text flex flex_btween">
 								<view class="text">深入了解当前播报职位信息</view>
-								<view class="step_btn">下一步</view>
+								<view class="step_btn">下一步(6/2)</view>
 							</view>
 						</view>
 						<view class="ai_avatar" style="top:auto;bottom:-60rpx;">
@@ -163,7 +163,7 @@
 								<view class="step_tit">点击“我要找工作”，快速入职合适工作</view>
 								<view class="step_text flex flex_btween">
 									<view class="text">优质工作，我最懂你</view>
-									<view class="step_btn">下一步</view>
+									<view class="step_btn">下一步(6/3)</view>
 								</view>
 							</view>
 							<view class="step_line">
@@ -193,7 +193,7 @@
 								<view class="step_tit">点击“我要去面试”，心仪工作马上面试</view>
 								<view class="step_text flex flex_btween">
 									<view class="text">线上面试，无需奔波</view>
-									<view class="step_btn">下一步</view>
+									<view class="step_btn">下一步(6/4)</view>
 								</view>
 							</view>
 							<view class="step_line" style="text-align: right;padding-right: 100rpx;">
@@ -231,7 +231,7 @@
 							<view class="text" style="font-size: 27rpx;line-height: 48rpx;">—“想找个近点的工作，轻松一点的？”</view>
 							<view class="text" style="font-size: 27rpx;line-height: 48rpx;">—“我想找个长白班的工作，最好包吃住。”</view>
 							<view class="flex flex_end" style="margin-top: 20rpx;">
-								<view class="step_btn">下一步</view>
+								<view class="step_btn">完成(6/6)</view>
 							</view>
 						</view>
 					</view>
@@ -258,7 +258,7 @@
 								</view>
 								<view class="text" style="font-size: 19rpx;color: #FFFFFF;">提示：以上为示例职位，仅供参考</view>
 							</view>
-							<view class="step_btn">下一步</view>
+							<view class="step_btn">下一步(6/5)</view>
 						</view>
 					</view>
 					<view class="step_line" style="padding-left: 40rpx;">

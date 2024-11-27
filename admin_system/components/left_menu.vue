@@ -194,34 +194,6 @@
 							text: "邀请列表"
 						}]
 					},
-					// {
-					// 	pid: 0,
-					// 	id: 16,
-					// 	pageName: "plan",
-					// 	icon: "/static/ic_plan.png",
-					// 	selectIcon: "/static/ic_plan.png",
-					// 	text: "运营中心",
-					// 	showSub: false,
-					// 	subList: [{
-					// 			pid: 16,
-					// 			id: 18,
-					// 			pageName: "live_data_list",
-					// 			text: "直播数据"
-					// 		},
-					// 		{
-					// 			pid: 16,
-					// 			id: 18,
-					// 			pageName: "live_list",
-					// 			text: "直播账号"
-					// 		},
-					// 		{
-					// 			pid: 16,
-					// 			id: 18,
-					// 			pageName: "anchor_list",
-					// 			text: "主播列表"
-					// 		}
-					// 	]
-					// },
 					{
 						pid: 0,
 						id: 17,
@@ -248,15 +220,37 @@
 								id: 20,
 								pageName: "chat_statistics",
 								text: "会话统计"
-							},
-							{
-								pid: 17,
-								id: 21,
-								pageName: "recom_position",
-								text: "小程序职位推荐"
 							}
 						]
-					}
+					},
+					{
+						pid: 0,
+						id: 16,
+						pageName: "setting",
+						icon: "/static/ic_plan.png",
+						selectIcon: "/static/ic_plan.png",
+						text: "小程序配置",
+						showSub: false,
+						subList: [{
+								pid: 16,
+								id: 21,
+								pageName: "recom_position",
+								text: "播报推荐"
+							},
+							{
+								pid: 16,
+								id: 22,
+								pageName: "hot_position",
+								text: "热招推荐"
+							},
+							{
+								pid: 16,
+								id: 23,
+								pageName: "pay_setting",
+								text: "支付设置"
+							}
+						]
+					},
 				]
 			};
 		},

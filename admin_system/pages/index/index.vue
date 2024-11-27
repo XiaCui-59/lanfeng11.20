@@ -40,7 +40,9 @@
 				<inviteList v-if="pageName == 'invite_list'" @getPageName="getPageName"></inviteList>
 				<channelList v-if="pageName == 'channel_list'" @getPageName="getPageName"></channelList>
 				<recommendPosi v-if="pageName == 'recom_position'" @getPageName="getPageName"></recommendPosi>
+				<hotPosition v-if="pageName == 'hot_position'" @getPageName="getPageName"></hotPosition>
 				<recommendDetail v-if="pageName == 'recom_detail'" @getPageName="getPageName"></recommendDetail>
+				<paySetting v-if="pageName == 'pay_setting'" @getPageName="getPageName"></paySetting>
 			</view>
 		</view>
 	</view>
@@ -84,6 +86,8 @@
 	import channelList from "@/components/channel_list.vue"
 	import recommendPosi from "@/components/recom_position.vue"
 	import recommendDetail from "@/components/recom_detail.vue"
+	import hotPosition from "@/components/hot_position.vue"
+	import paySetting from "@/components/pay_setting.vue"
 	export default {
 		data() {
 			return {
@@ -132,7 +136,9 @@
 			inviteList,
 			channelList,
 			recommendPosi,
-			recommendDetail
+			recommendDetail,
+			hotPosition,
+			paySetting
 		},
 		onLoad() {
 			// 设置本地存储tabs

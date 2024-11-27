@@ -17,7 +17,8 @@
 			<view class="box" :style="{top:boxTop+'px',background:list.length==0?'#fff':'#F3F3F5'}">
 				<scroll-view :scroll-top="scrollTop" scroll-y="true" class="scroll-Y"
 					:style="{height:scrollHeight+'px'}" @scrolltolower="lower">
-					<view class="item" v-for="(item,index) in list" :key="index" v-if="list.length>0">
+					<view class="item" v-for="(item,index) in list" :key="index" v-if="list.length>0"
+						@click.stop="toWorkerDetail(item)">
 						<view class="item_top">
 							<view class="status_icon">
 								<image :src="imgUrl+ status.filter(el => {return el.value == item.status})[0].icon"
@@ -37,7 +38,7 @@
 								<view class="mid_item"
 									style="font-size: 0;display: flex;justify-content: space-around;">
 									<image :src="imgUrl+'/broker/phone_icon.png'" mode="widthFix"
-										@click="makePhoneCall(item.worker_mobile)"></image>
+										@click.stop="makePhoneCall(item.worker_mobile)"></image>
 								</view>
 							</view>
 
@@ -50,22 +51,22 @@
 							<view class="mid_line">报名时间：{{item.create_time}}</view>
 						</view>
 						<view class="item_bot flex flex_btween">
-							<view class="edit_follow flex flex-start" @click="editFollow(item)"><u-icon
+							<view class="edit_follow flex flex-start" @click.stop="editFollow(item)"><u-icon
 									name="edit-pen-fill" size="22" color="#2ED775"></u-icon>写跟进</view>
 							<view class="line flex flex_end" v-if="item.status == 'wait_check_in'">
-								<view class="opra refuse" @click="checkIn(item,false)">拒绝</view>
-								<view class="opra pass" @click="checkIn(item,true)">接收</view>
+								<view class="opra refuse" @click.stop="checkIn(item,false)">拒绝</view>
+								<view class="opra pass" @click.stop="checkIn(item,true)">接收</view>
 							</view>
 							<view class="line flex flex_end" v-if="item.status == 'check_in'">
-								<view class="opra refuse" @click="toSign(item,false)">不通过</view>
-								<view class="opra pass" @click="toSign(item,true)">面试通过</view>
+								<view class="opra refuse" @click.stop="toSign(item,false)">不通过</view>
+								<view class="opra pass" @click.stop="toSign(item,true)">面试通过</view>
 							</view>
 							<view class="line flex flex_end" v-if="item.status == 'wait_entry'">
-								<view class="opra refuse" @click="toEntry(item,false)">未入职</view>
-								<view class="opra pass" @click="toEntry(item,true)">确认入职</view>
+								<view class="opra refuse" @click.stop="toEntry(item,false)">未入职</view>
+								<view class="opra pass" @click.stop="toEntry(item,true)">确认入职</view>
 							</view>
 							<view class="line flex flex_end" v-if="item.status == 'entry'">
-								<view class="opra pass" @click="depart(item)">离职</view>
+								<view class="opra pass" @click.stop="depart(item)">离职</view>
 							</view>
 						</view>
 
@@ -381,6 +382,12 @@
 
 		},
 		methods: {
+			toWorkerDetail(item) {
+				let str = encodeURIComponent(JSON.stringify(item))
+				uni.navigateTo({
+					url: "/subpkg/worker_detail/worker_detail?worker_info=" + str
+				})
+			},
 			getElementInfo(className) {
 				let _this = this
 				return new Promise((resolve) => {

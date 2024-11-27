@@ -6,7 +6,7 @@
 				<searchBox :showChannelStatus="true" :showRange="true" :seleStatus="channelStatusValue"
 					:searStart="searStart" :searEnd="searEnd" timeStr="生成" @handleSearch="handleSearch">
 				</searchBox>
-				<view class="btn" @click="openAdd" style="margin-bottom: 15px;">创建推荐</view>
+				<view class="btn" @click="openAdd" style="margin-bottom: 15px;">新增</view>
 			</view>
 
 			<view class="table_wrap">
@@ -52,7 +52,7 @@
 		</view>
 		<view class="mask" v-if="showMask">
 			<view class="inner" v-if="showAdd" style="width:80%;max-height: 800px;">
-				<view class="title">创建推荐记录</view>
+				<view class="title">新增</view>
 				<view class="close" @click="close">
 					<image src="/static/close_white.png" mode="widthFix"></image>
 				</view>
@@ -71,7 +71,7 @@
 								<uni-table border stripe emptyText="暂无更多数据">
 									<uni-tr>
 										<uni-th align="center">职位id</uni-th>
-										<uni-th align="center">职位内容</uni-th>
+										<uni-th align="center">职位名称</uni-th>
 										<uni-th align="center">创建时间</uni-th>
 										<uni-th align="center">操作</uni-th>
 									</uni-tr>
@@ -108,7 +108,7 @@
 								<uni-table border stripe emptyText="暂无更多数据">
 									<uni-tr>
 										<uni-th align="center">职位id</uni-th>
-										<uni-th align="center">职位内容</uni-th>
+										<uni-th align="center">职位名称</uni-th>
 										<uni-th align="center">创建时间</uni-th>
 										<uni-th align="center">操作</uni-th>
 									</uni-tr>

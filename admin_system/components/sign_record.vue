@@ -351,10 +351,43 @@
 						<view class="tab" :class="currentSubTab==2?'active':''" @click="changeSubTab(2)">跟进记录</view>
 					</view>
 					<view class="report" v-if="currentSubTab==0">
-						<view class="report_item">
-							<view class="tit">候选匹配度</view>
-							<rich-text :nodes="currentMatch.candidateMatchScore"></rich-text>
-						</view>
+						<scroll-view scroll-y="true" style="height: 500px;">
+							<view class="report_item">
+								<view class="tit">候选匹配度</view>
+								<rich-text :nodes="currentMatch.candidateMatchScore"></rich-text>
+							</view>
+							<view class="report_item">
+								<view class="tit">工作经验</view>
+								<rich-text :nodes="currentMatch.candidateMatchScore"></rich-text>
+							</view>
+							<view class="report_item">
+								<view class="tit">聊天记录摘要</view>
+								<view class="list">
+									<view class="item flex" v-for="(item,index) in chatSummary" :key="index"
+										:class="item.origin == 'customer'?'from_customer flex-start':'from_system flex_end'"
+										:id="'item'+index">
+										<image src="/static/user_avatar.png" mode="widthFix"
+											v-if="item.origin =='customer'">
+										</image>
+										<view class="line">
+											<view class="item_top flex"
+												:class="item.origin == 'customer'?'flex-start':'flex_end'">
+												<view class="name">
+													{{item.origin=="ai"?item.open_kf_name:(item.origin=="customer"?item.customer_nickname:(item.origin=="receptionist"?item.receptionist_name:"系统事件"))}}
+												</view>
+												<view class="time">{{item.send_time}}</view>
+											</view>
+											<view class="item_bot">
+												<text>{{item.msg_type=="voice"?"（语音）":""}}</text>{{item.content}}
+											</view>
+										</view>
+										<image src="/static/yoyo_avatar.png" mode="widthFix"
+											v-if="item.origin=='ai' || item.origin == 'system_event'"></image>
+									</view>
+								</view>
+							</view>
+						</scroll-view>
+
 					</view>
 					<view class="table_wrap" v-if="currentSubTab==1">
 						<uni-table border stripe emptyText="暂无更多数据">
@@ -1123,6 +1156,77 @@
 
 	.sele_area {
 		width: 100px;
+	}
+
+	.report {
+		.uni-scroll-view-content {
+			display: block;
+		}
+
+		.report_item {
+			margin-bottom: 40px;
+
+			.tit {
+				font-weight: 600;
+				font-size: 15px;
+				margin-bottom: 15px;
+			}
+
+			.list {
+				.item {
+					align-items: start;
+
+					image {
+						width: 35px;
+						height: 35px;
+						border-radius: 50%;
+					}
+
+					&.from_customer {
+						.line {
+							max-width: 70%;
+
+
+							.item_bot {
+								padding: 10px;
+								box-sizing: border-box;
+								border-radius: 10px;
+								// text-align: left;
+								background: #f6f6f6;
+
+							}
+						}
+
+						// float: left;
+
+
+					}
+
+					&.from_system {
+						.line {
+							max-width: 70%;
+							padding: 0 10px;
+							box-sizing: border-box;
+
+							.item_top {
+								text-align: right;
+							}
+
+							.item_bot {
+								padding: 0 10px;
+								box-sizing: border-box;
+								border-radius: 10px;
+								// text-align: left;
+								background: #EBF5FF;
+
+							}
+						}
+
+						// float: right;
+					}
+				}
+			}
+		}
 	}
 
 	.labels {
