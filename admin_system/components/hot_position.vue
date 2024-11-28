@@ -21,7 +21,7 @@
 						<uni-th align="center" style="font-size: 14px;font-weight: 600;color:#333;">操作</uni-th>
 					</uni-tr>
 					<uni-tr v-for="(item,index) in list">
-						<uni-td align="center">{{item.seq_num}}</uni-td>
+						<uni-td align="center">{{index+1+currentCount*(currentPage - 1)}}</uni-td>
 						<uni-td align="center">{{item.project_id }}</uni-td>
 						<uni-td align="center">{{item.project_name?item.project_name:item.project_id}}</uni-td>
 						<uni-td

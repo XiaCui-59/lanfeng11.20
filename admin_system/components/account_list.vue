@@ -16,6 +16,7 @@
 				</view> -->
 				<uni-table border stripe emptyText="暂无更多数据">
 					<uni-tr style="background: #f6f6f6;">
+						<uni-th align="center" style="font-size: 14px;font-weight: 600;color:#333;">序号</uni-th>
 						<uni-th align="center" style="font-size: 14px;font-weight: 600;color:#333;">姓名</uni-th>
 						<uni-th align="center" style="font-size: 14px;font-weight: 600;color:#333;">身份证号</uni-th>
 						<uni-th align="center" style="font-size: 14px;font-weight: 600;color:#333;">手机号</uni-th>
@@ -28,6 +29,7 @@
 						<uni-th align="center" style="font-size: 14px;font-weight: 600;color:#333;">操作</uni-th>
 					</uni-tr>
 					<uni-tr v-for="(item,index) in list">
+						<uni-td align="center">{{index+1+currentCount*(currentPage - 1)}}</uni-td>
 						<uni-td align="center">{{item.name}}</uni-td>
 						<uni-td align="center">{{item.id_card_number}}</uni-td>
 						<uni-td align="center">{{item.mobile}}</uni-td>
@@ -340,10 +342,11 @@
 </script>
 
 <style lang="scss">
-	.remark{
+	.remark {
 		font-size: 12px;
-		color:#f00;
+		color: #f00;
 	}
+
 	::v-deep {
 		.search_box {
 			margin: 0;

@@ -21,11 +21,12 @@
 						<uni-th align="center" style="font-size: 14px;font-weight: 600;color:#333;">邀请时间</uni-th>
 					</uni-tr>
 					<uni-tr v-for="(item,index) in list" :key="index">
-						<uni-td align="center">
+						<uni-td align="center">{{index+1+currentCount*(currentPage - 1)}}</uni-td>
+						<!-- <uni-td align="center">
 							<view style="cursor: pointer;color:#1E8EEE;" @click="showWorkerDetail(item)">
 								{{item.id}}
 							</view>
-						</uni-td>
+						</uni-td> -->
 						<uni-td align="center">{{item.inviter}}</uni-td>
 						<uni-td align="center">{{item.inviter_mobile}}</uni-td>
 						<uni-td align="center">{{item.invitee}}</uni-td>

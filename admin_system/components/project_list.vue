@@ -16,6 +16,7 @@
 				</view>
 				<uni-table border stripe emptyText="暂无更多数据">
 					<uni-tr style="background: #f6f6f6;">
+						<uni-th align="center" style="font-size: 14px;font-weight: 600;color:#333;">序号</uni-th>
 						<uni-th align="center" style="font-size: 14px;font-weight: 600;color:#333;">职位编号</uni-th>
 						<uni-th align="center" style="font-size: 14px;font-weight: 600;color:#333;">职位名称</uni-th>
 						<uni-th align="center" style="font-size: 14px;font-weight: 600;color:#333;">劳务公司</uni-th>
@@ -33,6 +34,7 @@
 						<uni-th align="center" style="font-size: 14px;font-weight: 600;color:#333;">操作</uni-th>
 					</uni-tr>
 					<uni-tr v-for="(item,index) in list" :key="index">
+						<uni-td align="center">{{index+1+currentCount*(currentPage - 1)}}</uni-td>
 						<uni-td align="center">{{item.code}}</uni-td>
 						<uni-td align="center">{{item.name}}</uni-td>
 						<uni-td align="center">{{item.broker_company_name}}</uni-td>

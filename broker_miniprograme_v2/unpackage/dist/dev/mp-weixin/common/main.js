@@ -22,12 +22,12 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 wx.__webpack_require_UNI_MP_PLUGIN__ = __webpack_require__;
 var customModal = function customModal() {
   __webpack_require__.e(/*! require.ensure | components/custom_modal */ "components/custom_modal").then((function () {
-    return resolve(__webpack_require__(/*! @/components/custom_modal.vue */ 386));
+    return resolve(__webpack_require__(/*! @/components/custom_modal.vue */ 394));
   }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 };
 var login = function login() {
   __webpack_require__.e(/*! require.ensure | components/login */ "components/login").then((function () {
-    return resolve(__webpack_require__(/*! @/components/login.vue */ 393));
+    return resolve(__webpack_require__(/*! @/components/login.vue */ 401));
   }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 };
 _vue.default.use(_uviewUi.default);

@@ -180,17 +180,17 @@ var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime
 var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 32));
 var infoFirst = function infoFirst() {
   __webpack_require__.e(/*! require.ensure | components/info_first */ "components/info_first").then((function () {
-    return resolve(__webpack_require__(/*! @/components/info_first.vue */ 414));
+    return resolve(__webpack_require__(/*! @/components/info_first.vue */ 422));
   }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 };
 var tabbar = function tabbar() {
   __webpack_require__.e(/*! require.ensure | components/tabbar */ "components/tabbar").then((function () {
-    return resolve(__webpack_require__(/*! @/components/tabbar.vue */ 400));
+    return resolve(__webpack_require__(/*! @/components/tabbar.vue */ 408));
   }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 };
 var customHeader = function customHeader() {
   __webpack_require__.e(/*! require.ensure | components/custom_header */ "components/custom_header").then((function () {
-    return resolve(__webpack_require__(/*! @/components/custom_header.vue */ 407));
+    return resolve(__webpack_require__(/*! @/components/custom_header.vue */ 415));
   }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 };
 var app = getApp();

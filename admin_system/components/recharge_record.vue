@@ -8,6 +8,7 @@
 			<view class="table_wrap">
 				<uni-table border stripe emptyText="暂无更多数据">
 					<uni-tr style="background: #f6f6f6;">
+						<uni-th align="center" style="font-size: 14px;font-weight: 600;color:#333;">序号</uni-th>
 						<uni-th align="center" style="font-size: 14px;font-weight: 600;color:#333;">充值编号</uni-th>
 						<uni-th align="center" style="font-size: 14px;font-weight: 600;color:#333;">劳务公司</uni-th>
 						<uni-th align="center" style="font-size: 14px;font-weight: 600;color:#333;">用户名称</uni-th>
@@ -19,6 +20,7 @@
 						<uni-th align="center" style="font-size: 14px;font-weight: 600;color:#333;">到账时间</uni-th>
 					</uni-tr>
 					<uni-tr v-for="(item,index) in list">
+						<uni-td align="center">{{index+1+currentCount*(currentPage - 1)}}</uni-td>
 						<uni-td align="center">{{item.id}}</uni-td>
 						<uni-td align="center">{{item.company_name}}</uni-td>
 						<uni-td align="center">{{item.broker_name}}</uni-td>

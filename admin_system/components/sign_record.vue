@@ -44,6 +44,7 @@
 								<text>全选</text>
 							</view>
 						</uni-th> -->
+						<uni-th align="center" style="font-size: 14px;font-weight: 600;color:#333;">序号</uni-th>
 						<uni-th align="center" style="font-size: 14px;font-weight: 600;color:#333;">工人姓名</uni-th>
 						<!-- <uni-th align="center" style="font-size: 14px;font-weight: 600;color:#333;">身份证号</uni-th> -->
 						<uni-th align="center" style="font-size: 14px;font-weight: 600;color:#333;">手机号</uni-th>
@@ -69,6 +70,7 @@
 						<uni-th align="center" style="font-size: 14px;font-weight: 600;color:#333;">操作</uni-th>
 					</uni-tr>
 					<uni-tr v-for="(item,index) in list" :key="index">
+						<uni-td align="center">{{index+1+currentCount*(currentPage - 1)}}</uni-td>
 						<!-- <uni-td align="center"
 							v-if="currentTab.value=='enrolled'||currentTab.value=='wait_check_in' || currentTab.value=='check_in'||currentTab.value=='wait_entry'||currentTab.value=='entry'">
 							<image
@@ -354,16 +356,27 @@
 						<scroll-view scroll-y="true" style="height: 500px;">
 							<view class="report_item">
 								<view class="tit">候选匹配度</view>
-								<rich-text :nodes="currentMatch.candidateMatchScore"></rich-text>
+								<view class="list" v-if="currentMatch.candidateMatchScore">
+									<view class="item flex flex-start"
+										v-for="(value,key,index) in JSON.parse(currentMatch.candidateMatchScore)"
+										:key="index" style="line-height: 28px;font-size: 14px;">
+										<view class="text">{{key}}：</view>
+										<view class="text">{{value}}</view>
+									</view>
+								</view>
+								<view v-if="!currentMatch.candidateMatchScore" style="color:#0092ff;font-size: 14px;">
+									暂无数据</view>
+								<!-- <rich-text :nodes="currentMatch.candidateMatchScore"></rich-text> -->
 							</view>
-							<view class="report_item">
+							<!-- <view class="report_item">
 								<view class="tit">工作经验</view>
 								<rich-text :nodes="currentMatch.candidateMatchScore"></rich-text>
-							</view>
+							</view> -->
 							<view class="report_item">
 								<view class="tit">聊天记录摘要</view>
-								<view class="list">
-									<view class="item flex" v-for="(item,index) in chatSummary" :key="index"
+								<view class="list" v-if="currentMatch.chatSummary">
+									<view class="item flex" v-for="(item,index) in currentMatch.chatSummary"
+										:key="index"
 										:class="item.origin == 'customer'?'from_customer flex-start':'from_system flex_end'"
 										:id="'item'+index">
 										<image src="/static/user_avatar.png" mode="widthFix"
@@ -385,6 +398,8 @@
 											v-if="item.origin=='ai' || item.origin == 'system_event'"></image>
 									</view>
 								</view>
+								<view v-if="!currentMatch.chatSummary" style="color:#0092ff;font-size: 14px;">
+									暂无数据</view>
 							</view>
 						</scroll-view>
 
@@ -573,9 +588,9 @@
 				currentCount: 15,
 				searBroker: "",
 				currentMatch: {
-					candidateMatchScore: "",
+					candidateMatchScore: '{"工作内容":"接受工作内容","地点匹配":"可以到岗","时间要求":"适应长白班"}',
 					workExperience: "",
-					chatSummary: []
+					chatSummary: [],
 				}
 				// selectProId: []
 			};
@@ -618,7 +633,8 @@
 		methods: {
 			getStatics() {
 				let url = "/admin/project/signing-requests-status/stats?worker_search=" + this.searEmployee +
-					"&start_time=" + this.searStart + "&end_time=" + this.searEnd + "&project_search=" + this.searPro +
+					"&start_time=" + this.searStart + "&end_time=" + this.searEnd + "&project_search=" + this
+					.searPro +
 					"&company_name=" + this.searBroker
 				this.$request(url).then(res => {
 					if (res.code == 0) {
@@ -659,6 +675,14 @@
 						this.currentInfo = res.data
 						this.showMask = true
 						this.showSecond = true
+					}
+				})
+			},
+			getReport() {
+				let url = "/admin/interview_record/" + this.currentWorkerInfo.id
+				this.$request(url).then(res => {
+					if (res.code == 0) {
+						this.currentMatch = res.data
 					}
 				})
 			},
@@ -725,8 +749,10 @@
 					"Authorization": "bearer " + uni.getStorageSync("token"),
 					"accept": "application/json"
 				}
-				let url = app.globalData.baseUrl + "/admin/project/export/signing-requests?page=" + this.currentPage +
-					"&worker_search=" + this.searEmployee + "&start_time=" + this.searStart + "&end_time=" + this.searEnd +
+				let url = app.globalData.baseUrl + "/admin/project/export/signing-requests?page=" + this
+					.currentPage +
+					"&worker_search=" + this.searEmployee + "&start_time=" + this.searStart + "&end_time=" + this
+					.searEnd +
 					"&page_size=15" + "&project_search=" + this.searPro + "&status=" + this.currentTab.value +
 					"&company_name=" + this.searBroker
 				uni.downloadFile({
@@ -748,6 +774,7 @@
 			},
 			showWorkerDetail(item) {
 				this.currentWorkerInfo = item
+				this.getReport()
 				let url = "/admin/worker/" + item.id + "/infov"
 				this.$request(url).then(res => {
 					if (res.code == 0) {
@@ -796,7 +823,8 @@
 			},
 			getFollowList() {
 
-				let url = "/admin/remarks/" + this.currentWorkerInfo.worker_id + "/" + this.currentWorkerInfo.project_id
+				let url = "/admin/remarks/" + this.currentWorkerInfo.worker_id + "/" + this.currentWorkerInfo
+					.project_id
 				this.$request(url).then(res => {
 					if (res.code == 0) {
 						this.followList = res.data
@@ -847,8 +875,10 @@
 			},
 			getList() {
 				let url = "/admin/project/signing-requests?page=" + this.currentPage +
-					"&worker_search=" + this.searEmployee + "&start_time=" + this.searStart + "&end_time=" + this.searEnd +
-					"&page_size=15" + "&project_search=" + this.searPro + "&page_size=" + this.currentCount + "&status=" +
+					"&worker_search=" + this.searEmployee + "&start_time=" + this.searStart + "&end_time=" + this
+					.searEnd +
+					"&page_size=15" + "&project_search=" + this.searPro + "&page_size=" + this.currentCount +
+					"&status=" +
 					this.currentTab.value + "&company_name=" + this.searBroker
 				this.$request(url).then(res => {
 					if (res.code == 0) {
@@ -1085,18 +1115,19 @@
 								"relation_id": _this.selectedIds, // 已经选择数据ID
 								"project_id": item.project_id, // 职位ID
 							}
-							_this.$request("/admin/project/confirm-depart-user", data, "POST").then(resp => {
-								if (resp.code == 0) {
-									_this.getStatics()
-									_this.resetSeleData()
-									_this.getList()
-									_this.close()
-									uni.showModal({
-										title: "离职办理成功",
-										showCancel: false
-									})
-								}
-							})
+							_this.$request("/admin/project/confirm-depart-user", data, "POST").then(
+								resp => {
+									if (resp.code == 0) {
+										_this.getStatics()
+										_this.resetSeleData()
+										_this.getList()
+										_this.close()
+										uni.showModal({
+											title: "离职办理成功",
+											showCancel: false
+										})
+									}
+								})
 						}
 					}
 				})
@@ -1159,8 +1190,10 @@
 	}
 
 	.report {
-		.uni-scroll-view-content {
-			display: block;
+		::v-deep {
+			.uni-scroll-view-content {
+				display: block;
+			}
 		}
 
 		.report_item {
@@ -1182,16 +1215,22 @@
 						border-radius: 50%;
 					}
 
+					.item_bot {
+						padding: 10px;
+						box-sizing: border-box;
+						border-radius: 10px;
+					}
+
+					.line {
+						max-width: 70%;
+						padding: 0 10px;
+						box-sizing: border-box;
+						margin-bottom: 20px
+					}
+
 					&.from_customer {
 						.line {
-							max-width: 70%;
-
-
 							.item_bot {
-								padding: 10px;
-								box-sizing: border-box;
-								border-radius: 10px;
-								// text-align: left;
 								background: #f6f6f6;
 
 							}
@@ -1204,18 +1243,11 @@
 
 					&.from_system {
 						.line {
-							max-width: 70%;
-							padding: 0 10px;
-							box-sizing: border-box;
-
 							.item_top {
 								text-align: right;
 							}
 
 							.item_bot {
-								padding: 0 10px;
-								box-sizing: border-box;
-								border-radius: 10px;
 								// text-align: left;
 								background: #EBF5FF;
 
@@ -1638,6 +1670,14 @@
 				height: calc(100% - 50px);
 				max-height: calc(100% - 50px);
 				box-sizing: border-box;
+
+				.report {
+					::v-deep {
+						.uni-scroll-view-content {
+							display: block;
+						}
+					}
+				}
 
 				::v-deep {
 					.uni-scroll-view-content {

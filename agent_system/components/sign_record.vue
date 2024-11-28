@@ -230,16 +230,27 @@
 						<scroll-view scroll-y="true" style="height: 500px;">
 							<view class="report_item">
 								<view class="tit">候选匹配度</view>
-								<rich-text :nodes="currentMatch.candidateMatchScore"></rich-text>
+								<view class="list" v-if="currentMatch.candidateMatchScore">
+									<view class="item flex flex-start"
+										v-for="(value,key,index) in JSON.parse(currentMatch.candidateMatchScore)"
+										:key="index" style="line-height: 28px;font-size: 14px;">
+										<view class="text">{{key}}：</view>
+										<view class="text">{{value}}</view>
+									</view>
+								</view>
+								<view v-if="!currentMatch.candidateMatchScore" style="color:#0092ff;font-size: 14px;">
+									暂无数据</view>
+								<!-- <rich-text :nodes="currentMatch.candidateMatchScore"></rich-text> -->
 							</view>
-							<view class="report_item">
+							<!-- <view class="report_item">
 								<view class="tit">工作经验</view>
 								<rich-text :nodes="currentMatch.candidateMatchScore"></rich-text>
-							</view>
+							</view> -->
 							<view class="report_item">
 								<view class="tit">聊天记录摘要</view>
-								<view class="list">
-									<view class="item flex" v-for="(item,index) in chatSummary" :key="index"
+								<view class="list" v-if="currentMatch.chatSummary">
+									<view class="item flex" v-for="(item,index) in currentMatch.chatSummary"
+										:key="index"
 										:class="item.origin == 'customer'?'from_customer flex-start':'from_system flex_end'"
 										:id="'item'+index">
 										<image src="/static/user_avatar.png" mode="widthFix"
@@ -261,6 +272,8 @@
 											v-if="item.origin=='ai' || item.origin == 'system_event'"></image>
 									</view>
 								</view>
+								<view v-if="!currentMatch.chatSummary" style="color:#0092ff;font-size: 14px;">
+									暂无数据</view>
 							</view>
 						</scroll-view>
 
@@ -670,6 +683,7 @@
 			},
 			showWorkerDetail(item) {
 				this.currentWorkerInfo = item
+				this.getReport()
 				let url = "/broker/worker/" + item.id + "/info"
 				this.$request(url).then(res => {
 					if (res.code == 0) {
@@ -777,6 +791,14 @@
 					if (res.code == 0) {
 						this.list = res.data.list
 						this.pagination = res.data.pagination
+					}
+				})
+			},
+			getReport() {
+				let url = "/broker/interview_record/" + this.currentWorkerInfo.id
+				this.$request(url).then(res => {
+					if (res.code == 0) {
+						this.currentMatch = res.data
 					}
 				})
 			},
@@ -1155,8 +1177,10 @@
 	}
 
 	.report {
-		.uni-scroll-view-content {
-			display: block;
+		::v-deep {
+			.uni-scroll-view-content {
+				display: block;
+			}
 		}
 
 		.report_item {
@@ -1178,16 +1202,22 @@
 						border-radius: 50%;
 					}
 
+					.item_bot {
+						padding: 10px;
+						box-sizing: border-box;
+						border-radius: 10px;
+					}
+
+					.line {
+						max-width: 70%;
+						padding: 0 10px;
+						box-sizing: border-box;
+						margin-bottom: 20px
+					}
+
 					&.from_customer {
 						.line {
-							max-width: 70%;
-
-
 							.item_bot {
-								padding: 10px;
-								box-sizing: border-box;
-								border-radius: 10px;
-								// text-align: left;
 								background: #f6f6f6;
 
 							}
@@ -1200,18 +1230,11 @@
 
 					&.from_system {
 						.line {
-							max-width: 70%;
-							padding: 0 10px;
-							box-sizing: border-box;
-
 							.item_top {
 								text-align: right;
 							}
 
 							.item_bot {
-								padding: 0 10px;
-								box-sizing: border-box;
-								border-radius: 10px;
 								// text-align: left;
 								background: #EBF5FF;
 

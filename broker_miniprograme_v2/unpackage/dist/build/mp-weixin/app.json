@@ -32,7 +32,8 @@
         "addmore_project_info/addmore_project_info",
         "edit_my_info/edit_my_info",
         "account/account",
-        "recharge/recharge"
+        "recharge/recharge",
+        "worker_detail/worker_detail"
       ]
     }
   ],

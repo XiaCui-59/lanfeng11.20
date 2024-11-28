@@ -6,21 +6,21 @@
 			<view class="top_area">
 				<view class="base_info">
 					<view class="base_top flex flex-start">
-						<image :src="info.worker_avatar" mode="widthFix"></image>
+						<image :src="workerInfo.worker_avatar" mode="widthFix"></image>
 						<view class="base">
 							<view class="flex flex_btween">
-								<view class="name">{{info.worker_name}}</view>
-								<view class="posi">职位：{{info.project_name}}</view>
+								<view class="name">{{workerInfo.worker_name}}</view>
+								<view class="posi">职位：{{workerInfo.project_name}}</view>
 							</view>
-							<view class="mobile">{{info.worker_mobile}}</view>
+							<view class="mobile">{{workerInfo.worker_mobile}}</view>
 						</view>
 					</view>
 					<view class="base_bot flex flex_around">
-						<view class="text">{{info.worker_gender=="male"?"男":"女"}}</view>
+						<view class="text">{{workerInfo.worker_gender=="male"?"男":"女"}}</view>
 						<view class="line"></view>
-						<view class="text">{{info.worker_nation}}</view>
+						<view class="text">{{workerInfo.worker_nation}}</view>
 						<view class="line"></view>
-						<view class="text">{{info.worker_age+"岁"}}</view>
+						<view class="text">{{workerInfo.worker_age+"岁"}}</view>
 					</view>
 				</view>
 				<view class="tabs flex">
@@ -33,10 +33,11 @@
 				<view class="report" v-show="currentTab == 0">
 					<view class="item">
 						<view class="title">候选匹配度</view>
-						<view class="detail">
-							<view class="text_line flex flex-start">
-								<view class="tit">薪资匹配：</view>
-								<view class="text">符合岗位标准</view>
+						<view class="detail" v-if="currentMatch.candidateMatchScore">
+							<view class="text_line flex flex-start"
+								v-for="(value,key,index) in JSON.parse(currentMatch.candidateMatchScore)" :key="index">
+								<view class="tit">{{key}}：</view>
+								<view class="text">{{value}}</view>
 							</view>
 							<view class="text_line flex flex-start">
 								<view class="tit">薪资匹配：</view>
@@ -47,33 +48,32 @@
 								<view class="text">符合岗位标准</view>
 							</view>
 						</view>
+						<view v-if="!currentMatch.candidateMatchScore" style="color:#0092ff;font-size: 14px;">
+							暂无数据</view>
 					</view>
-					<view class="item">
+					<!-- <view class="item">
 						<view class="title">工作经验</view>
 						<view class="detail">
 							<view class="text">做过2年富士康流水线</view>
 							<view class="text">做过2年富士康流水线</view>
 							<view class="text">做过2年富士康流水线</view>
 						</view>
-					</view>
+					</view> -->
 					<view class="item">
 						<view class="title">聊天记录摘要</view>
-						<view class="detail">
-							<view class="chat_item">
-								<view class="chat_top ai flex flex-start">
-									<view class="origin">AI</view>
-									<view class="time">2024-22-21 15:32:30</view>
+						<view class="detail" v-if="currentMatch.chatSummary">
+							<view class="chat_item" v-for="(item,index) in currentMatch.chatSummary" :key="index">
+								<view class="chat_top flex flex-start" :class="item.origin">
+									<view class="origin">
+										{{item.origin=="ai"?item.open_kf_name:(item.origin=="customer"?item.customer_nickname:(item.origin=="receptionist"?item.receptionist_name:"系统事件"))}}
+									</view>
+									<view class="time">{{item.send_time}}</view>
 								</view>
-								<view class="chat_content">请问您有组装经验吗?</view>
-							</view>
-							<view class="chat_item">
-								<view class="chat_top customer flex flex-start">
-									<view class="origin">AI</view>
-									<view class="time">2024-22-21 15:32:30</view>
-								</view>
-								<view class="chat_content">请问您有组装经验吗?</view>
+								<view class="chat_content">{{item.content}}</view>
 							</view>
 						</view>
+						<view v-if="!currentMatch.chatSummary" style="color:#0092ff;font-size: 14px;">
+							暂无数据</view>
 					</view>
 				</view>
 				<view class="follow" v-show="currentTab == 1" style="min-height: 100%;">
@@ -86,13 +86,6 @@
 							</view>
 						</view>
 					</view>
-					<view class="foll_line follow_item">
-						<view class="follow_cont">跟进记录333333333</view>
-						<view class="follow_time flex flex_btween">
-							<view class="time">2024-22-21 15:32:30</view>
-							<view class="status">待初筛</view>
-						</view>
-					</view>
 				</view>
 			</scroll-view>
 		</view>
@@ -101,39 +94,34 @@
 
 <script>
 	import customHeader from "@/components/custom_header.vue"
+	import commonData from "@/common/commonData"
 	const app = getApp()
 	export default {
 		data() {
 			return {
+				status: commonData.workerStatus,
 				systemHeight: app.globalData.systemHeight,
 				imgUrl: app.globalData.baseImageUrl,
 				pageName: "工人详情",
 				marginTop: app.globalData.marginTop,
 				headerHeight: app.globalData.topHeight,
 				tabMargin: app.globalData.tabMargin,
-				info: {
-					worker_avatar: "",
-					worker_name: "张三张",
-					worker_mobile: "15102130246",
-					worker_gender: "male",
-					worker_age: 30,
-					worker_nation: "汉族",
-					project_name: "股份个人提供股份个人提供"
-				},
 				currentTab: 0,
 				scrollHeight: 0,
 				workerInfo: {
 
 				},
-				followList: []
+				followList: [],
+				currentMatch: {}
 			}
 		},
 		components: {
 			customHeader
 		},
 		async onLoad(param) {
-			// this.info = await this.getInfo()
-			// this.workerInfo = JSON.parse(decodeURIComponent(param.worker_info))
+			this.workerInfo = JSON.parse(decodeURIComponent(param.worker_info))
+			this.getFollowList()
+			this.getReport()
 			this.getScrollHeight()
 		},
 		methods: {
@@ -157,6 +145,14 @@
 				this.$request(url).then(res => {
 					if (res.code == 0) {
 						this.followList = res.data
+					}
+				})
+			},
+			getReport() {
+				let url = "/broker/interview_record/" + this.workerInfo.id
+				this.$request(url).then(res => {
+					if (res.code == 0) {
+						this.currentMatch = res.data
 					}
 				})
 			},
