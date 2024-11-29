@@ -7,7 +7,7 @@
 					<view class="salary flex flex-start">
 						<text>{{currentPlay.worker_salary_max}}</text>
 						<text
-							class="period">元{{period.filter(el=>{return el.value == currentPlay.worker_salary_type})[0].text}}
+							class="period">元{{period.filter(el=>{return el.value == currentPlay.worker_salary_type})[0].text?period.filter(el=>{return el.value == currentPlay.worker_salary_type})[0].text:""}}
 						</text>
 					</view>
 				</view>
@@ -17,14 +17,14 @@
 						{{currentPlay.content}}
 					</scroll-view>
 				</view>
-				<image :src="imgUrl+'/worker/new/banner_ai.png'" mode="widthFix"></image>
+				<image :src="imgUrl+'/worker/new/banner_ai.png'" :lazy-load="true" mode="widthFix"></image>
 				<view class="voice_control" @click.stop="handleAudio">
 					<image :src="imgUrl+'/worker/new/ic_index_voice_muted.png'" mode="heightFix"
 						:style="{display:muted?'inline-block':'none'}"></image>
 					<image :src="imgUrl+'/worker/new/ic_index_voice_play.png'" mode="heightFix"
 						:style="{display:muted?'none':'inline-block'}"></image>
 				</view>
-				<view class="surein" @click.stop="toChat('surejob')">
+				<view class="surein" v-show="showSureJob" @click.stop="toChat('surejob')">
 					<image :src="imgUrl+'/worker/new/ic_heart.png'" mode="widthFix"></image>
 					<text>立即报名</text>
 				</view>
@@ -36,7 +36,7 @@
 						<view class="text">{{item}}</view>
 					</view>
 				</view>
-				<view class="change" @click="changeNext">下一个&gt;</view>
+				<view class="change" @click="changeNext" v-show="showSureJob">下一个&gt;</view>
 			</view>
 		</view>
 		<view class="iwant_wrap" :style="{bottom:bottom+10+'px'}">
@@ -112,7 +112,7 @@
 							<view class="step_tit">点击“立即报名”，了解当前播报工作详情</view>
 							<view class="step_text flex flex_btween">
 								<view class="text">听语音播报，好工作不容错过</view>
-								<view class="step_btn">下一步(6/1)</view>
+								<view class="step_btn">下一步(1/6)</view>
 							</view>
 						</view>
 						<view class="ai_avatar">
@@ -136,7 +136,7 @@
 							<view class="step_tit">点击这里，可能会有您想问的问题哟</view>
 							<view class="step_text flex flex_btween">
 								<view class="text">深入了解当前播报职位信息</view>
-								<view class="step_btn">下一步(6/2)</view>
+								<view class="step_btn">下一步(2/6)</view>
 							</view>
 						</view>
 						<view class="ai_avatar" style="top:auto;bottom:-60rpx;">
@@ -163,7 +163,7 @@
 								<view class="step_tit">点击“我要找工作”，快速入职合适工作</view>
 								<view class="step_text flex flex_btween">
 									<view class="text">优质工作，我最懂你</view>
-									<view class="step_btn">下一步(6/3)</view>
+									<view class="step_btn">下一步(3/6)</view>
 								</view>
 							</view>
 							<view class="step_line">
@@ -193,7 +193,7 @@
 								<view class="step_tit">点击“我要去面试”，心仪工作马上面试</view>
 								<view class="step_text flex flex_btween">
 									<view class="text">线上面试，无需奔波</view>
-									<view class="step_btn">下一步(6/4)</view>
+									<view class="step_btn">下一步(4/6)</view>
 								</view>
 							</view>
 							<view class="step_line" style="text-align: right;padding-right: 100rpx;">
@@ -258,7 +258,7 @@
 								</view>
 								<view class="text" style="font-size: 19rpx;color: #FFFFFF;">提示：以上为示例职位，仅供参考</view>
 							</view>
-							<view class="step_btn">下一步(6/5)</view>
+							<view class="step_btn">下一步(5/6)</view>
 						</view>
 					</view>
 					<view class="step_line" style="padding-left: 40rpx;">
@@ -289,6 +289,7 @@
 		props: ["top", "bottom", "canPlay"],
 		data() {
 			return {
+				showSureJob: false,
 				scrollTop: 0,
 				period: commonData.periodList,
 				current: 0, // 当前激活的swiper-item索引
@@ -322,7 +323,9 @@
 				bannerImageInfo: null,
 				bannerHeight: 0,
 				showUserStep: false,
-				currentStep: 1
+				currentStep: 1,
+				firstEnd: false,
+				isWelcome: true
 			};
 		},
 		computed: {
@@ -332,7 +335,10 @@
 			let _this = this
 			//音频停止事件
 			app.globalData.Audio.onPlay(e => {
-				this.textAnimation()
+				if (!this.isWelcome) {
+					this.textAnimation()
+				}
+
 			});
 
 			//音频停止事件
@@ -341,7 +347,12 @@
 			//音频播放结束事件
 			app.globalData.Audio.onEnded(e => {
 				if (this.canPlay) {
-					this.playFirst()
+					if (this.firstEnd) {
+						this.playNext()
+					} else {
+						this.playFirst()
+					}
+
 				}
 			});
 			let readStep = uni.getStorageSync("readsteps") ? uni.getStorageSync("readsteps") : ""
@@ -425,7 +436,9 @@
 
 			},
 			playFirst() {
-				app.globalData.Audio.stop()
+				this.firstEnd = true
+				this.isWelcome = false
+				// app.globalData.Audio.stop()
 				if (this.canPlay && !this.muted) {
 					this.playAudio()
 				}
@@ -521,6 +534,7 @@
 					if (res.data.list.length > 0) {
 						this.currentPlay = res.data.list[0]
 						this.recommendList = res.data.list
+						this.showSureJob = true
 						this.getMayAsk()
 						if (!this.showUserStep) {
 							this.playWelcome()
@@ -570,7 +584,7 @@
 				if (!this.animationTimer) {
 					this.animationTimer = setInterval(function() {
 						_this.scrollTop += 2
-					}, 500)
+					}, 300)
 				}
 
 			},

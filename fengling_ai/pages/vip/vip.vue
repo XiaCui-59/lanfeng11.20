@@ -87,7 +87,6 @@
 				userInfo: {
 					is_vip: false
 				},
-				canPay: true,
 				imgUrl: app.globalData.baseImageUrl,
 				marginTop: app.globalData.marginTop,
 				tabMargin: app.globalData.tabMargin,
@@ -126,23 +125,6 @@
 			if (this.ifSingle) {
 				return
 			}
-			let systemInfo = uni.getSystemInfoSync()
-			if (systemInfo.osName == "ios") {
-				// 如果是ios系统，调用支付开关
-				this.$request("/ios/status").then(res => {
-					if (res.code == 0) {
-						if (res.data) {
-							this.canPay = true
-						} else {
-							this.canPay = false
-						}
-					} else {
-						this.canPay = false
-					}
-				})
-			} else {
-				this.canPay = true
-			}
 			if (this.fromSingle) {
 				// 单页模式打开小程序，跳转至首页
 				app.globalData.scene = 0
@@ -166,13 +148,26 @@
 					this.showLogin = true
 					return
 				}
-				if (!this.canPay) {
-					this.$refs.myModal.showModal({
-						title: "由于相关规范，iOS成为会员功能暂不可用。",
-						showCancel: false
+				let systemInfo = uni.getSystemInfoSync()
+				if (systemInfo.osName == "ios") {
+					// 如果是ios系统，调用支付开关
+					this.$request("/ios/status").then(res => {
+						if (res.code == 0) {
+							if (!res.data) {
+								this.$refs.myModal.showModal({
+									title: "由于相关规范，iOS成为会员功能暂不可用。",
+									showCancel: false
+								})
+							} else {
+								this.surePay()
+							}
+						}
 					})
-					return
+				} else {
+					this.surePay()
 				}
+			},
+			async surePay() {
 				// 获取订单数据
 				let _this = this
 				let orderId = await this.getOrderId()
@@ -214,7 +209,6 @@
 					}
 
 				})
-
 			},
 			closeLogin() {
 				this.showLogin = false

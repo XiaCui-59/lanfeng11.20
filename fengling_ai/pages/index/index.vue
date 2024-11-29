@@ -58,8 +58,8 @@
 								<image :src="userInfo.avatar.url?userInfo.avatar.url:imgUrl+'/worker/avatar.png'"
 									mode="widthFix"></image>
 								<view class="name flex" :class="userInfo.is_vip?'isvip':'not_vip'">
-									<view class="tit">{{userInfo.name}}</view>
 									<view class="mark" v-if="!userInfo.is_vip">您尚未开通至尊会员</view>
+									<view class="tit">{{userInfo.name}}</view>
 								</view>
 							</view>
 						</view>

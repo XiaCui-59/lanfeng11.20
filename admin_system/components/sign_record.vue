@@ -337,10 +337,12 @@
 									{{!currentWorkerInfo.worker_age?"无":(currentWorkerInfo.worker_age+"岁")}}
 								</view>
 							</view>
-							<!-- <view class="line flex flex-start">
-								<view class="tit">身份证号：</view>
-								<view class="text">{{currentWorkerInfo.worker_id_card_number}}</view>
-							</view> -->
+							<view class="line flex flex-start">
+								<view class="tit">民族：</view>
+								<view class="text">{{currentWorkerInfo.worker_nation}}</view>
+							</view>
+						</view>
+						<view class="out_line flex flex_start">
 							<view class="line flex flex-start">
 								<view class="tit">手机号码：</view>
 								<view class="text">{{currentWorkerInfo.worker_mobile}}</view>

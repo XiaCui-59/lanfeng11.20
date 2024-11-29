@@ -84,7 +84,12 @@ var render = function () {
   var g0 = _vm.period.filter(function (el) {
     return el.value == _vm.currentPlay.worker_salary_type
   })
-  var g1 = _vm.period.filter(function (el) {
+  var g1 = g0[0].text
+    ? _vm.period.filter(function (el) {
+        return el.value == _vm.currentPlay.worker_salary_type
+      })
+    : null
+  var g2 = _vm.period.filter(function (el) {
     return el.value == _vm.currentPlay.worker_salary_type
   })
   _vm.$mp.data = Object.assign(
@@ -93,6 +98,7 @@ var render = function () {
       $root: {
         g0: g0,
         g1: g1,
+        g2: g2,
       },
     }
   )
@@ -150,6 +156,7 @@ var _default = {
   props: ["top", "bottom", "canPlay"],
   data: function data() {
     return {
+      showSureJob: false,
       scrollTop: 0,
       period: _commonData.default.periodList,
       current: 0,
@@ -187,7 +194,9 @@ var _default = {
       bannerImageInfo: null,
       bannerHeight: 0,
       showUserStep: false,
-      currentStep: 1
+      currentStep: 1,
+      firstEnd: false,
+      isWelcome: true
     };
   },
   computed: _objectSpread({}, (0, _vuex.mapState)(["city", "aiReady"])),
@@ -196,7 +205,9 @@ var _default = {
     var _this = this;
     //音频停止事件
     app.globalData.Audio.onPlay(function (e) {
-      _this2.textAnimation();
+      if (!_this2.isWelcome) {
+        _this2.textAnimation();
+      }
     });
 
     //音频停止事件
@@ -205,7 +216,11 @@ var _default = {
     //音频播放结束事件
     app.globalData.Audio.onEnded(function (e) {
       if (_this2.canPlay) {
-        _this2.playFirst();
+        if (_this2.firstEnd) {
+          _this2.playNext();
+        } else {
+          _this2.playFirst();
+        }
       }
     });
     var readStep = uni.getStorageSync("readsteps") ? uni.getStorageSync("readsteps") : "";
@@ -284,7 +299,9 @@ var _default = {
       }
     },
     playFirst: function playFirst() {
-      app.globalData.Audio.stop();
+      this.firstEnd = true;
+      this.isWelcome = false;
+      // app.globalData.Audio.stop()
       if (this.canPlay && !this.muted) {
         this.playAudio();
       }
@@ -401,6 +418,7 @@ var _default = {
                 if (res.data.list.length > 0) {
                   _this4.currentPlay = res.data.list[0];
                   _this4.recommendList = res.data.list;
+                  _this4.showSureJob = true;
                   _this4.getMayAsk();
                   if (!_this4.showUserStep) {
                     _this4.playWelcome();
@@ -457,7 +475,7 @@ var _default = {
       if (!this.animationTimer) {
         this.animationTimer = setInterval(function () {
           _this.scrollTop += 2;
-        }, 500);
+        }, 300);
       }
     },
     touchStart: function touchStart() {

@@ -31,11 +31,13 @@ const request = (url = '', date = {}, type = 'GET', header = {
 				uni.hideLoading();
 			}
 			if (res.code == -1) {
+
 				uni.showModal({
 					title: "登录状态异常，请重新登录。",
 					showCancel: false,
 					success(resp) {
 						if (resp.confirm) {
+							uni.clearStorage()
 							uni.redirectTo({
 								url: "/pages/login/login"
 							})

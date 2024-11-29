@@ -19,7 +19,7 @@
 						<uni-td align="center">{{item.code}}</uni-td>
 						<uni-td align="center">{{item.name}}</uni-td>
 						<uni-td
-							align="center">{{(item.worker_salary_min == item.worker_salary_max?item.worker_salary_min:(item.worker_salary_min+"-"+item.worker_salary_max))+"元"}}
+							align="center">{{(item.worker_salary_min == item.worker_salary_max?item.worker_salary_min:(item.worker_salary_min+"-"+item.worker_salary_max))+"元"+ periodList.filter(el=>{return el.value == item.worker_salary_type})[0].text}}
 						</uni-td>
 						<uni-td
 							align="center">{{gender.filter(el=>{return el.value == item.worker_gender})[0].text}}</uni-td>
@@ -67,6 +67,7 @@
 		name: "contract_list",
 		data() {
 			return {
+				periodList: commonData.periodList,
 				inputPage: 1,
 				place: "top",
 				count: 15,
@@ -88,23 +89,6 @@
 					text: "微信",
 					icon: "/static/wechat.png"
 				},
-				periodList: [{
-						value: "hour",
-						text: "时"
-					},
-					{
-						value: "day",
-						text: "天"
-					},
-					{
-						value: "week",
-						text: "周"
-					},
-					{
-						value: "month",
-						text: "月"
-					},
-				],
 				gender: [{
 						value: "male",
 						text: "男"

@@ -192,7 +192,6 @@ var _default = {
       userInfo: {
         is_vip: false
       },
-      canPay: true,
       imgUrl: app.globalData.baseImageUrl,
       marginTop: app.globalData.marginTop,
       tabMargin: app.globalData.tabMargin,
@@ -219,7 +218,6 @@ var _default = {
     login: login
   },
   onLoad: function onLoad(params) {
-    var _this2 = this;
     uni.setNavigationBarColor({
       frontColor: '#000000',
       backgroundColor: 'transparent'
@@ -227,23 +225,6 @@ var _default = {
     this.shareId = params.share_id ? params.share_id : "";
     if (this.ifSingle) {
       return;
-    }
-    var systemInfo = uni.getSystemInfoSync();
-    if (systemInfo.osName == "ios") {
-      // 如果是ios系统，调用支付开关
-      this.$request("/ios/status").then(function (res) {
-        if (res.code == 0) {
-          if (res.data) {
-            _this2.canPay = true;
-          } else {
-            _this2.canPay = false;
-          }
-        } else {
-          _this2.canPay = false;
-        }
-      });
-    } else {
-      this.canPay = true;
     }
     if (this.fromSingle) {
       // 单页模式打开小程序，跳转至首页
@@ -263,40 +244,64 @@ var _default = {
   },
   methods: {
     buyVip: function buyVip() {
-      var _this3 = this;
+      var _this2 = this;
       return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
-        var _this, orderId, orderParams;
+        var systemInfo;
         return _regenerator.default.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                if (_this3.isLogin()) {
+                if (_this2.isLogin()) {
                   _context.next = 3;
                   break;
                 }
-                _this3.showLogin = true;
+                _this2.showLogin = true;
                 return _context.abrupt("return");
               case 3:
-                if (_this3.canPay) {
-                  _context.next = 6;
-                  break;
+                systemInfo = uni.getSystemInfoSync();
+                if (systemInfo.osName == "ios") {
+                  // 如果是ios系统，调用支付开关
+                  _this2.$request("/ios/status").then(function (res) {
+                    if (res.code == 0) {
+                      if (!res.data) {
+                        _this2.$refs.myModal.showModal({
+                          title: "由于相关规范，iOS成为会员功能暂不可用。",
+                          showCancel: false
+                        });
+                      } else {
+                        _this2.surePay();
+                      }
+                    }
+                  });
+                } else {
+                  _this2.surePay();
                 }
-                _this3.$refs.myModal.showModal({
-                  title: "由于相关规范，iOS成为会员功能暂不可用。",
-                  showCancel: false
-                });
-                return _context.abrupt("return");
-              case 6:
+              case 5:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }))();
+    },
+    surePay: function surePay() {
+      var _this3 = this;
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2() {
+        var _this, orderId, orderParams;
+        return _regenerator.default.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
                 // 获取订单数据
                 _this = _this3;
-                _context.next = 9;
+                _context2.next = 3;
                 return _this3.getOrderId();
-              case 9:
-                orderId = _context.sent;
-                _context.next = 12;
+              case 3:
+                orderId = _context2.sent;
+                _context2.next = 6;
                 return _this3.getOrderParams(orderId);
-              case 12:
-                orderParams = _context.sent;
+              case 6:
+                orderParams = _context2.sent;
                 uni.requestPayment({
                   "appId": orderParams.appId,
                   "timeStamp": orderParams.timeStamp,
@@ -338,12 +343,12 @@ var _default = {
                     });
                   }
                 });
-              case 14:
+              case 8:
               case "end":
-                return _context.stop();
+                return _context2.stop();
             }
           }
-        }, _callee);
+        }, _callee2);
       }))();
     },
     closeLogin: function closeLogin() {

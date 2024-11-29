@@ -7,9 +7,9 @@
 			</view>
 		</view>
 		<view class="line flex flex_start" v-show="showUser">
-			<view class="tit">{{userStr?userStr:"咨询客户"}}</view>
+			<view class="tit">{{userStr?userStr:"咨询用户"}}</view>
 			<view class="cont flex flex_start">
-				<input type="text" v-model="userName" placeholder="姓名/手机号/昵称" placeholder-style="font-size:14px;" />
+				<input type="text" v-model="userName" placeholder="ID/用户名" placeholder-style="font-size:14px;" />
 			</view>
 		</view>
 		<view class="line flex flex_start" v-show="showEmployee">

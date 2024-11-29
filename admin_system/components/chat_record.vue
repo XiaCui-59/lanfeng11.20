@@ -13,7 +13,8 @@
 						<uni-th align="center" style="font-size: 14px;font-weight: 600;color:#333;">序号</uni-th>
 						<uni-th align="center" style="font-size: 14px;font-weight: 600;color:#333;">会话ID</uni-th>
 						<uni-th align="center" style="font-size: 14px;font-weight: 600;color:#333;">uid</uni-th>
-						<uni-th align="center" style="font-size: 14px;font-weight: 600;color:#333;">咨询客户</uni-th>
+						<uni-th align="center" style="font-size: 14px;font-weight: 600;color:#333;">用户ID</uni-th>
+						<uni-th align="center" style="font-size: 14px;font-weight: 600;color:#333;">咨询用户</uni-th>
 						<!-- <uni-th align="center" style="font-size: 14px;font-weight: 600;color:#333;">客服账号</uni-th> -->
 						<!-- <uni-th align="center" style="font-size: 14px;font-weight: 600;color:#333;">接入视频号</uni-th>
 						<uni-th align="center" style="font-size: 14px;font-weight: 600;color:#333;">接入主播</uni-th> -->
@@ -28,6 +29,7 @@
 						<uni-td align="center">{{index+1+currentCount*(currentPage - 1)}}</uni-td>
 						<uni-td align="center">{{item.id}}</uni-td>
 						<uni-td align="center">{{item.worker_account_id}}</uni-td>
+						<uni-td align="center">{{item.worker_id}}</uni-td>
 						<uni-td align="center">{{item.customer_nickname}}</uni-td>
 						<!-- <uni-td align="center">{{item.open_kf_name}}</uni-td> -->
 						<!-- <uni-td align="center">{{item.live_account_name}}</uni-td>

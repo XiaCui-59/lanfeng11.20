@@ -400,10 +400,6 @@
 				this.showModal = true
 			},
 			async toadd() {
-				uni.navigateTo({
-					url: "/subpkg/worker_detail/worker_detail"
-				})
-				return
 				let token = uni.getStorageSync("token")
 				if (!token) {
 					this.showLogin = true

@@ -39,14 +39,6 @@
 								<view class="tit">{{key}}：</view>
 								<view class="text">{{value}}</view>
 							</view>
-							<view class="text_line flex flex-start">
-								<view class="tit">薪资匹配：</view>
-								<view class="text">符合岗位标准</view>
-							</view>
-							<view class="text_line flex flex-start">
-								<view class="tit">薪资匹配：</view>
-								<view class="text">符合岗位标准</view>
-							</view>
 						</view>
 						<view v-if="!currentMatch.candidateMatchScore" style="color:#0092ff;font-size: 14px;">
 							暂无数据</view>
@@ -62,10 +54,11 @@
 					<view class="item">
 						<view class="title">聊天记录摘要</view>
 						<view class="detail" v-if="currentMatch.chatSummary">
-							<view class="chat_item" v-for="(item,index) in currentMatch.chatSummary" :key="index">
+							<view class="chat_item" v-for="(item,index) in currentMatch.chatSummary" :key="index"
+								v-if="item.origin!='receptionist'">
 								<view class="chat_top flex flex-start" :class="item.origin">
 									<view class="origin">
-										{{item.origin=="ai"?item.open_kf_name:(item.origin=="customer"?item.customer_nickname:(item.origin=="receptionist"?item.receptionist_name:"系统事件"))}}
+										{{item.origin=="customer"?(item.customer_nickname?item.customer_nickname:"用户"):"风铃"}}
 									</view>
 									<view class="time">{{item.send_time}}</view>
 								</view>
