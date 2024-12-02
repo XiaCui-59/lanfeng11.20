@@ -55,7 +55,7 @@
 						<view class="title">聊天记录摘要</view>
 						<view class="detail" v-if="currentMatch.chatSummary">
 							<view class="chat_item" v-for="(item,index) in currentMatch.chatSummary" :key="index"
-								v-if="item.origin!='receptionist'">
+								v-if="item.origin!='system_event'">
 								<view class="chat_top flex flex-start" :class="item.origin">
 									<view class="origin">
 										{{item.origin=="customer"?(item.customer_nickname?item.customer_nickname:"用户"):"风铃"}}

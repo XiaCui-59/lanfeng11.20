@@ -53,11 +53,11 @@
 			// 版本更新提示
 			if (params.scene != 1154) {
 				const updateManager = uni.getUpdateManager();
-				updateManager.onCheckForUpdate(function(res) {
+				updateManager.onCheckForUpdate(res => {
 					// console.log('res==>', res);
 					// 请求完新版本信息的回调
 					if (res.hasUpdate) {
-						updateManager.onUpdateReady(function(res2) {
+						updateManager.onUpdateReady(res2 => {
 							uni.showModal({
 								title: '更新提示',
 								content: '小程序有新的版本，请更新后使用哟~',
@@ -72,7 +72,7 @@
 						});
 					}
 				});
-				updateManager.onUpdateFailed(function(res) {
+				updateManager.onUpdateFailed(res => {
 					// 新的版本下载失败
 					uni.showModal({
 						title: '已经有新版本了哟~',

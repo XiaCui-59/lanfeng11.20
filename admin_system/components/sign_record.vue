@@ -377,8 +377,8 @@
 							<view class="report_item">
 								<view class="tit">聊天记录摘要</view>
 								<view class="list" v-if="currentMatch.chatSummary">
-									<view class="item flex" v-for="(item,index) in currentMatch.chatSummary"
-										:key="index"
+									<view class="item flex" v-if="item.origin!='system_event'"
+										v-for="(item,index) in currentMatch.chatSummary" :key="index"
 										:class="item.origin == 'customer'?'from_customer flex-start':'from_system flex_end'"
 										:id="'item'+index">
 										<image src="/static/user_avatar.png" mode="widthFix"

@@ -74,10 +74,12 @@
 				box-sizing: border-box;" :scroll-into-view="scrollView">
 						<view class="item flex" v-for="(item,index) in chatDetail" :key="index"
 							:class="item.origin == 'customer'?'from_customer flex-start':'from_system flex_end'"
-							:id="'item'+index">
+							v-if="item.origin != 'system_event'" :id="'item'+index">
 							<image src="/static/user_avatar.png" mode="widthFix" v-if="item.origin =='customer'">
 							</image>
 							<view class="line">
+								<view class="time" style="font-size: 12px;">{{item.create_time}}
+								</view>
 								<view class="item_top flex" :class="item.origin == 'customer'?'flex-start':'flex_end'">
 									<view class="name">
 										{{item.origin=="ai"?item.open_kf_name:(item.origin=="customer"?item.customer_nickname:(item.origin=="receptionist"?item.receptionist_name:"系统事件"))}}
@@ -308,6 +310,9 @@
 						.line {
 							max-width: 70%;
 
+							.time {
+								text-align: left;
+							}
 
 							.item_bot {
 								padding: 10px;
@@ -330,12 +335,16 @@
 							padding: 0 10px;
 							box-sizing: border-box;
 
+							.time {
+								text-align: right;
+							}
+
 							.item_top {
 								text-align: right;
 							}
 
 							.item_bot {
-								padding: 0 10px;
+								padding: 10px;
 								box-sizing: border-box;
 								border-radius: 10px;
 								// text-align: left;
