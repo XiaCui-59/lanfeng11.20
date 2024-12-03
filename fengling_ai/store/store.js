@@ -6,12 +6,12 @@ Vue.use(Vuex)
 // 获取初始状态值
 let userInfo = uni.getStorageSync("userInfo") ? JSON.parse(uni.getStorageSync("userInfo")) : null
 let shareParams = uni.getStorageSync("shareParams") ? JSON.parse(uni.getStorageSync("shareParams")) : null
-let token = uni.getStorageSync("token")
-let openid = uni.getStorageSync("token")
+// let token = uni.getStorageSync("token")
+let openid = uni.getStorageSync("openid")
 const store = new Vuex.Store({
 	state: {
 		userInfo: userInfo,
-		isLogin: token ? true : false,
+		// isLogin: token ? true : false,
 		openid: openid ? openid : "",
 		shareParams: shareParams,
 		answering: false, //等待返回数据，有数据返回时关闭动效

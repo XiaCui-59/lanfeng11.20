@@ -2,7 +2,6 @@
 	import urlSetting from "./url_setting";
 	export default {
 		globalData: {
-			jobList: urlSetting.urls.jobList,
 			wssUrl: urlSetting.urls.wssUrl,
 			baseUrl: urlSetting.urls.apiUrl, //测试环境,接口域名
 			baseImageUrl: urlSetting.urls.imageUrl, //测试环境，静态资源域名
@@ -80,6 +79,7 @@
 					});
 				});
 			}
+
 
 			// 计算两个topHeight的高度
 			let systemInfo = uni.getSystemInfoSync()

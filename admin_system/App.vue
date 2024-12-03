@@ -253,7 +253,8 @@
 		}
 
 		&>.inner {
-			width: 70%;
+			width: 40%;
+			min-width: 700px;
 			max-height: 800px;
 			overflow: scroll;
 
@@ -307,7 +308,7 @@
 					margin-bottom: 20px;
 
 					&:last-child {
-						margin-bottom: 0;
+						// margin-bottom: 0;
 					}
 
 					.tit {

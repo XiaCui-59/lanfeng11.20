@@ -25,18 +25,14 @@
 						<uni-td align="center">{{item.project_id }}</uni-td>
 						<uni-td align="center">{{item.project_name?item.project_name:item.project_id}}</uni-td>
 						<uni-td
-							align="center">{{item.worker_salary_min+"-"+item.worker_salary_max+ "元"+type.filter(el=>{return el.value==item.worker_salary_type})[0].text}}</uni-td>
+							align="center">{{item.worker_salary_min+"-"+item.worker_salary_max+typeRange.filter(el=>{return el.value==item.worker_salary_type})[0].text}}</uni-td>
 						<uni-td align="center">{{status.filter(el=>{return el.value == item.status})[0].text}}</uni-td>
 						<uni-td align="center">{{item.create_time}}</uni-td>
 						<!-- <uni-td align="center">{{item.create_time}}</uni-td> -->
 						<uni-td style="padding:8px 0px;">
 							<view class="ope flex flex_around">
-								<view class="ope_item detail" @click="showDetail(item)">
-									<image src="/static/ic_btn_detail.png" mode="heightFix"></image>详情
-								</view>
 								<view class="ope_item" @click="handleChannel(item)"
-									:class="item.status == 'already_online'?'frozen':'unfrozen'"
-									v-if="currentRecord.status == 'already_online'">
+									:class="item.status == 'already_online'?'frozen':'unfrozen'">
 									<image
 										:src="item.status == 'already_online'?'/static/ic_btn_frozen.png':'/static/ic_btn_unfrozen.png'"
 										mode="heightFix"></image>
@@ -84,7 +80,7 @@
 										<uni-td align="center">{{item.id}}</uni-td>
 										<uni-td align="center">
 											<view style="color:#0092ff;cursor: pointer;" @click="showContent(item)">
-												{{item.content.slice(0,20)+"..."}}
+												{{item.name}}
 											</view>
 										</uni-td>
 										<uni-td align="center">{{item.create_time}}</uni-td>
@@ -109,7 +105,7 @@
 						<!-- 右侧已选区 -->
 						<view class="mask_table_item">
 							<view class="table_tit">已选数据（{{selectedArr.length}}）</view>
-							<scroll-view scroll-y="true" style="height:300px;">
+							<scroll-view scroll-y="true" style="height:348px;">
 								<uni-table border stripe emptyText="暂无更多数据">
 									<uni-tr>
 										<uni-th align="center">职位id</uni-th>
@@ -121,7 +117,7 @@
 										<uni-td align="center">{{item.id}}</uni-td>
 										<uni-td align="center">
 											<view style="color:#0092ff;cursor: pointer;" @click="showContent(item)">
-												{{item.content.slice(0,20)+"..."}}
+												{{item.name}}
 											</view>
 										</uni-td>
 										<uni-td align="center">{{item.create_time}}</uni-td>
@@ -165,6 +161,19 @@
 		name: "broker_list",
 		data() {
 			return {
+				typeRange: [{
+						value: "month",
+						text: "元/月"
+					},
+					{
+						value: "day",
+						text: "元/天"
+					},
+					{
+						value: "hour",
+						text: "元/时"
+					}
+				],
 				maskKeyword: "",
 				list: [],
 				pagination: {},
@@ -174,6 +183,7 @@
 				channelStatusValue: "",
 				searStart: "",
 				searEnd: "",
+				searPro: "",
 				currentCount: 15,
 				currentChannel: {
 
@@ -214,21 +224,27 @@
 					this.currentPage = paramArr[i].split("=")[1]
 				}
 			}
-			// this.getList()
+			this.getList()
 		},
 		methods: {
 			searchPositon() {
-				let url = "/admin/homepage/projects_issue/list?key_words=" + this.maskKeyword + "&page=" + this
+				let url = "/admin/hot-jobs/available-projects?keyword=" + this.maskKeyword + "&page=" + this
 					.currentInnerPage
 				this.$request(url).then(res => {
 					if (res.code == 0) {
 						this.searchResult = res.data.list
+						this.currentInnerPagination = res.data.pagination
 					}
 				})
 			},
 			showContent(item) {
-				this.currentDetail = item
-				this.showTwoMask = true
+				let url = "/admin/project/" + item.id
+				this.$request(url).then(res => {
+					if (res.code == 0) {
+						this.currentDetail = res.data
+						this.showTwoMask = true
+					}
+				})
 			},
 			closeTwoMask() {
 				this.showTwoMask = false
@@ -308,17 +324,20 @@
 			},
 			handleChannel(item) {
 				let _this = this
-				let url = ""
+				let url = "/admin/hot-jobs/" + item.id + "/status"
+				let data = {
+					status: ""
+				}
 				if (item.status == "pending_online") {
 					// 上线操作
-					url = "/admin/homepage/projects_display/online/" + item.id
+					data.status = "already_online"
 					uni.showModal({
-						title: "是否确认上线这批职位推荐：ID(" + item.id + ")？",
+						title: "是否确认上线该职位：" + item.project_name + "？",
 						confirmText: "确认上线",
 						confirmColor: "#0092ff",
 						success(resp) {
 							if (resp.confirm) {
-								_this.$request(url, {}, "POST").then(res => {
+								_this.$request(url, data, "POST").then(res => {
 									if (res.code == 0) {
 										uni.showToast({
 											title: "上线成功",
@@ -333,14 +352,14 @@
 					})
 				} else {
 					// 下线操作
-					url = "/admin/homepage/projects_display/offline/" + item.id
+					data.status = "pending_online"
 					uni.showModal({
-						title: "是否确认下线这批职位推荐：ID(" + item.id + ")？",
+						title: "是否确认下线该职位：" + item.project_name + "？",
 						confirmText: "确认下线",
 						confirmColor: "#f00",
 						success(resp) {
 							if (resp.confirm) {
-								_this.$request(url, {}, "POST").then(res => {
+								_this.$request(url, data, "POST").then(res => {
 									if (res.code == 0) {
 										uni.showToast({
 											title: "下线成功",
@@ -361,10 +380,10 @@
 					ids.push(el.id)
 				})
 				let data = {
-					"ids": ids
+					"project_ids": ids
 				}
 				console.log(data)
-				let url = "/admin/homepage/projects_display"
+				let url = "/admin/hot-jobs"
 				this.$request(url, data, "POST").then(res => {
 					if (res.code == 0) {
 						uni.showToast({
@@ -399,14 +418,37 @@
 				this.setPageName(obj, id, status, preStatus, searObj)
 				this.$emit("getPageName", obj)
 			},
+			deleteChannel(item) {
+				let _this = this
+				let url = "/admin/hot-jobs/" + item.id
+				uni.showModal({
+					title: "是否将职位（" + item.project_name + "）从热招列表中删除？",
+					confirmText: "确认删除",
+					confirmColor: "#f00",
+					success(res) {
+						if (res.confirm) {
+							_this.$request(url, {}, "DELETE").then(res => {
+								if (res.code == 0) {
+									uni.showToast({
+										title: "删除成功",
+										duration: 2000
+									})
+									_this.getList()
+								}
+							})
+						}
+					}
+				})
+
+			},
 			getList() {
 				uni.showLoading({
 					title: "努力加载中~"
 				})
-				let url = "/admin/homepage/projects_display/list?page=" + this.currentPage +
-					"&start_time=" + this.searStart + "&end_time=" + this.searEnd + "&status=" + this
+				let url = "/admin/hot-jobs?page=" + this.currentPage +
+					"&create_time_start=" + this.searStart + "&create_time_end=" + this.searEnd + "&status=" + this
 					.channelStatusValue +
-					"&page_size=" + this.currentCount
+					"&page_size=" + this.currentCount + "&keyword=" + this.searPro
 				this.$request(url).then(res => {
 					if (res.code == 0) {
 						this.list = res.data.list
@@ -419,6 +461,7 @@
 				this.channelStatusValue = e.channelStatusValue
 				this.searStart = e.startTime
 				this.searEnd = e.endTime
+				this.searPro = e.projectName
 				this.getList()
 			},
 			close() {

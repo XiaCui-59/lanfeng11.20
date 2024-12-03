@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/error_sever/error_sever",
     "pages/phone_call/phone_call",
     "pages/call/call",
     "pages/invite/invite",

@@ -111,6 +111,10 @@
 </template>
 
 <script>
+	import {
+		mapState,
+		mapMutations
+	} from "vuex"
 	export default {
 		name: "login",
 		props: ["showLogin", "shareId"],
@@ -119,6 +123,9 @@
 				showPolicy: false,
 				getPhoneData: {}
 			};
+		},
+		computed: {
+			...mapState(["token"])
 		},
 		methods: {
 			// #ifdef MP-BAIDU
@@ -212,7 +219,18 @@
 						uni.hideLoading()
 					})
 				} else {
-					console.log(e.detail.errMsg)
+					uni.hideLoading()
+					_this.$emit("closeLogin")
+					uni.setStorageSync("token", _this.token)
+					let header = {
+						"Authorization": "bearer " + _this.token,
+						"accept": "application/json",
+						"open-id": !uni.getStorageSync("openid") ? "" : uni.getStorageSync(
+							"openid")
+					}
+					_this.getShareParams(header)
+					_this.$emit("getInfo")
+
 				}
 			}
 		}

@@ -7,6 +7,12 @@
 				"navigationBarTitleText": "",
 				"disableScroll": true
 			}
+		},
+		{
+			"path": "pages/error_sever/error_sever",
+			"style": {
+				"navigationBarTitleText": ""
+			}
 		}, {
 			"path": "pages/phone_call/phone_call",
 			"style": {

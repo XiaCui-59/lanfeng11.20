@@ -1066,7 +1066,8 @@
 							resolve(res)
 						},
 						fail(err) {
-							this.$refs.myModal.showModal({
+							console.log("err:", err)
+							_this.$refs.myModal.showModal({
 								title: err.errMsg,
 								showCancel: false
 							})
@@ -1103,11 +1104,11 @@
 					_this.openAnswerContinue()
 					_this.closeAnswering()
 					let respData = JSON.parse(res.data)
-					console.log("websocket返回：", respData)
+					// console.log("websocket返回：", respData)
 					if (_this.inCall) {
 						// 对话页
 						if (respData.type == "audio_call_start_interview") {
-							console.log("返回的job_id：", respData.job_id)
+							// console.log("返回的job_id：", respData.job_id)
 							_this.setIncallJobId(respData.job_id ? respData.job_id : "")
 							// 用户报名了
 							_this.setIncallEnroll()

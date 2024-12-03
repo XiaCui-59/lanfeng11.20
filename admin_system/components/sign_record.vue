@@ -205,13 +205,15 @@
 				</view>
 			</view>
 			<view class="inner" v-if="showSecond" style="overflow: hidden;height: 600px;">
-				<view class="title" style="margin-bottom: 0;">职位详情{{"（"+currentInfo.name+")"}}</view>
-				<view class="close" @click="close">
-					<image src="/static/close_white.png" mode="widthFix"></image>
+				<view class="inner_top">
+					<view class="title" style="margin-bottom: 0;">职位详情{{"（"+currentInfo.name+")"}}</view>
+					<view class="close" @click="close">
+						<image src="/static/close_white.png" mode="widthFix"></image>
+					</view>
 				</view>
+
 				<view class="box">
 					<scroll-view scroll-y="true" style="height:100%;
-					padding-bottom: 40px;
 					box-sizing: border-box;">
 						<view class="base_box" style="width:50%;">
 							<view class="line flex flex_start">
@@ -311,42 +313,32 @@
 			</view>
 
 			<view class="inner" v-if="showThird">
-				<view class="title" style="margin-bottom: 0;">工人详情{{"（"+currentWorkerInfo.worker_id+")"}}</view>
-				<view class="close" @click="close">
-					<image src="/static/close_white.png" mode="widthFix"></image>
+				<view class="inner_top">
+					<view class="title" style="margin-bottom: 0;">工人详情{{"（"+currentWorkerInfo.worker_id+")"}}</view>
+					<view class="close" @click="close">
+						<image src="/static/close_white.png" mode="widthFix"></image>
+					</view>
 				</view>
+
 				<view class="box" style="padding:0 30px;">
 					<view class="base">
-						<view class="out_line flex flex_start">
-							<view class="line flex flex_start">
-								<view class="tit">工人姓名：</view>
+						<view class="out_line flex flex_btween">
+							<view class="line flex flex_start" style="width:auto;white-space: nowrap;">
+								<view class="tit" style="width:auto;">姓名：</view>
 								<view class="text">{{currentWorkerInfo.worker_name}}</view>
 							</view>
-							<view class="line flex flex-start">
-								<view class="tit">工人性别：</view>
+							<view class="line flex flex-start" style="width:auto;white-space: nowrap;">
+								<view class="tit" style="width:auto;">基本信息：</view>
 								<view class="text">
-									{{currentWorkerInfo.worker_gender=="male"?"男":(currentWorkerInfo.worker_gender=="female"?"女":"未知")}}
+									{{currentWorkerInfo.worker_gender == "male"?"男":(currentWorkerInfo.worker_gender == "female"?"女":"")}}
+									{{(currentWorkerInfo.worker_age?(" / "+currentWorkerInfo.worker_age):"")+(currentWorkerInfo.worker_nation?(" / "+currentWorkerInfo.worker_nation):"")}}
 								</view>
 							</view>
-
-						</view>
-						<view class="out_line flex flex_start">
-							<view class="line flex flex-start">
-								<view class="tit">工人年龄：</view>
-								<view class="text">
-									{{!currentWorkerInfo.worker_age?"无":(currentWorkerInfo.worker_age+"岁")}}
-								</view>
-							</view>
-							<view class="line flex flex-start">
-								<view class="tit">民族：</view>
-								<view class="text">{{currentWorkerInfo.worker_nation}}</view>
-							</view>
-						</view>
-						<view class="out_line flex flex_start">
-							<view class="line flex flex-start">
-								<view class="tit">手机号码：</view>
+							<view class="line flex flex-start" style="width:auto;white-space: nowrap;">
+								<view class="tit" style="width:auto;">手机号码：</view>
 								<view class="text">{{currentWorkerInfo.worker_mobile}}</view>
 							</view>
+
 						</view>
 					</view>
 					<view class="tabs flex flex_start">
@@ -355,27 +347,28 @@
 						<view class="tab" :class="currentSubTab==2?'active':''" @click="changeSubTab(2)">跟进记录</view>
 					</view>
 					<view class="report" v-if="currentSubTab==0">
-						<scroll-view scroll-y="true" style="height: 500px;">
-							<view class="report_item">
-								<view class="tit">候选匹配度</view>
-								<view class="list" v-if="currentMatch.candidateMatchScore">
-									<view class="item flex flex-start"
-										v-for="(value,key,index) in JSON.parse(currentMatch.candidateMatchScore)"
-										:key="index" style="line-height: 28px;font-size: 14px;">
-										<view class="text">{{key}}：</view>
-										<view class="text">{{value}}</view>
-									</view>
+						<view class="report_item">
+							<view class="tit">候选匹配度</view>
+							<view class="list" v-if="currentMatch.candidateMatchScore">
+								<view class="item flex flex-start"
+									v-for="(value,key,index) in JSON.parse(currentMatch.candidateMatchScore)"
+									:key="index" style="line-height: 28px;font-size: 14px;">
+									<view class="text">{{key}}：</view>
+									<view class="text">{{value}}</view>
 								</view>
-								<view v-if="!currentMatch.candidateMatchScore" style="color:#0092ff;font-size: 14px;">
-									暂无数据</view>
-								<!-- <rich-text :nodes="currentMatch.candidateMatchScore"></rich-text> -->
 							</view>
-							<!-- <view class="report_item">
-								<view class="tit">工作经验</view>
-								<rich-text :nodes="currentMatch.candidateMatchScore"></rich-text>
-							</view> -->
-							<view class="report_item">
-								<view class="tit">聊天记录摘要</view>
+							<view v-if="!currentMatch.candidateMatchScore" style="color:#0092ff;font-size: 14px;">
+								暂无数据</view>
+							<!-- <rich-text :nodes="currentMatch.candidateMatchScore"></rich-text> -->
+						</view>
+						<!-- <view class="report_item">
+							<view class="tit">工作经验</view>
+							<rich-text :nodes="currentMatch.candidateMatchScore"></rich-text>
+						</view> -->
+
+						<view class="report_item">
+							<view class="tit">聊天记录摘要</view>
+							<scroll-view scroll-y="true" :style="{height:currentMatch.chatSummary? '480px':'auto'}">
 								<view class="list" v-if="currentMatch.chatSummary">
 									<view class="item flex" v-if="item.origin!='system_event'"
 										v-for="(item,index) in currentMatch.chatSummary" :key="index"
@@ -402,8 +395,9 @@
 								</view>
 								<view v-if="!currentMatch.chatSummary" style="color:#0092ff;font-size: 14px;">
 									暂无数据</view>
-							</view>
-						</scroll-view>
+							</scroll-view>
+						</view>
+
 
 					</view>
 					<view class="table_wrap" v-if="currentSubTab==1">
@@ -456,10 +450,13 @@
 				</view>
 			</view>
 			<view class="inner" v-if="showFour" style="width:50%;">
-				<view class="title" style="margin-bottom: 0;">添加跟进记录（{{currentWorkerInfo.worker_name}}）</view>
-				<view class="close" @click="close">
-					<image src="/static/close_white.png" mode="widthFix"></image>
+				<view class="inner_top">
+					<view class="title" style="margin-bottom: 0;">添加跟进记录（{{currentWorkerInfo.worker_name}}）</view>
+					<view class="close" @click="close">
+						<image src="/static/close_white.png" mode="widthFix"></image>
+					</view>
 				</view>
+
 				<view class="box" style="padding:30px 30px 0 30px;">
 					<view class="line flex flex-start" style="padding-left: 0;">
 						<view class="tit" style="margin-right: 15px;width:70px;">选择状态</view>
@@ -1201,6 +1198,10 @@
 		.report_item {
 			margin-bottom: 40px;
 
+			&:last-child {
+				margin-bottom: 0;
+			}
+
 			.tit {
 				font-weight: 600;
 				font-size: 15px;
@@ -1664,8 +1665,14 @@
 
 	.mask {
 		.inner {
+			padding-top: 50px;
+
 			.inner_top {
+				width: 100%;
 				height: 50px;
+				position: absolute;
+				top: 0;
+				left: 0;
 			}
 
 			.box {

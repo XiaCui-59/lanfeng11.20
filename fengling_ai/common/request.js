@@ -23,8 +23,14 @@ const request = (url = '', date = {}, type = 'GET', header = {
 		}).then((response) => {
 			let [error, res] = response;
 			if (res) {
-				if (res.statusCode == 500) {
+				if (res.statusCode.toString()[0] == "5") {
 					console.log("系统内部发生错误")
+					if (url == "/homepage") {
+						uni.redirectTo({
+							url: "/pages/error_sever/error_sever"
+						})
+						return
+					}
 				}
 				if (res.data.code == -1) {
 					uni.removeStorageSync("token")

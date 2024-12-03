@@ -6,14 +6,14 @@
 					<view class="ai_logo">
 						<image :src="imgUrl+'/worker/new/fl_inner_ai.png'" mode="widthFix"></image>
 					</view>
-					<view class="tit">看看这里有你喜欢的工作吗？</view>
+					<view class="tit">{{listTest.length == 0?"这里暂无热招职位推荐，快去和风铃聊天了解更多吧":"看看这里有你喜欢的工作吗？"}}</view>
 				</view>
-				<scroll-view scroll-y="true" style="height:800rpx;">
+				<scroll-view scroll-y="true" style="height:800rpx;" v-if="listTest.length > 0">
 					<view class="bot">
 						<view class="list">
 							<view class="item_wrap flex " v-for="(item,index) in listTest" :key="index">
 								<view class="item" :class="item.showAnimation?'animation':''"
-									@click="sendMsg(item,'job')">{{item.text}}</view>
+									@click="sendMsg(item,'job')">{{item.project_name}}</view>
 							</view>
 						</view>
 					</view>
@@ -30,12 +30,22 @@
 		data() {
 			return {
 				imgUrl: app.globalData.baseImageUrl,
-				listTest: app.globalData.jobList,
+				listTest: [],
 				currentIndex: 0
 			};
 		},
+		created() {
+
+		},
 		mounted() {
-			this.setAnimation()
+			// 获取热招职位列表
+			this.$request("/guest/worker/hot-jobs").then(res => {
+				if (res.code == 0) {
+					this.listTest = res.data
+					this.setAnimation()
+				}
+			})
+
 		},
 		methods: {
 			setAnimation() {
@@ -44,8 +54,8 @@
 				let timer = setInterval(function() {
 					if (_this.currentIndex < len) {
 						let obj = {
-							text: _this.listTest[_this.currentIndex].text,
-							job_id: _this.listTest[_this.currentIndex].job_id,
+							project_name: _this.listTest[_this.currentIndex].project_name,
+							project_id: _this.listTest[_this.currentIndex].project_id,
 							showAnimation: true
 						}
 						_this.$set(_this.listTest, _this.currentIndex, JSON.parse(JSON.stringify(obj)))
@@ -62,9 +72,9 @@
 			sendMsg(item, type) {
 				console.log("点击推荐：", item)
 				let obj = {
-					msg: item.text + "（职位ID：" + item.job_id + "）",
+					msg: item.project_name + "（职位ID：" + item.project_id + "）",
 					type: type,
-					job_id: item.job_id
+					job_id: item.project_id
 				}
 				this.$emit("sendMsg", obj)
 			},
@@ -120,6 +130,8 @@
 				}
 
 				.tit {
+					padding-right: 28rpx;
+					line-height: 50rpx;
 					font-size: 35rpx;
 					color: #FFFFFF;
 					background: linear-gradient(332deg, #D8D8D8 0%, #00B2FF 100%);

@@ -1,10 +1,10 @@
 <script>
 	export default {
 		globalData: {
-			baseUrl: "https://api.test.swiftwd.com", //测试环境
-			baseImageUrl: "https://static.test.swiftwd.com", //测试环境
-			// baseUrl: "https://api.swiftwd.com", //正式环境
-			// baseImageUrl: "https://static.swiftwd.com" //测试环境
+			// baseUrl: "https://api.test.swiftwd.com", //测试环境
+			// baseImageUrl: "https://static.test.swiftwd.com", //测试环境
+			baseUrl: "https://api.swiftwd.com", //正式环境
+			baseImageUrl: "https://static.swiftwd.com" //测试环境
 		},
 		onLaunch: function() {
 			console.log('App Launch')
@@ -262,7 +262,7 @@
 		}
 
 		.inner {
-			width: 60%;
+			width: 40%;
 			max-height: 800px;
 			overflow: scroll;
 

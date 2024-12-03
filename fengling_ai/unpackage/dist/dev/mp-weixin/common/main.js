@@ -26,7 +26,7 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 wx.__webpack_require_UNI_MP_PLUGIN__ = __webpack_require__;
 var myModal = function myModal() {
   __webpack_require__.e(/*! require.ensure | components/myModal */ "components/myModal").then((function () {
-    return resolve(__webpack_require__(/*! @/components/myModal.vue */ 246));
+    return resolve(__webpack_require__(/*! @/components/myModal.vue */ 254));
   }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 };
 _vue.default.mixin(_share.default);
@@ -154,7 +154,6 @@ var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/r
 var _url_setting = _interopRequireDefault(__webpack_require__(/*! ./url_setting */ 33));
 var _default = {
   globalData: {
-    jobList: _url_setting.default.urls.jobList,
     wssUrl: _url_setting.default.urls.wssUrl,
     baseUrl: _url_setting.default.urls.apiUrl,
     //测试环境,接口域名

@@ -1,5 +1,5 @@
-const BASE_URL = "https://api.test.swiftwd.com" //开发环境
-// const BASE_URL = "https://api.swiftwd.com" //正式环境
+// const BASE_URL = "https://api.test.swiftwd.com" //开发环境
+const BASE_URL = "https://api.swiftwd.com" //正式环境
 // import JSONbig from 'json-bigint'
 const request = (url = '', date = {}, type = 'GET', header = {
 	"Content-Type": "application/json",

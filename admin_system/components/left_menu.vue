@@ -237,18 +237,18 @@
 								pageName: "recom_position",
 								text: "播报推荐"
 							},
-							// {
-							// 	pid: 16,
-							// 	id: 22,
-							// 	pageName: "hot_position",
-							// 	text: "热招推荐"
-							// },
-							// {
-							// 	pid: 16,
-							// 	id: 23,
-							// 	pageName: "pay_setting",
-							// 	text: "支付设置"
-							// }
+							{
+								pid: 16,
+								id: 22,
+								pageName: "hot_position",
+								text: "热招推荐"
+							},
+							{
+								pid: 16,
+								id: 23,
+								pageName: "pay_setting",
+								text: "支付设置"
+							}
 						]
 					},
 				]

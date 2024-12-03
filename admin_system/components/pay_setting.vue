@@ -37,10 +37,12 @@
 						text: "关"
 					}
 				],
-				curIosIndex: 0
+				curIosIndex: 1
 			};
 		},
-		created() {},
+		created() {
+			this.getStatus()
+		},
 		onReady() {
 
 		},
@@ -48,8 +50,39 @@
 
 		},
 		methods: {
+			getStatus() {
+				this.$request("/admin/ios/status").then(res => {
+					if (res.code == 0) {
+						if (res.data) {
+							// 当前为开启状态
+							this.curIosIndex = 0
+						} else {
+							// 当前为关闭状态
+							this.curIosIndex = 1
+						}
+					}
+				})
+			},
 			radioChange(e) {
-				console.log(e)
+				let data = {
+					status: false
+				}
+				let url = "/admin/ios/status"
+				let tips = ""
+				if (e.detail.value == "open") {
+					data.status = true
+					tips = "已开启"
+				} else {
+					data.status = false
+					tips = "已关闭"
+				}
+				this.$request(url, data, "POST").then(res => {
+					if (res.code == 0) {
+						uni.showToast({
+							title: tips
+						})
+					}
+				})
 			}
 		}
 	}
