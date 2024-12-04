@@ -1325,12 +1325,9 @@
 				});
 			},
 			stopRecord(e) {
-				if (!this.canSend) {
-					return
-				}
 				let _this = this
-				this.touchEndTime = e.timeStamp
 				this.inputing = false
+				this.touchEndTime = e.timeStamp
 				if ((this.touchEndTime - this.touchStartTime) > 1000) {
 					this.manager.stop()
 				} else {
