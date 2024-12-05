@@ -6,9 +6,9 @@
 					<view class="ai_logo">
 						<image :src="imgUrl+'/worker/new/fl_inner_ai.png'" mode="widthFix"></image>
 					</view>
-					<view class="tit">{{listTest.length == 0?"这里暂无热招职位推荐，快去和风铃聊天了解更多吧":"看看这里有你喜欢的工作吗？"}}</view>
+					<view class="tit">{{showList?"看看这里有你喜欢的工作吗？":"这里暂无热招职位推荐，快去和风铃聊天了解更多吧。"}}</view>
 				</view>
-				<scroll-view scroll-y="true" style="height:800rpx;" v-if="listTest.length > 0">
+				<scroll-view scroll-y="true" style="height:800rpx;" v-if="showList">
 					<view class="bot">
 						<view class="list">
 							<view class="item_wrap flex " v-for="(item,index) in listTest" :key="index">
@@ -31,7 +31,8 @@
 			return {
 				imgUrl: app.globalData.baseImageUrl,
 				listTest: [],
-				currentIndex: 0
+				currentIndex: 0,
+				showList: true
 			};
 		},
 		created() {
@@ -42,7 +43,12 @@
 			this.$request("/guest/worker/hot-jobs").then(res => {
 				if (res.code == 0) {
 					this.listTest = res.data
-					this.setAnimation()
+					if (res.data.length > 0) {
+						this.setAnimation()
+					} else {
+						this.showList = false
+					}
+
 				}
 			})
 

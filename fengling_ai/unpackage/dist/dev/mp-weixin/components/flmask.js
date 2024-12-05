@@ -81,17 +81,6 @@ var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  var g0 = _vm.listTest.length
-  var g1 = _vm.listTest.length
-  _vm.$mp.data = Object.assign(
-    {},
-    {
-      $root: {
-        g0: g0,
-        g1: g1,
-      },
-    }
-  )
 }
 var recyclableRender = false
 var staticRenderFns = []
@@ -164,7 +153,8 @@ var _default = {
     return {
       imgUrl: app.globalData.baseImageUrl,
       listTest: [],
-      currentIndex: 0
+      currentIndex: 0,
+      showList: true
     };
   },
   created: function created() {},
@@ -174,7 +164,11 @@ var _default = {
     this.$request("/guest/worker/hot-jobs").then(function (res) {
       if (res.code == 0) {
         _this2.listTest = res.data;
-        _this2.setAnimation();
+        if (res.data.length > 0) {
+          _this2.setAnimation();
+        } else {
+          _this2.showList = false;
+        }
       }
     });
   },
