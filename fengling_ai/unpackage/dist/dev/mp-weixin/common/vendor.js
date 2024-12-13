@@ -10395,6 +10395,8 @@ var store = new _vuex.default.Store({
       if (obj && obj.ad_info) {
         state.location = obj;
         state.city = obj.ad_info.city;
+      } else {
+        state.city = "成都市";
       }
     },
     resetCity: function resetCity(state) {
@@ -45595,7 +45597,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;var _typeof = 
 /* 442 */,
 /* 443 */,
 /* 444 */,
-/* 445 */
+/* 445 */,
+/* 446 */,
+/* 447 */,
+/* 448 */,
+/* 449 */,
+/* 450 */,
+/* 451 */,
+/* 452 */
 /*!********************************************************************************************************!*\
   !*** E:/项目文件/lanfeng11.20/fengling_ai/uni_modules/uni-icons/components/uni-icons/uniicons_file_vue.js ***!
   \********************************************************************************************************/

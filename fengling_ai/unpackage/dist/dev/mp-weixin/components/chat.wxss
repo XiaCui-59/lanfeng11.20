@@ -230,69 +230,6 @@ image {
   padding: 20rpx 0rpx;
   box-sizing: border-box;
 }
-.content_body .chat_wrap .list .sure_card {
-  margin-top: 30rpx;
-  padding: 34rpx 25rpx 20rpx 25rpx;
-  width: 100%;
-  background: linear-gradient(180deg, #82C7FF 0%, #FFFFFF 100%);
-  box-shadow: 0rpx 4rpx 4rpx 0rpx rgba(0, 0, 0, 0.15);
-  border-radius: 15rpx;
-  box-sizing: border-box;
-  position: relative;
-}
-.content_body .chat_wrap .list .sure_card .text_img {
-  padding-left: 25rpx;
-  box-sizing: border-box;
-}
-.content_body .chat_wrap .list .sure_card .text_img image {
-  width: 310rpx;
-}
-.content_body .chat_wrap .list .sure_card .sure_icon {
-  position: absolute;
-  top: 0;
-  right: 0;
-}
-.content_body .chat_wrap .list .sure_card .sure_icon image {
-  width: 200rpx;
-}
-.content_body .chat_wrap .list .sure_card .bot_box {
-  background: #FFFFFF;
-  border-radius: 15rpx;
-  padding: 23rpx 26rpx;
-  box-sizing: border-box;
-  margin-top: 21rpx;
-}
-.content_body .chat_wrap .list .sure_card .bot_box .name {
-  margin-top: 10rpx;
-}
-.content_body .chat_wrap .list .sure_card .bot_box .name .label {
-  width: 138rpx;
-  height: 42rpx;
-  text-align: center;
-  line-height: 42rpx;
-  background: rgba(33, 111, 249, 0.08);
-  border-radius: 12rpx;
-  border: 2rpx solid #216FF9;
-  font-weight: 600;
-  font-size: 23rpx;
-  color: #216FF9;
-  flex-shrink: 0;
-}
-.content_body .chat_wrap .list .sure_card .bot_box .name .text {
-  margin-left: 12rpx;
-  font-weight: 600;
-  font-size: 31rpx;
-  color: #020202;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.content_body .chat_wrap .list .sure_card .bot_box .sure_btn {
-  margin-top: 36rpx;
-}
-.content_body .chat_wrap .list .sure_card .bot_box .sure_btn image {
-  width: 100%;
-}
 .content_body .chat_wrap .list .qa_item {
   transition: all 1s;
 }

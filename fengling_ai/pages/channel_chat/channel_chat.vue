@@ -63,7 +63,7 @@
 				<image :src="imgUrl+'/worker/new/inputing_wave2.gif'" mode="heightFix"></image>
 			</view>
 			<!-- 快速按钮 -->
-			<view class="btns_wrap flex flex-start"
+			<!-- <view class="btns_wrap flex flex-start"
 				v-if="(!inputHeight && !newUser) || (newUser && channelQaList.length>0 &&!inputHeight)">
 				<view class="btn_item flex" v-if="!userInfo.is_vip" @click="navigate('/pages/vip/vip')">
 					<image :src="imgUrl+'/worker/new/ic_become_vip.png'" mode="widthFix"></image>
@@ -73,7 +73,7 @@
 					<image :src="imgUrl+'/worker/new/ic_gift.png'" mode="widthFix"></image>
 					<view class="">邀请有礼</view>
 				</view>
-			</view>
+			</view> -->
 
 		</view>
 		<myModal ref="myModal">

@@ -128,18 +128,6 @@ var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  var g0 = !_vm.ifSingle
-    ? (!_vm.inputHeight && !_vm.newUser) ||
-      (_vm.newUser && _vm.channelQaList.length > 0 && !_vm.inputHeight)
-    : null
-  _vm.$mp.data = Object.assign(
-    {},
-    {
-      $root: {
-        g0: g0,
-      },
-    }
-  )
 }
 var recyclableRender = false
 var staticRenderFns = []

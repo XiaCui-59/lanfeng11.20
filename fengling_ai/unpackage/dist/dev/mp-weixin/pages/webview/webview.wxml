@@ -1,0 +1,1 @@
+<view><image style="width:200rpx;" src="{{imageUrl}}" mode="widthFix" data-event-opts="{{[['tap',[['prev',['$event']]]]]}}" bindtap="__e"></image></view>

@@ -130,7 +130,6 @@
 					<image :src="imgUrl+'/worker/new/ic_become_vip.png'" mode="widthFix"></image>
 					<view class="">成为会员</view>
 				</view>
-				<!-- <view class="btn_item" @click="sendBtnMsg('最新工作')">最新工作</view> -->
 				<view class="btn_item flex " @click="navigate('/pages/invite/invite')">
 					<image :src="imgUrl+'/worker/new/ic_gift.png'" mode="widthFix"></image>
 					<view class="">邀请有礼</view>
@@ -269,7 +268,7 @@
 				hasChannel: false,
 				scrollStr: "",
 				jobId: "",
-				sureStatus: false, //记录用户是否报名成功
+				noMayAsk: false, //记录用户是否报名成功
 				greetingReady: false,
 				action: "" //记录当前状态
 			}
@@ -336,7 +335,7 @@
 				"click-id": _this.params.gdt_vid ? _this.params.gdt_vid : "",
 				"ad-platform": _this.params.ad_platform ? _this.params.ad_platform : "",
 				"ad-sub-platform": _this.params.platform ? _this.params.platform : "",
-				"address": encodeURIComponent(JSON.stringify(_this.location)),
+				"address": _this.location ? encodeURIComponent(JSON.stringify(_this.location)) : "",
 				"Authorization": "bearer " + token,
 			}
 			this.openid = await this.getOpenid()
@@ -542,7 +541,7 @@
 							resolve(res.data.result)
 						},
 						fail(err) {
-							reject(err)
+							reject("error")
 						}
 					})
 				})
@@ -608,7 +607,7 @@
 							_this.resetData()
 							_this.closeAnswerContinue()
 							// 如果用户是报名成功则推送面试卡片
-							// if (_this.sureStatus) {
+							// if (_this.noMayAsk) {
 							// 	if (_this.inChannel) {
 							// 		_this.setChannelInterviewCard()
 							// 	} else {
@@ -1009,7 +1008,7 @@
 						success(res) {
 							_this.jobId = ""
 							_this.action = ""
-							_this.sureStatus = false
+							_this.noMayAsk = false
 							_this.closeInterviewCard()
 							_this.closeChannelInterviewCard()
 							_this.$set(_this, "question", "")
@@ -1104,7 +1103,7 @@
 					_this.openAnswerContinue()
 					_this.closeAnswering()
 					let respData = JSON.parse(res.data)
-					// console.log("websocket返回：", respData)
+					console.log("websocket返回：", respData)
 					if (_this.inCall) {
 						// 对话页
 						if (respData.type == "audio_call_start_interview") {
@@ -1130,22 +1129,15 @@
 						}
 
 					} else {
-						if (respData.type == "audio_call_start_interview") {
-							// 用户报名了,推送卡片
+						if (respData.type == "QCODE") {
+							// 推送客服微信
 							let card = {
-								card_type: "audio_call_start_interview",
-								job_name: respData.job_name,
-								job_id: respData.job_id,
-								showCard: false
+								type: "QCODE"
 							}
 							_this.curRespone.card = JSON.parse(JSON.stringify(card))
-							_this.sureStatus = true
-							_this.setJobName(respData.job_name)
-							_this.setJobId(respData.job_id)
+							_this.noMayAsk = true
 						} else {
-							_this.sureStatus = false
-							_this.resetJobId()
-							_this.resetJobName()
+							_this.noMayAsk = false
 						}
 						if (respData.message != "[DONE]") {
 							_this.responCount++
@@ -1155,7 +1147,7 @@
 							}
 						} else {
 							_this.setRespEnd()
-							if (!_this.sureStatus) {
+							if (!_this.noMayAsk) {
 								_this.getMayAsk()
 							}
 						}

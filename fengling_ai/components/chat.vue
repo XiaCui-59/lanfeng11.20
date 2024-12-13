@@ -1,16 +1,16 @@
 <template>
 	<view class="content_body body_bg" :style="{paddingTop:top+'px',paddingBottom:bottom+'px'}">
 		<!-- 无聊天记录时展示区 -->
-		<view class="greeting" v-if="historyList.length == 0 && qaList.length < 2">
+		<!-- <view class="greeting" v-if="historyList.length == 0 && qaList.length < 2">
 			<view class="avatar">
 				<image :src="greetingObj.logo?greetingObj.logo:imgUrl+'/worker/channel_default.png'" mode="widthFix">
 				</image>
 			</view>
 			<view class="title">{{greetingObj.title}}</view>
 			<view class="tips">{{greetingObj.content}}</view>
-		</view>
+		</view> -->
 		<!-- 有聊天对话区 -->
-		<view class="chat_area" v-show="historyList.length>0 ||qaList.length > 1">
+		<view class="chat_area">
 			<scroll-view class="chat_wrap" :scroll-into-view="scrollView" :style="{height:scrollHeight+'px'}"
 				:scroll-y="true" id="chatwrap" :refresher-enabled="true" :refresher-triggered="trigger"
 				@refresherrefresh="getMoreHistory">
@@ -19,39 +19,17 @@
 					<view class="qa_item" v-for="(item,index) in historyList" :key="item.id" :id="'his'+item.id">
 						<view class="line" :class="item.origin == 'customer'?'right':'left'">
 							<view class="inline_box">
-								<view class="cont" :style="{background:item.msg_type=='card'?'transparent':'auto',
-								width:item.msg_type=='card'?'100%':'auto'}" :class="item.msg_type == 'text'?'textcont':''">
+								<view class="cont" :class="item.msg_type == 'text'?'textcont':''">
 									<!-- 文字信息 -->
 									<rich-text :nodes="item.content"
 										:class="item.origin == 'customer'?'customer_text':'ai_text'"
 										v-if="item.msg_type == 'text'  && item.origin == 'customer'"></rich-text>
 									<markdown-render :sourceMdContent="item.content" :showCursor="false" class="ai_text"
-										v-if="item.msg_type == 'text' && item.origin == 'ai'"></markdown-render>
+										v-if="item.origin == 'ai'"></markdown-render>
 									<!-- 文字信息 -->
 									<!-- <rich-text :nodes="item.content"
 										:class="item.origin == 'customer'?'customer_text':'ai_text'"
 										v-if="item.msg_type == 'text'"></rich-text> -->
-									<!-- 面试卡片 -->
-									<view class="sure_card" style="margin-top:0;"
-										v-if="item.msg_type == 'card' && item.card && item.card.type == 'audio_call_start_interview'"
-										@click="clickSureCard(item)">
-										<view class="text_img">
-											<image :src="imgUrl+'/worker/new/sure_text.png'" mode="widthFix"></image>
-										</view>
-										<view class="bot_box">
-											<view class="name flex flex-start">
-												<view class="label">已报名工作</view>
-												<view class="text">{{item.card.job_title}}</view>
-											</view>
-											<view class="sure_btn">
-												<image :src="imgUrl+'/worker/new/sure_button.png'" mode="widthFix">
-												</image>
-											</view>
-										</view>
-										<view class="sure_icon">
-											<image :src="imgUrl+'/worker/new/sure_icon.png'" mode="widthFix"></image>
-										</view>
-									</view>
 									<view class="voice_line flex flex_end">
 										<view class="trans" v-show="item.showTranIcon"
 											@click.stop="startTrans(item,'his')">
@@ -72,6 +50,8 @@
 									<rich-text :nodes="item.content" class="trans_result text"
 										v-if="item.showTranlate"></rich-text>
 								</view>
+								<cardKefu v-if="item.msg_type == 'card' && item.card && item.card.type == 'QCODE'">
+								</cardKefu>
 							</view>
 						</view>
 					</view>
@@ -128,65 +108,11 @@
 										</view>
 									</view>
 								</view>
-								<!-- 面试卡片 -->
-								<view class="sure_card" style="margin-top:20rpx;"
-									v-if="item.card && item.card.card_type == 'audio_call_start_interview' && item.card.showCard"
-									@click="toCall">
-									<view class="text_img">
-										<image :src="imgUrl+'/worker/new/sure_text.png'" mode="widthFix"></image>
-									</view>
-									<view class="bot_box">
-										<view class="name flex flex-start">
-											<view class="label">已报名工作</view>
-											<view class="text">{{item.card.job_name}}</view>
-										</view>
-										<view class="sure_btn">
-											<image :src="imgUrl+'/worker/new/sure_button.png'" mode="widthFix">
-											</image>
-										</view>
-									</view>
-									<view class="sure_icon">
-										<image :src="imgUrl+'/worker/new/sure_icon.png'" mode="widthFix"></image>
-									</view>
-								</view>
+								<!-- 添加客服微信 -->
+								<cardKefu v-if="item.card && item.card.type == 'QCODE'"></cardKefu>
 							</view>
 						</view>
 					</view>
-					<!-- 报名成功后展示面试提示卡片 -->
-					<!-- <view class="sure_card" v-if="showInterviewCard" @click="toCall">
-						<view class="text_img">
-							<image :src="imgUrl+'/worker/new/sure_text.png'" mode="widthFix"></image>
-						</view>
-						<view class="bot_box">
-							<view class="name flex flex-start">
-								<view class="label">已报名工作</view>
-								<view class="text">{{sureJobName}}</view>
-							</view>
-							<view class="sure_btn">
-								<image :src="imgUrl+'/worker/new/sure_button.png'" mode="widthFix"></image>
-							</view>
-						</view>
-						<view class="sure_icon">
-							<image :src="imgUrl+'/worker/new/sure_icon.png'" mode="widthFix"></image>
-						</view>
-					</view> -->
-					<!-- <view class="sure_card" v-if="showChannelInterviewCard" @click="toCall">
-						<view class="text_img">
-							<image :src="imgUrl+'/worker/new/sure_text.png'" mode="widthFix"></image>
-						</view>
-						<view class="bot_box">
-							<view class="name flex flex-start">
-								<view class="label">已报名工作</view>
-								<view class="text">{{sureJobName}}</view>
-							</view>
-							<view class="sure_btn">
-								<image :src="imgUrl+'/worker/new/sure_button.png'" mode="widthFix"></image>
-							</view>
-						</view>
-						<view class="sure_icon">
-							<image :src="imgUrl+'/worker/new/sure_icon.png'" mode="widthFix"></image>
-						</view>
-					</view> -->
 				</view>
 				<view class="list">
 					<view class="qa_item" :style="{paddingBottom: '20rpx',display:answering?'block':'none'}"
@@ -210,14 +136,14 @@
 			</scroll-view>
 		</view>
 		<!-- 提示区 -->
-		<view class="tips_wrap" :style="{bottom:'240rpx'}" v-if="historyList.length == 0 && qaList.length < 2">
+		<!-- <view class="tips_wrap" :style="{bottom:'240rpx'}" v-if="historyList.length == 0 && qaList.length < 2">
 			<view class="title">您可以这样问：</view>
 			<view class="tip_list">
 				<view class="item" v-for="(item,index) in tipList" :key="index" @click="sendMsg(item.text,'tip')">
 					<view class="text">{{item.text}}</view>
 				</view>
 			</view>
-		</view>
+		</view> -->
 	</view>
 </template>
 
@@ -227,6 +153,7 @@
 		mapState,
 		mapMutations
 	} from "vuex"
+	import cardKefu from "@/components/chat_card_kefu.vue"
 	const app = getApp();
 	export default {
 		name: "welcome",
@@ -259,6 +186,9 @@
 			...mapState(["showInterviewCard", "inChannel", "channelId", "showChannelInterviewCard", "sureJobName",
 				"sureJobId"
 			])
+		},
+		components: {
+			cardKefu
 		},
 		async created() {
 
@@ -879,79 +809,7 @@
 			.list {
 
 				// padding: 30rpx;
-				.sure_card {
-					margin-top: 30rpx;
-					padding: 34rpx 25rpx 20rpx 25rpx;
-					width: 100%;
-					background: linear-gradient(180deg, #82C7FF 0%, #FFFFFF 100%);
-					box-shadow: 0rpx 4rpx 4rpx 0rpx rgba(0, 0, 0, 0.15);
-					border-radius: 15rpx;
-					box-sizing: border-box;
-					position: relative;
 
-					.text_img {
-						padding-left: 25rpx;
-						box-sizing: border-box;
-
-						image {
-							width: 310rpx;
-						}
-					}
-
-					.sure_icon {
-						position: absolute;
-						top: 0;
-						right: 0;
-
-						image {
-							width: 200rpx;
-						}
-					}
-
-					.bot_box {
-						background: #FFFFFF;
-						border-radius: 15rpx;
-						padding: 23rpx 26rpx;
-						box-sizing: border-box;
-						margin-top: 21rpx;
-
-						.name {
-							margin-top: 10rpx;
-
-							.label {
-								width: 138rpx;
-								height: 42rpx;
-								text-align: center;
-								line-height: 42rpx;
-								background: rgba(33, 111, 249, 0.08);
-								border-radius: 12rpx;
-								border: 2rpx solid #216FF9;
-								font-weight: 600;
-								font-size: 23rpx;
-								color: #216FF9;
-								flex-shrink: 0;
-							}
-
-							.text {
-								margin-left: 12rpx;
-								font-weight: 600;
-								font-size: 31rpx;
-								color: #020202;
-								white-space: nowrap;
-								overflow: hidden;
-								text-overflow: ellipsis;
-							}
-						}
-
-						.sure_btn {
-							margin-top: 36rpx;
-
-							image {
-								width: 100%;
-							}
-						}
-					}
-				}
 
 				.qa_item {
 					transition: all 1s;

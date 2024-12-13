@@ -312,7 +312,7 @@ var _default = {
       hasChannel: false,
       scrollStr: "",
       jobId: "",
-      sureStatus: false,
+      noMayAsk: false,
       //记录用户是否报名成功
       greetingReady: false,
       action: "" //记录当前状态
@@ -403,7 +403,7 @@ var _default = {
                 "click-id": _this.params.gdt_vid ? _this.params.gdt_vid : "",
                 "ad-platform": _this.params.ad_platform ? _this.params.ad_platform : "",
                 "ad-sub-platform": _this.params.platform ? _this.params.platform : "",
-                "address": encodeURIComponent(JSON.stringify(_this.location)),
+                "address": _this.location ? encodeURIComponent(JSON.stringify(_this.location)) : "",
                 "Authorization": "bearer " + token
               };
               _context2.next = 20;
@@ -621,7 +621,7 @@ var _default = {
             resolve(res.data.result);
           },
           fail: function fail(err) {
-            reject(err);
+            reject("error");
           }
         });
       });
@@ -684,7 +684,7 @@ var _default = {
             _this.resetData();
             _this.closeAnswerContinue();
             // 如果用户是报名成功则推送面试卡片
-            // if (_this.sureStatus) {
+            // if (_this.noMayAsk) {
             // 	if (_this.inChannel) {
             // 		_this.setChannelInterviewCard()
             // 	} else {
@@ -1095,7 +1095,7 @@ var _default = {
           success: function success(res) {
             _this.jobId = "";
             _this.action = "";
-            _this.sureStatus = false;
+            _this.noMayAsk = false;
             _this.closeInterviewCard();
             _this.closeChannelInterviewCard();
             _this.$set(_this, "question", "");
@@ -1211,7 +1211,7 @@ var _default = {
         _this.openAnswerContinue();
         _this.closeAnswering();
         var respData = JSON.parse(res.data);
-        // console.log("websocket返回：", respData)
+        console.log("websocket返回：", respData);
         if (_this.inCall) {
           // 对话页
           if (respData.type == "audio_call_start_interview") {
@@ -1234,22 +1234,15 @@ var _default = {
             _this.closeAnswerContinue();
           }
         } else {
-          if (respData.type == "audio_call_start_interview") {
-            // 用户报名了,推送卡片
+          if (respData.type == "QCODE") {
+            // 推送客服微信
             var card = {
-              card_type: "audio_call_start_interview",
-              job_name: respData.job_name,
-              job_id: respData.job_id,
-              showCard: false
+              type: "QCODE"
             };
             _this.curRespone.card = JSON.parse(JSON.stringify(card));
-            _this.sureStatus = true;
-            _this.setJobName(respData.job_name);
-            _this.setJobId(respData.job_id);
+            _this.noMayAsk = true;
           } else {
-            _this.sureStatus = false;
-            _this.resetJobId();
-            _this.resetJobName();
+            _this.noMayAsk = false;
           }
           if (respData.message != "[DONE]") {
             _this.responCount++;
@@ -1259,7 +1252,7 @@ var _default = {
             }
           } else {
             _this.setRespEnd();
-            if (!_this.sureStatus) {
+            if (!_this.noMayAsk) {
               _this.getMayAsk();
             }
           }
